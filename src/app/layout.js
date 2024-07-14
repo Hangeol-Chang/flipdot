@@ -1,3 +1,6 @@
+import Footer from '../../components/layout/footer'
+import Header from '../../components/layout/header'
+import RecoilRootWrapper from '../../wrappers/RecoilRootWrapper'
 import './globals.css'
 import { Inter } from 'next/font/google'
 
@@ -10,8 +13,20 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang="ko">
+      <head>
+          <title>Flip Dot</title>
+      </head>
+      
+      <body className={``}>
+          <Header />
+          <div className={``}>
+          <RecoilRootWrapper>
+              {children}
+          </RecoilRootWrapper>
+          </div>
+          <Footer />
+      </body>
     </html>
   )
 }
