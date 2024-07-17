@@ -1,43 +1,22 @@
 "use client";
-import Image from 'next/image'
 import styles from './page.module.css'
-import Dot from '../../components/flipdot/dot'
 import { useState } from 'react';
+import DotDisplay from '../../components/flipdot/dotDisplay';
 
 export default function Home() {
     const [row, setRow] = useState(10);
     const [col, setCol] = useState(20);
 
-    const DotRow = () => {
-        let result = [];
-        for(let c = 0; c < col; c++) {
-            result.push(<Dot size={50} />);
-        }
-        return result;
-    }
-
-    const DotDisplay = () => {
-        let result = [];
-        for(let r = 0; r < row; r++) {
-            result.push(
-                <div
-                    style={{
-                        display : 'flex',
-                        flexDirection : 'row',
-                        backgroundColor : '#111111',
-                    }}
-                >
-                    {DotRow(r)}
-                </div>
-            );
-        }
-        return result;
+    const [mod, setMoe] = useState(0);
+    
+    const flip = (r, c) => {
+        const id = r*1000 + c;
+        const dot = document.getElementById(id);
+        dot.setFliped(true);
     }
 
     return (
-        <main className={styles.main}
-        
-        >
+        <main className={styles.main}>
             <div
                 style={{
                     display : 'flex',
@@ -46,8 +25,8 @@ export default function Home() {
                     margin : 30,
                 }}
             >
-                <div style={{backgroundColor : '#111111', border : '20px solid', borderRadius : '10px'}}>
-                    <DotDisplay />
+                <div style={{backgroundColor : '#111111', border : '15px solid', borderRadius : '10px'}}>
+                    <DotDisplay row={row} col={col}/>
                 </div>
             </div>
         </main>

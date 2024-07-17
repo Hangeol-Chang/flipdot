@@ -1,15 +1,22 @@
-.circle {
-    border-radius : 50%;
-    background-color : #222222;
-    transition: transform 0.3s; 
+circle {
+    width : size;
+    height : size;
+    position : 'absolute';
+    border-radius : '50%';
+    transition : transform 0.3s;
+
+    background-color : #222;
     transform: 
         perspective(800px) 
         rotateZ(0deg)
         rotateY(0deg);
 }
 
-.circle:hover {
-    background-color : #AAAAAA;
+circle_normal {
+}
+
+circle_hover {
+    background-color : #eee;
     transform: 
         perspective(800px) 
         rotateZ(90deg)
