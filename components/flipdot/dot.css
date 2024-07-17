@@ -1,0 +1,17 @@
+.circle {
+    border-radius : 50%;
+    background-color : #222222;
+    transition: transform 0.3s; 
+    transform: 
+        perspective(800px) 
+        rotateZ(0deg)
+        rotateY(0deg);
+}
+
+.circle:hover {
+    background-color : #AAAAAA;
+    transform: 
+        perspective(800px) 
+        rotateZ(90deg)
+        rotateY(180deg); 
+}
