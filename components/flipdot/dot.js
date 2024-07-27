@@ -1,5 +1,4 @@
-import { forwardRef, useImperativeHandle, useState } from 'react';
-import { Transition } from 'react-transition-group';
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 
 const black1 = '#333333';
 const black2 = '#222222';
@@ -8,35 +7,37 @@ const black3 = '#111111';
 const white1 = '#EEEEEE';
 
 function Circle({size, fliped}) {
+    const [localFliped, setLocalFliped] = useState(false);
+
+    useEffect(() => {
+        if(fliped == true) {
+            setLocalFliped(true);
+        }
+        else {
+            setTimeout(function() {setLocalFliped(false)}, 1000);
+        }
+        // 1초 지연.
+    }, [fliped]);
+
     return (
-        <div
+        <div 
             style={{
-                position : 'absolute',
                 width : size,
                 height : size,
+                position : 'absolute',
+                borderRadius : '50%',
+                transition : `
+                    transform 0.3s ease-in-out, 
+                    background-color 0.15s ease-in-out`,
+
+                backgroundColor : localFliped ? white1 : black2,
+                transform       : localFliped ? 
+                    `perspective(800px) rotateZ(0deg) rotateY(0deg)` : 
+                    `perspective(800px) rotateZ(90deg) rotateY(180deg)`,
             }}
         >
-            <Transition in={fliped} timeout={500}>
-                {(state) => (
-                    <div 
-                        style={{
-                            width : size,
-                            height : size,
-                            position : 'absolute',
-                            borderRadius : '50%',
-                            // transition : 'transform 0.3s',
-                            transition: `opacity .5s ease-in-out background-color 0.1s ease-in-out`,
-                            transition : 'transform 0.3s ease-in-out',
-                            backgroundColor : state === 'exited' ? black2 : white1,
-                            // backgroundColor : `${fliped ? white1 : black2}`,
-                            transform : state === 'exited' ? 'perspective(800px) rotateZ(0deg) rotateY(0deg)' : 'perspective(800px) rotateZ(90deg) rotateY(180deg)',
-                        }}
-                    >
-                    </div>
-                )}
-            </Transition>
         </div>
-    )
+    );
 }
 
 export const Dot = forwardRef(({size=30, id, mod}, ref) => {
