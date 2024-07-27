@@ -17,7 +17,7 @@ export default function Footer() {
     return (
         <StyledFooter>
             <div>
-                all copyrights belongs to @Hangeol-Chang.
+                @Hangeol-Chang All rights reserved
             </div>
             <div>
                 connect Info

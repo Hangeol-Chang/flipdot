@@ -48,7 +48,7 @@ export default function Header() {
                             alignItems : 'center'
                         }}
                     >
-                        <HeaderButton href="/about">About</HeaderButton>
+                        <HeaderButton href="/example">API Example</HeaderButton>
                         <HeaderButton href="/terms">Terms</HeaderButton>
                     </div>
                         

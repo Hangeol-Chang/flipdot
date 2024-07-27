@@ -14,7 +14,7 @@ function Circle({size, fliped}) {
             setLocalFliped(true);
         }
         else {
-            setTimeout(function() {setLocalFliped(false)}, 1000);
+            setTimeout(function() {setLocalFliped(false)}, 500);
         }
         // 1초 지연.
     }, [fliped]);
@@ -43,8 +43,13 @@ function Circle({size, fliped}) {
 export const Dot = forwardRef(({size=30, id, mod}, ref) => {
     // export default function Dot ({size = 30, id, mod, ref}) {
     const [fliped, setFliped] = useState(false);
-    useImperativeHandle(ref, () => ({flip}));
-    function flip() { setFliped(!fliped);  }
+    useImperativeHandle(ref, () => ({
+        flip
+    }));
+
+    const flip = (flag) => { 
+        if(flag != fliped)  setFliped(flag);
+    }
 
     const Triangle = ({clipPath}) => {
         return (
