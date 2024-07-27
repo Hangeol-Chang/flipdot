@@ -4,10 +4,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 const StyledHeader = styled.div`
-    background : white;
+    background : black;
+    color : white;
     padding : 10px 30px;
     border : 10px 0px;
-    filter : drop-shadow(0 0 0.75rem #AAAAAA);
+    // filter : drop-shadow(0 0 0.75rem #AAAAAA);
 `;
 
 function HeaderButton({href, children}) {

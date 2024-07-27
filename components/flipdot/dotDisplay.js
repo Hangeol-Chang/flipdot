@@ -2,12 +2,9 @@ import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "re
 import { Dot } from "./dot.js";
 
 // export default function DotDisplay({row, col, mod=0}) {
-export const DotDisplay = forwardRef(({ROW, COL, mod=0}, ref) => {
+export const DotDisplay = forwardRef(({ROW, COL, DOTSIZE, mod=0}, ref) => {
     let dotRefs = useRef({});
-
-    useImperativeHandle(ref, () => ({
-        flip
-    }))
+    useImperativeHandle(ref, () => ({ flip }))
 
     const flip = function(r, c, flag) {
         const idx = r*COL + c;
@@ -15,10 +12,8 @@ export const DotDisplay = forwardRef(({ROW, COL, mod=0}, ref) => {
             dotRefs.current[idx].flip(flag);
         }
     }
-
-    const DotArray = function({R, C}) {
-        // MakeRefs(R, C);
-        
+    
+    const DotArray = function({R, C}) {        
         let result = [];
         for(let r = 0; r < R; r++) {
             result.push(
@@ -28,10 +23,9 @@ export const DotDisplay = forwardRef(({ROW, COL, mod=0}, ref) => {
                         flexDirection : 'row',
                     }}
                 >
-                    {/* {DotRow(r, C)} */}
                     {
                         Array.from(new Array(C)).map((_, c) => 
-                            <Dot key={r*COL + c} size={50} id={r*COL + c} mod={mod} 
+                            <Dot key={r*COL + c} size={DOTSIZE} id={r*COL + c} mod={mod} 
                                 ref = {ref => dotRefs.current[r*COL + c] = ref}
                             />
                         )

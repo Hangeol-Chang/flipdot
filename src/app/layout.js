@@ -18,12 +18,20 @@ export default function RootLayout({ children }) {
           <title>Flip Dot</title>
       </head>
       
-      <body className={``}>
+      <body className={``}
+        style={{
+          backgroundColor : 'black',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          height: '100vh',
+        }}
+      >
           <Header />
           <div className={``}>
-          <RecoilRootWrapper>
-              {children}
-          </RecoilRootWrapper>
+            <RecoilRootWrapper>
+                {children}
+            </RecoilRootWrapper>
           </div>
           <Footer />
       </body>
