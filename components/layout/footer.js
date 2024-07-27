@@ -2,9 +2,9 @@
 import styled from 'styled-components'
 
 const StyledFooter = styled.div`
-    background : #FFFFFF;
-    filter : drop-shadow(0 0 0.1rem #CCCCCC);
-    border-top : 0.1rem solid;
+    background : black;
+    color : white;
+    // border-top : 0.1rem solid;
     border-color : #AAAAAA;
     
     display : flex;
