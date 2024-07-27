@@ -25,11 +25,34 @@
 </div>
 <br>
 
-![](./public/docs/description_image1.gif)
+![](./docs/description_image1.gif)
 
 ## Usage guide
 > 더 밑으로 내리면 example이 준비되어 있습니다.
 
+### appearence
+
+### custom text
+
+### clicking mode
+
+### utc timestamp
 
 
 ## Examples
+
+### appearence
+
+### custom text 
+
+### clicking mode
+
+### hovering mode
+
+### utc timestamp
+
+
+<hr>
+버그리포트와 아이디어 제안, 풀리퀘스트는 언제나 환영입니다.
+<br>
+hgchang1@naver.com
