@@ -86,3 +86,4 @@ export const Dot = forwardRef(({size=30, id, mod}, ref) => {
         </div>
     )
 })
+Dot.displayName = 'Dot';

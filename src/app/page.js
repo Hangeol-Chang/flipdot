@@ -44,7 +44,7 @@ export default function Home() {
                 }}
             >
                 <div style={{backgroundColor : '#111111', border : '15px solid', borderRadius : '10px'}}>
-                    <DotDisplay row={row} col={col} ref={displayRef} />
+                    <DotDisplay ROW={row} COL={col} ref={displayRef} />
                 </div>
             </div>
         </main>
