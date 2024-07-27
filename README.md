@@ -1,20 +1,20 @@
 # Flip Dot
 
 <div align="center">
-    <link href="https://flipdots.vercel.app">
-            <div style="
-                color : white;
-                border : 3px solid;
-                border-color : black;
-                width : 200px;
-                border-radius : 40px;
-                padding : 5px;
-                "
-            >
-                <h5 style="margin: 0px;"> Try </h5> 
-                <h3 style="margin: 0px;"> 💿 flip dot 💿 </h3>
-            </div>
-    </link>
+    <a href="https://flipdots.vercel.app"
+        style="
+            background-color : #222222;
+            border : 3px solid black;
+            color : white;
+            width : 200px;
+            border-radius : 40px;
+            padding : 5px;
+            display : flex;
+            flex-direction : column;
+        "
+    >
+        try 💿 flip dot 💿 
+    </a>         
 </div>
 <hr>
 <div align="center">
