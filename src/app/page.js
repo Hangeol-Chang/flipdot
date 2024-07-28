@@ -2,6 +2,7 @@
 import styles from './page.module.css'
 import { useEffect, useRef, useState } from 'react';
 import { DotDisplay } from '../../components/flipdot/dotDisplay';
+import { Syne_Tactile } from 'next/font/google';
 
 // 계산에 사용되는 함수 대부분은 추후에 api로 분리할 것
 
@@ -10,12 +11,10 @@ export default function Home() {
     const [dotSize , setDotSize ] = useState(50);   // 30 ~ 150 정도의 값으로 움직일 것.
 
     const [windowSizeLimit, ] = useState({min : [300, 300], max : [3840, 1440]});
-
-    const [dotCountLimit, ] = useState(
-        { min : [10, 10],
-          max : [25, 100] }
-    );
+    const [dotCountLimit, ] = useState(  {min : [10, 10],   max : [25, 100] }  );
     const [dotSizeLimit, ] = useState({min : 50, max : 80});
+    
+    const [fullScreenMode, setFullScreenMode] = useState(false);
 
     const saturateDotCount = (row, col) => {
         if(     row < dotCountLimit.min[0]) row = dotCountLimit.min[0];
@@ -58,41 +57,50 @@ export default function Home() {
         const rC = Math.floor(Math.random() * dotCount[1]); 
         
         flip(rR, rC, true);
-        setTimeout(() => {reserFlip(rR, rC)}, interval);
+        setTimeout(() => {resetFlip(rR, rC)}, interval);
         setTimeout(() => {randomFlip()}, interval);
     }
 
-    const reserFlip = (r, c) => {
+    const resetFlip = (r, c) => {
         flip(r, c, false);
     }
 
-    const refreshAll = () => {
+    const refreshAll = (r = 0, c = 0) => {
         // 전체 false처리 해버리는 코드.
+        flip(r, c, true);
+        setTimeout();
     }
 
     useEffect(() => {
         randomFlip();
     }, [])
 
+    
+    const handleResize = () => {
+        let newDotSize = 50;
+        let newDotCount = [10, 20];
+        
+        if(fullScreenMode) {
+            newDotSize = CalculateDotSize(window.innerWidth, window.innerHeight);
+            newDotCount = calulateDotCount(window.innerWidth / newDotSize, window.innerHeight / 80);
+        }
+        
+        setDotSize(newDotSize);
+        setDotCount(newDotCount);
+    }
+
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-
-            const handleResize = () => {
-                const newDotSize = CalculateDotSize(window.innerWidth, window.innerHeight);
-                setDotSize(newDotSize);
-                console.log(newDotSize);
-
-                const newDotCount = calulateDotCount(window.innerWidth / newDotSize, window.innerHeight / 80);
-
-                setDotCount(newDotCount);
-            }
+        if (typeof window !== 'undefined') {            
             window.addEventListener("resize", handleResize);
             handleResize();
-
             return () => window.removeEventListener("resize", handleResize);
         } 
         else return () => window.removeEventListener("resize", () => {return null});
     }, []); 
+    useEffect(() => {
+        handleResize();
+    }, [fullScreenMode])
+
 
     return (
         <main className={styles.main}>
@@ -104,6 +112,19 @@ export default function Home() {
                     // margin : 30,
                 }}
             >
+                <button
+                    onClick={() => setFullScreenMode(!fullScreenMode)}
+                    style={{
+                        backgroundColor : 'black',
+                        color : 'white',
+                        border : '1px solid',
+                        padding : '10px',
+                        borderRadius : '50px'
+                    }}
+                >
+                    fullscreen Mode
+                </button>
+                
                 <div style={{backgroundColor : '#111111', border : '15px solid', borderRadius : '10px'}}>
                     <DotDisplay ROW={dotCount[0]} COL={dotCount[1]} DOTSIZE={dotSize} ref={displayRef} />
                 </div>
