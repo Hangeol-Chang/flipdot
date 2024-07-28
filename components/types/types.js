@@ -1,6 +1,6 @@
 // global using types
 
-const FLIP_MODE = {
+const FD_FLIP_MODE = {
     FLIP_MODE_HOVER     : 0,
     FLIP_MODE_CLICK     : 1,
     FLIP_MODE_RANDOM    : 2,
@@ -12,5 +12,5 @@ const FLIP_MODE = {
 }
 
 export {
-    FLIP_MODE,
+    FD_FLIP_MODE,
 }
