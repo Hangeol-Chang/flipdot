@@ -41,16 +41,6 @@ function Circle2({className}) {
         <path d="M0 0 L0 10 L10 0 Z" fill="#AAAAAA" />
         <path d="M50 50 L50 40 L40 50 Z" fill="#AAAAAA" />
 
-        <circle cx="50" cy="50" r="50" fill="red">
-            <animate
-                attributeName="cx"
-                begin="0s"
-                dur="8s"
-                from="50"
-                to="90%"
-                repeatCount="indefinite" 
-            />
-        </circle>
       </svg>
     )
 }
