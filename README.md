@@ -51,6 +51,10 @@
 
 ### utc timestamp
 
+----
+### Special Thanks
+- Capsule-Render
+
 
 <hr>
 버그리포트와 아이디어 제안, 풀리퀘스트는 언제나 환영입니다.

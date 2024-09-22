@@ -23,12 +23,12 @@ export default function RootLayout({ children }) {
           backgroundColor : 'black',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'space-between',
+          justifyContent: 'start',
           height: '100vh',
         }}
       >
           <Header />
-          <div className={``}>
+          <div className={``} style={{minHeight : '1000px'}}>
             <RecoilRootWrapper>
                 {children}
             </RecoilRootWrapper>
