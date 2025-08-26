@@ -26,6 +26,7 @@ function Circle({size, fliped}) {
                 height : size,
                 position : 'absolute',
                 borderRadius : '50%',
+                zIndex: 10,
                 transition : `
                     transform 0.3s ease-in-out, 
                     background-color 0.15s ease-in-out`,
@@ -58,6 +59,7 @@ export const Dot = forwardRef(({size=30, id, mod}, ref) => {
                     width : size, height : size,
                     backgroundColor : black2,
                     position : 'absolute',
+                    zIndex: 5,
                     clipPath : clipPath
                 }}
             >
@@ -75,6 +77,8 @@ export const Dot = forwardRef(({size=30, id, mod}, ref) => {
                 margin : '1px',
                 backgroundColor : black3,
                 flexShrink : 0,
+                position: 'relative',
+                zIndex: 1,
             }}
             onMouseEnter={() => setFliped(true)}
             onMouseLeave={() => setFliped(false)} 

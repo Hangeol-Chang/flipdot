@@ -105,18 +105,17 @@ function generateFlipDotSVG(pattern, options) {
             
             const shouldFlip = pattern.data[y] && pattern.data[y][x] === 1;
             
-            // 배경 사각형 (dot holder)
-            dots += `<rect x="${x * totalDotSize}" y="${y * totalDotSize}" width="${dotSize}" height="${dotSize}" fill="${colors.background}" stroke="${colors.border}" stroke-width="0.5"/>`;
+            // 배경 사각형 (dot holder) - 테두리 제거
+            dots += `<rect x="${x * totalDotSize}" y="${y * totalDotSize}" width="${dotSize}" height="${dotSize}" fill="${colors.background}"/>`;
             
-            // 모서리 삼각형들 (입체감)
+            // 왼쪽 위 삼각형만 남김 (포인트 효과)
             dots += `<polygon points="${x * totalDotSize},${y * totalDotSize} ${x * totalDotSize + 4},${y * totalDotSize} ${x * totalDotSize},${y * totalDotSize + 4}" fill="${colors.shadow}"/>`;
-            dots += `<polygon points="${(x + 1) * totalDotSize},${(y + 1) * totalDotSize} ${(x + 1) * totalDotSize - 4},${(y + 1) * totalDotSize} ${(x + 1) * totalDotSize},${(y + 1) * totalDotSize - 4}" fill="${colors.shadow}"/>`;
             
             // 중앙 원 (실제 flip dot)
             const dotColor = shouldFlip ? colors.dotOn : colors.dotOff;
             const transform = shouldFlip ? 
                 `transform="rotate(0 ${centerX} ${centerY})"` : 
-                `transform="rotate(180 ${centerX} ${centerY}) scale(0.8)"`;
+                `transform="rotate(180 ${centerX} ${centerY})"`;
             
             dots += `<circle cx="${centerX}" cy="${centerY}" r="${dotRadius}" fill="${dotColor}" ${transform}/>`;
         }
