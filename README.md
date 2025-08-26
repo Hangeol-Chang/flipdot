@@ -1,7 +1,7 @@
 # 💿 Flip Dot Display
 
 <div align="center">
-    <a href="https://flipdots.vercel.app"
+    <a href="https://flipdots.vercel.app/example"
         style="
             background-color : #222222;
             border : 3px solid black;
