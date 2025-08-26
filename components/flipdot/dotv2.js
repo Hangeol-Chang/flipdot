@@ -4,13 +4,12 @@ import { useEffect, useState } from 'react';
 
 function Circle2({className}) {
     const [fliped, setFliped] = useState(false);
-
-    const toggleFlip = (a) => {
-        setFliped(a);
-        console.log("fliped", a, fliped);
-    }
     
     useEffect(() => {
+        const toggleFlip = (a) => {
+            setFliped(a);
+            console.log("fliped", a, fliped);
+        }
         setTimeout(() => {toggleFlip(!fliped)}, 1000);
     }, [fliped]);
 

@@ -1,6 +1,6 @@
 "use client";
 import styles from './page.module.css'
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { DotDisplay } from '../../components/flipdot/dotDisplay';
 import { Syne_Tactile } from 'next/font/google';
 
@@ -16,7 +16,7 @@ export default function Home() {
     
     const [fullScreenMode, setFullScreenMode] = useState(false);
 
-    const saturateDotCount = (row, col) => {
+    const saturateDotCount = useCallback((row, col) => {
         if(     row < dotCountLimit.min[0]) row = dotCountLimit.min[0];
         else if(row > dotCountLimit.max[0]) row = dotCountLimit.max[0];
 
@@ -24,23 +24,25 @@ export default function Home() {
         else if(col > dotCountLimit.max[1]) col = dotCountLimit.max[1];
 
         return [row, col];
-    }
-    const saturateDotSize = (size) => {
+    }, [dotCountLimit]);
+    
+    const saturateDotSize = useCallback((size) => {
         if(size < dotSizeLimit.min) return dotSizeLimit.min;
         if(size > dotSizeLimit.max) return dotSizeLimit.max;
         return size;
-    }
+    }, [dotSizeLimit]);
 
-    const calulateDotCount = (width, height) => {
+    const calulateDotCount = useCallback((width, height) => {
         const row = Math.floor(height);
         const col = Math.floor(width );
 
         return saturateDotCount(row, col);
-    }
-    const CalculateDotSize = (width, height) => {
+    }, [saturateDotCount]);
+    
+    const CalculateDotSize = useCallback((width, height) => {
         const step = (windowSizeLimit.max[0] - windowSizeLimit.min[0]) / (dotSizeLimit.max - dotSizeLimit.min);
         return saturateDotSize(dotSize + (width - windowSizeLimit.min[0]) / step);
-    }
+    }, [dotSize, dotSizeLimit, windowSizeLimit, saturateDotSize]);
 
 
     const [mod, setMoe] = useState(0);
@@ -52,19 +54,19 @@ export default function Home() {
         displayRef.current.flip(r, c, flag);
     }
     
+    const resetFlip = useCallback((r, c) => {
+        flip(r, c, false);
+    }, []);
+
     const interval = 300;
-    const randomFlip = () => {
+    const randomFlip = useCallback(() => {
         const rR = Math.floor(Math.random() * dotCount[0]);
         const rC = Math.floor(Math.random() * dotCount[1]); 
         
         flip(rR, rC, true);
         setTimeout(() => {resetFlip(rR, rC)}, interval);
         setTimeout(() => {randomFlip()}, interval);
-    }
-
-    const resetFlip = (r, c) => {
-        flip(r, c, false);
-    }
+    }, [dotCount, resetFlip]);
 
     const refreshAll = (r = 0, c = 0) => {
         // 전체 false처리 해버리는 코드.
@@ -74,10 +76,10 @@ export default function Home() {
 
     useEffect(() => {
         randomFlip();
-    }, [])
+    }, [randomFlip])
 
     
-    const handleResize = () => {
+    const handleResize = useCallback(() => {
         let newDotSize = 50;
         let newDotCount = [10, 20];
         
@@ -88,7 +90,7 @@ export default function Home() {
         
         setDotSize(newDotSize);
         setDotCount(newDotCount);
-    }
+    }, [fullScreenMode, CalculateDotSize, calulateDotCount]);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {            
@@ -97,10 +99,10 @@ export default function Home() {
             return () => window.removeEventListener("resize", handleResize);
         } 
         else return () => window.removeEventListener("resize", () => {return null});
-    }, []); 
+    }, [handleResize]); 
     useEffect(() => {
         handleResize();
-    }, [fullScreenMode])
+    }, [handleResize])
 
 
     return (

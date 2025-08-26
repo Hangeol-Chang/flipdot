@@ -205,7 +205,7 @@ export default function Page() {
                 
                 <h3>특수 기능</h3>
                 <ul>
-                    <li><strong>띄어쓰기</strong>: 공백 또는 '_' (언더스코어) 사용</li>
+                    <li><strong>띄어쓰기</strong>: 공백 또는 &apos;_&apos; (언더스코어) 사용</li>
                     <li><strong>특수문자</strong>: ! ? . , : ; - + = * / \ ( ) [ ] @ # $ % &</li>
                     <li><strong>URL 인코딩</strong>: 특수문자가 URL에서 자동으로 인코딩되어도 정상 처리</li>
                 </ul>
