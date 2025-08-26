@@ -2,7 +2,7 @@ import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "re
 import { Dot } from "./dot.js";
 
 // export default function DotDisplay({row, col, mod=0}) {
-export const DotDisplay = forwardRef(({ROW, COL, DOTSIZE, mod=0}, ref) => {
+export const DotDisplay = forwardRef(({ROW, COL, DOTSIZE, mod=0, animationMode='BASIC'}, ref) => {
     let dotRefs = useRef({});
     const [isInitialized, setIsInitialized] = useState(false);
     
@@ -37,7 +37,7 @@ export const DotDisplay = forwardRef(({ROW, COL, DOTSIZE, mod=0}, ref) => {
                     {
                         Array.from(new Array(C)).map((_, c) => 
                             <Dot key={r*COL + c} size={DOTSIZE} id={r*COL + c} mod={mod} 
-                                row={r} col={c}
+                                row={r} col={c} animationMode={animationMode}
                                 ref = {ref => dotRefs.current[r*COL + c] = ref}
                             />
                         )

@@ -44,6 +44,7 @@ export default function Home() {
 
 
     const [mod, setMoe] = useState(0);
+    const [animationMode, setAnimationMode] = useState('BASIC');
 
     const displayRef = useRef();
     
@@ -127,6 +128,20 @@ export default function Home() {
                 </button>
                 
                 <button
+                    onClick={() => setAnimationMode(animationMode === 'BASIC' ? 'BREATHING' : 'BASIC')}
+                    style={{
+                        backgroundColor : animationMode === 'BREATHING' ? '#28a745' : '#6c757d',
+                        color : 'white',
+                        border : '1px solid',
+                        padding : '10px',
+                        borderRadius : '50px',
+                        marginRight: '10px'
+                    }}
+                >
+                    {animationMode} MODE
+                </button>
+                
+                <button
                     onClick={() => window.open('/example', '_blank')}
                     style={{
                         backgroundColor : '#007ACC',
@@ -140,7 +155,7 @@ export default function Home() {
                 </button>
                 
                 <div style={{backgroundColor : '#111111', border : '15px solid', borderRadius : '10px'}}>
-                    <DotDisplay ROW={dotCount[0]} COL={dotCount[1]} DOTSIZE={dotSize} ref={displayRef} />
+                    <DotDisplay ROW={dotCount[0]} COL={dotCount[1]} DOTSIZE={dotSize} animationMode={animationMode} ref={displayRef} />
                 </div>
             </div>
         </main>

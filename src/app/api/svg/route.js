@@ -10,6 +10,7 @@ export async function GET(request) {
     const style = searchParams.get('style') || 'dark';
     const dotSize = parseInt(searchParams.get('dotSize')) || 20;
     const spacing = parseInt(searchParams.get('spacing')) || 2;
+    const animationMode = searchParams.get('animationMode') || 'static';
     
     // 커스텀 색상 파라미터 (# 기호 자동 추가)
     const customColors = {
@@ -26,7 +27,9 @@ export async function GET(request) {
         style,
         dotSize,
         spacing,
-        customColors
+        customColors,
+        animationMode,
+        text
     });
     
     return new NextResponse(svg, {
@@ -94,12 +97,26 @@ function textToPattern(text) {
 }
 
 function generateFlipDotSVG(pattern, options) {
-    const { dotSize, spacing, style, customColors } = options;
+    const { dotSize, spacing, style, customColors, animationMode = 'static', text = '' } = options;
     const dotRadius = dotSize / 2 - 1;
     const totalDotSize = dotSize + spacing;
     
-    const svgWidth = pattern.width * totalDotSize;
-    const svgHeight = pattern.height * totalDotSize;
+    // scroll 모드일 때는 더 넓은 캔버스 사용
+    let svgWidth, svgHeight, displayWidth;
+    const padding = 4; // 패딩 크기
+    const borderWidth = 4; // 테두리 크기
+    const borderRadius = 4; // 모서리 둥글기
+    const totalPadding = padding + borderWidth; // 총 여백
+    
+    if (animationMode === 'scroll') {
+        displayWidth = Math.max(pattern.width, 20); // 텍스트 길이나 최소 20개 중 더 큰 값
+        svgWidth = displayWidth * totalDotSize + totalPadding * 2;
+        svgHeight = pattern.height * totalDotSize + totalPadding * 2;
+    } else {
+        svgWidth = pattern.width * totalDotSize + totalPadding * 2;
+        svgHeight = pattern.height * totalDotSize + totalPadding * 2;
+        displayWidth = pattern.width;
+    }
     
     // 스타일 설정 (기본 스타일 먼저 적용, 그 다음 커스텀 색상으로 덮어쓰기)
     const colors = getStyleColors(style, customColors);
@@ -109,37 +126,67 @@ function generateFlipDotSVG(pattern, options) {
     // dotOn이 여러 색상인 경우 처리
     const dotOnColors = colors.dotOn.split(',').map(color => color.trim());
     
-    for (let y = 0; y < pattern.height; y++) {
-        for (let x = 0; x < pattern.width; x++) {
-            const centerX = x * totalDotSize + dotSize / 2;
-            const centerY = y * totalDotSize + dotSize / 2;
-            
-            const shouldFlip = pattern.data[y] && pattern.data[y][x] === 1;
-            
-            // 배경 사각형 (dot holder) - 테두리 제거
-            dots += `<rect x="${x * totalDotSize}" y="${y * totalDotSize}" width="${dotSize}" height="${dotSize}" fill="${colors.background}"/>`;
-            
-            // 왼쪽 위 삼각형만 남김 (포인트 효과)
-            dots += `<polygon points="${x * totalDotSize},${y * totalDotSize} ${x * totalDotSize + 4},${y * totalDotSize} ${x * totalDotSize},${y * totalDotSize + 4}" fill="${colors.shadow}"/>`;
-            
-            // 중앙 원 (실제 flip dot)
-            let dotColor;
-            if (shouldFlip && dotOnColors.length > 1) {
-                // 전체 panel에서 해당 위치의 그라디언트 색상 계산
-                dotColor = calculateGradientColor(dotOnColors, x, pattern.width);
-            } else {
-                dotColor = shouldFlip ? colors.dotOn : colors.dotOff;
+    if (animationMode === 'scroll') {
+        // scroll 모드: 고정된 화면 크기에 스크롤링 텍스트
+        for (let y = 0; y < pattern.height; y++) {
+            for (let x = 0; x < displayWidth; x++) {
+                const centerX = x * totalDotSize + dotSize / 2 + totalPadding;
+                const centerY = y * totalDotSize + dotSize / 2 + totalPadding;
+                
+                // 배경 사각형 (dot holder)
+                dots += `<rect x="${x * totalDotSize + totalPadding}" y="${y * totalDotSize + totalPadding}" width="${dotSize}" height="${dotSize}" fill="${colors.background}"/>`;
+                
+                // 왼쪽 위 삼각형 (포인트 효과)
+                dots += `<polygon points="${x * totalDotSize + totalPadding},${y * totalDotSize + totalPadding} ${x * totalDotSize + 4 + totalPadding},${y * totalDotSize + totalPadding} ${x * totalDotSize + totalPadding},${y * totalDotSize + 4 + totalPadding}" fill="${colors.shadow}"/>`;
+                
+                // 중앙 원 (실제 flip dot) - scroll 애니메이션 적용
+                let dotColor = colors.dotOff;
+                if (dotOnColors.length > 1) {
+                    dotColor = calculateGradientColor(dotOnColors, x, displayWidth);
+                } else {
+                    dotColor = colors.dotOn;
+                }
+                
+                dots += `<circle cx="${centerX}" cy="${centerY}" r="${dotRadius}" fill="${colors.dotOff}" 
+                           class="scroll-dot" data-x="${x}" data-y="${y}" data-on-color="${dotColor}"/>`;
             }
-            
-            // 애니메이션 지연 계산 (대각선 순서)
-            const animationDelay = (x + y) * 0.08; // 80ms씩 지연
-            const animationClass = shouldFlip ? 'dot-on' : 'dot-off';
-            
-            // 각 dot를 개별적으로 배치하고 transform-origin을 명시적으로 설정
-            dots += `<circle cx="${centerX}" cy="${centerY}" r="${dotRadius}" fill="${dotColor}" class="${animationClass}" 
-                       style="animation-delay: ${animationDelay}s; "/>`;
+        }
+    } else {
+        // 기존 static/sequential 모드
+        for (let y = 0; y < pattern.height; y++) {
+            for (let x = 0; x < pattern.width; x++) {
+                const centerX = x * totalDotSize + dotSize / 2 + totalPadding;
+                const centerY = y * totalDotSize + dotSize / 2 + totalPadding;
+                
+                const shouldFlip = pattern.data[y] && pattern.data[y][x] === 1;
+                
+                // 배경 사각형 (dot holder) - 테두리 제거
+                dots += `<rect x="${x * totalDotSize + totalPadding}" y="${y * totalDotSize + totalPadding}" width="${dotSize}" height="${dotSize}" fill="${colors.background}"/>`;
+                
+                // 왼쪽 위 삼각형만 남김 (포인트 효과)
+                dots += `<polygon points="${x * totalDotSize + totalPadding},${y * totalDotSize + totalPadding} ${x * totalDotSize + 4 + totalPadding},${y * totalDotSize + totalPadding} ${x * totalDotSize + totalPadding},${y * totalDotSize + 4 + totalPadding}" fill="${colors.shadow}"/>`;
+                
+                // 중앙 원 (실제 flip dot)
+                let dotColor;
+                if (shouldFlip && dotOnColors.length > 1) {
+                    // 전체 panel에서 해당 위치의 그라디언트 색상 계산
+                    dotColor = calculateGradientColor(dotOnColors, x, pattern.width);
+                } else {
+                    dotColor = shouldFlip ? colors.dotOn : colors.dotOff;
+                }
+                
+                // 애니메이션 지연 계산 (대각선 순서)
+                const animationDelay = (x + y) * 0.08; // 80ms씩 지연
+                const animationClass = shouldFlip ? 'dot-on' : 'dot-off';
+                
+                // 각 dot를 개별적으로 배치하고 transform-origin을 명시적으로 설정
+                dots += `<circle cx="${centerX}" cy="${centerY}" r="${dotRadius}" fill="${dotColor}" class="${animationClass}" 
+                           style="animation-delay: ${animationDelay}s; "/>`;
+            }
         }
     }
+    
+    const scrollAnimationCSS = animationMode === 'scroll' ? generateScrollAnimation(pattern, displayWidth, colors, text) : '';
     
     return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${svgWidth}" height="${svgHeight}" viewBox="0 0 ${svgWidth} ${svgHeight}">
@@ -148,6 +195,16 @@ function generateFlipDotSVG(pattern, options) {
             font-family: monospace; 
         }
         
+        ${animationMode === 'scroll' ? `
+        /* 스크롤 모드 애니메이션 */
+        .scroll-dot {
+            animation-fill-mode: forwards;
+            transform-box: content-box;
+            transform-origin: center center;
+        }
+        
+        ${scrollAnimationCSS}
+        ` : `
         /* 켜진 dot들만 애니메이션 적용 */
         .dot-on {
             animation: sequentialFlip 0.5s ease-in-out forwards;
@@ -178,18 +235,18 @@ function generateFlipDotSVG(pattern, options) {
                     rotateY(90deg);
                 opacity: 1;
             }
-            51% {
-                opacity: 1;
-            }
             100% {
+                fill: ${colors.dotOn};
                 transform: 
                     rotateZ(90deg)
                     rotateY(180deg);
                 opacity: 1;
             }
         }
+        `}
     </style>
-    <rect width="100%" height="100%" fill="${colors.panelBackground}"/>
+    <!-- 패딩과 테두리 영역 (패널 배경과 동일한 색상) -->
+    <rect width="100%" height="100%" fill="${colors.panelBackground}" rx="${borderRadius}" ry="${borderRadius}"/>
     ${dots}
 </svg>`;
 }
@@ -249,6 +306,118 @@ function getStyleColors(style, customColors = {}) {
     }
     
     return colors;
+}
+
+// 스크롤 애니메이션 CSS 생성
+function generateScrollAnimation(pattern, displayWidth, colors, text) {
+    const totalTextWidth = pattern.width;
+    const scrollSteps = totalTextWidth + displayWidth; // 전체 스크롤 단계
+    const flipDuration = 0.3; // flip 애니메이션 시간
+    const holdDuration = 0.5; // 읽을 시간
+    const stepInterval = 0.3; // 각 스텝 간격 (동시 애니메이션을 위해)
+    const totalScrollTime = scrollSteps * stepInterval;
+    const pauseTime = 2; // 반복 전 대기 시간
+    const totalCycleDuration = totalScrollTime + pauseTime;
+    
+    let animationCSS = '';
+    
+    // 각 display 위치의 dot별로 애니메이션 생성
+    for (let y = 0; y < pattern.height; y++) {
+        for (let x = 0; x < displayWidth; x++) {
+            let keyframes = `@keyframes scroll-${x}-${y} {\n  0% { fill: ${colors.dotOff}; }\n`;
+            
+            // 이 dot가 켜져야 하는 모든 스텝을 찾기
+            let activeSteps = [];
+            for (let step = 0; step < scrollSteps; step++) {
+                const textPosition = step - displayWidth + x + 1;
+                if (textPosition >= 0 && textPosition < totalTextWidth) {
+                    const shouldFlip = pattern.data[y] && pattern.data[y][textPosition] === 1;
+                    if (shouldFlip) {
+                        activeSteps.push(step);
+                    }
+                }
+            }
+            
+            // 각 활성 스텝에 대해 애니메이션 생성
+            for (let i = 0; i < activeSteps.length; i++) {
+                const step = activeSteps[i];
+                const stepStartTime = step * stepInterval;
+                const stepStartPercent = (stepStartTime / totalCycleDuration) * 100;
+                
+                // 다음 스텝이 연속인지 확인
+                const isNextConsecutive = i < activeSteps.length - 1 && activeSteps[i + 1] === step + 1;
+                const isPrevConsecutive = i > 0 && activeSteps[i - 1] === step - 1;
+                
+                if (isPrevConsecutive) {
+                    // 이전 스텝과 연속이면 계속 켜진 상태 유지
+                    continue;
+                }
+                
+                // 켜지는 애니메이션 시작
+                const flipOnStart = stepStartPercent;
+                const flipOnMid = stepStartPercent + (flipDuration / 2 / totalCycleDuration) * 100;
+                const flipOnEnd = stepStartPercent + (flipDuration / totalCycleDuration) * 100;
+                
+                keyframes += `  ${flipOnStart}% { 
+                    fill: ${colors.dotOff}; 
+                    transform: rotateZ(0deg) rotateY(0deg);
+                }\n`;
+                keyframes += `  ${flipOnMid}% { 
+                    fill: ${colors.dotOff}; 
+                    transform: rotateZ(45deg) rotateY(90deg);
+                }\n`;
+                keyframes += `  ${flipOnEnd}% { 
+                    fill: ${colors.dotOn}; 
+                    transform: rotateZ(90deg) rotateY(180deg);
+                }\n`;
+                
+                // 연속 구간의 끝을 찾기
+                let lastConsecutiveStep = step;
+                while (i < activeSteps.length - 1 && activeSteps[i + 1] === lastConsecutiveStep + 1) {
+                    i++;
+                    lastConsecutiveStep = activeSteps[i];
+                }
+                
+                // 꺼지는 애니메이션 (연속 구간의 마지막에서)
+                const lastStepTime = lastConsecutiveStep * stepInterval;
+                const holdEndTime = lastStepTime + holdDuration;
+                const flipOffEndTime = holdEndTime + flipDuration;
+                
+                const holdEndPercent = (holdEndTime / totalCycleDuration) * 100;
+                const flipOffMidPercent = ((holdEndTime + flipDuration / 2) / totalCycleDuration) * 100;
+                const flipOffEndPercent = (flipOffEndTime / totalCycleDuration) * 100;
+                
+                keyframes += `  ${holdEndPercent}% { 
+                    fill: ${colors.dotOn}; 
+                    transform: rotateZ(90deg) rotateY(180deg);
+                }\n`;
+                keyframes += `  ${flipOffMidPercent}% { 
+                    fill: ${colors.dotOff}; 
+                    transform: rotateZ(45deg) rotateY(90deg);
+                }\n`;
+                keyframes += `  ${flipOffEndPercent}% { 
+                    fill: ${colors.dotOff}; 
+                    transform: rotateZ(0deg) rotateY(0deg);
+                }\n`;
+            }
+            
+            const scrollEndPercent = (totalScrollTime / totalCycleDuration) * 100;
+            keyframes += `  ${scrollEndPercent}% { fill: ${colors.dotOff}; }\n`;
+            keyframes += `  100% { fill: ${colors.dotOff}; }\n`;
+            keyframes += `}\n\n`;
+            
+            animationCSS += keyframes;
+            
+            // dot에 애니메이션 적용
+            animationCSS += `.scroll-dot[data-x="${x}"][data-y="${y}"] {\n`;
+            animationCSS += `  animation: scroll-${x}-${y} ${totalCycleDuration}s infinite ease-in-out;\n`;
+            animationCSS += `  transform-box: content-box;\n`;
+            animationCSS += `  transform-origin: center center;\n`;
+            animationCSS += `}\n\n`;
+        }
+    }
+    
+    return animationCSS;
 }
 
 // 전체 panel에서 해당 위치의 그라디언트 색상 계산
