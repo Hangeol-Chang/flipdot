@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 
 export default function Page() {
-    const [text, setText] = useState('HELLO WORLD');
+    const [text, setText] = useState('HELLO_WORLD!');
     const [style, setStyle] = useState('basic');
     const [dotSize, setDotSize] = useState(20);
     const [spacing, setSpacing] = useState(2);
@@ -196,12 +196,79 @@ export default function Page() {
             }}>
                 <h2>파라미터</h2>
                 <ul>
-                    <li><strong>text</strong>: 표시할 텍스트 (영문자, 숫자, 공백 지원)</li>
+                    <li><strong>text</strong>: 표시할 텍스트 (영문자, 숫자, 특수문자 지원)</li>
                     <li><strong>style</strong>: 스타일 테마 (basic, retro, modern)</li>
                     <li><strong>animationMode</strong>: 애니메이션 모드 (static, sequential, scroll)</li>
                     <li><strong>dotSize</strong>: 각 dot의 크기 (10-40px)</li>
                     <li><strong>spacing</strong>: dot 간의 간격 (1-10px)</li>
                 </ul>
+                
+                <h3>특수 기능</h3>
+                <ul>
+                    <li><strong>띄어쓰기</strong>: 공백 또는 '_' (언더스코어) 사용</li>
+                    <li><strong>특수문자</strong>: ! ? . , : ; - + = * / \ ( ) [ ] @ # $ % &</li>
+                    <li><strong>URL 인코딩</strong>: 특수문자가 URL에서 자동으로 인코딩되어도 정상 처리</li>
+                </ul>
+                
+                <h3>예제 텍스트</h3>
+                <div style={{ marginTop: '10px' }}>
+                    <button 
+                        onClick={() => setText('HELLO_WORLD!')}
+                        style={{
+                            backgroundColor: '#444',
+                            color: 'white',
+                            border: 'none',
+                            padding: '5px 10px',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            margin: '5px'
+                        }}
+                    >
+                        HELLO_WORLD!
+                    </button>
+                    <button 
+                        onClick={() => setText('ABC_123')}
+                        style={{
+                            backgroundColor: '#444',
+                            color: 'white',
+                            border: 'none',
+                            padding: '5px 10px',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            margin: '5px'
+                        }}
+                    >
+                        ABC_123
+                    </button>
+                    <button 
+                        onClick={() => setText('GITHUB.COM/USER')}
+                        style={{
+                            backgroundColor: '#444',
+                            color: 'white',
+                            border: 'none',
+                            padding: '5px 10px',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            margin: '5px'
+                        }}
+                    >
+                        GITHUB.COM/USER
+                    </button>
+                    <button 
+                        onClick={() => setText('SCORE:_100%')}
+                        style={{
+                            backgroundColor: '#444',
+                            color: 'white',
+                            border: 'none',
+                            padding: '5px 10px',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            margin: '5px'
+                        }}
+                    >
+                        SCORE:_100%
+                    </button>
+                </div>
             </div>
         </div>
     );

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { FD_TEXT_MAP_ENG } from '../../../../components/types/textmapEng.js';
 import { FD_TEXT_MAP_NUM } from '../../../../components/types/textmapNum.js';
+import { FD_TEXT_MAP_SPECIAL } from '../../../../components/types/textmapSpecial.js';
 
 export async function GET(request) {
     const { searchParams } = new URL(request.url);
@@ -45,13 +46,44 @@ function textToPattern(text) {
     let totalWidth = 0;
     let maxHeight = 0;
     
+    // URL 디코딩된 특수문자 처리를 위한 매핑
+    const urlDecodedMap = {
+        '%21': '!',
+        '%3F': '?',
+        '%40': '@',
+        '%23': '#',
+        '%24': '$',
+        '%25': '%',
+        '%26': '&',
+        '%2A': '*',
+        '%2B': '+',
+        '%2D': '-',
+        '%3D': '=',
+        '%2F': '/',
+        '%5C': '\\',
+        '%28': '(',
+        '%29': ')',
+        '%5B': '[',
+        '%5D': ']',
+        '%3A': ':',
+        '%3B': ';',
+        '%2C': ',',
+        '%2E': '.'
+    };
+    
+    // URL 인코딩된 특수문자 디코딩
+    let decodedText = text;
+    for (const [encoded, decoded] of Object.entries(urlDecodedMap)) {
+        decodedText = decodedText.replace(new RegExp(encoded, 'gi'), decoded);
+    }
+    
     // 각 문자의 패턴을 가져와서 연결
-    for (let i = 0; i < text.length; i++) {
-        const char = text[i];
+    for (let i = 0; i < decodedText.length; i++) {
+        const char = decodedText[i];
         let pattern = null;
         
-        if (char === ' ') {
-            // 공백 처리
+        if (char === ' ' || char === '_') {
+            // 공백 및 언더스코어(_)를 띄어쓰기로 처리 (3 column)
             pattern = {
                 size: [7, 3],
                 data: Array(7).fill().map(() => Array(3).fill(0))
@@ -60,6 +92,8 @@ function textToPattern(text) {
             pattern = FD_TEXT_MAP_ENG[char];
         } else if (FD_TEXT_MAP_NUM[char]) {
             pattern = FD_TEXT_MAP_NUM[char];
+        } else if (FD_TEXT_MAP_SPECIAL[char]) {
+            pattern = FD_TEXT_MAP_SPECIAL[char];
         }
         
         if (pattern) {
@@ -68,7 +102,7 @@ function textToPattern(text) {
             maxHeight = Math.max(maxHeight, pattern.size[0]);
             
             // 문자 간 간격 (마지막 문자가 아닌 경우)
-            if (i < text.length - 1) {
+            if (i < decodedText.length - 1) {
                 totalWidth += 1;
             }
         }
