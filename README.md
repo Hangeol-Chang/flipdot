@@ -19,7 +19,7 @@
 
 <div align="center">
     
-![Flip Dot Display](https://flipdots.vercel.app/api/svg?text=GITHUB%20README&style=modern&dotSize=16&spacing=2)
+![Flip Dot Display](https://flipdots.vercel.app/api/svg?text=GITHUB%20README&style=dark&dotSize=16&spacing=2)
 
 </div>
 
@@ -41,22 +41,23 @@ GitHub README.md에 직접 임베드할 수 있는 flip dot 이미지를 생성�
 ### 사용법
 
 ```markdown
-![Flip Dot Display](https://flipdots.vercel.app/api/svg?text=YOUR_TEXT&style=basic)
+![Flip Dot Display](https://flipdots.vercel.app/api/svg?text=YOUR_TEXT&style=dark)
 ```
 
 ### 파라미터
 
 - `text`: 표시할 텍스트 (영문자, 숫자, 공백 지원)
-- `style`: 스타일 테마 (`basic`, `retro`, `modern`)
+- `style`: 스타일 테마 (`light`, `retro`, `modern`, `dark`) - 기본값: `dark`
 - `dotSize`: 각 dot의 크기 (10-40px, 기본값: 20)
 - `spacing`: dot 간의 간격 (1-10px, 기본값: 2)
 
 ### 예제
 
 ```markdown
-![Basic Style](https://flipdots.vercel.app/api/svg?text=HELLO&style=basic&dotSize=20)
+![Light Style](https://flipdots.vercel.app/api/svg?text=HELLO&style=light&dotSize=20)
 ![Retro Style](https://flipdots.vercel.app/api/svg?text=WORLD&style=retro&dotSize=24)
 ![Modern Style](https://flipdots.vercel.app/api/svg?text=123&style=modern&dotSize=18)
+![Dark Style](https://flipdots.vercel.app/api/svg?text=DARK&style=dark&dotSize=22)
 ```
 
 ## Usage guide

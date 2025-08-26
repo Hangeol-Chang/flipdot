@@ -1,8 +1,10 @@
-import basic from "./styles/basic";
+import light from "./styles/light";
+import dark from "./styles/dark";
 
 
 const styleTypes = {
-    basic,
+    light,
+    dark,
 }
 
 const styleModel = {

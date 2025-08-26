@@ -105,28 +105,78 @@ function generateFlipDotSVG(pattern, options) {
             
             const shouldFlip = pattern.data[y] && pattern.data[y][x] === 1;
             
-            // 배경 사각형 (dot holder)
-            dots += `<rect x="${x * totalDotSize}" y="${y * totalDotSize}" width="${dotSize}" height="${dotSize}" fill="${colors.background}" stroke="${colors.border}" stroke-width="0.5"/>`;
+            // 배경 사각형 (dot holder) - 테두리 제거
+            dots += `<rect x="${x * totalDotSize}" y="${y * totalDotSize}" width="${dotSize}" height="${dotSize}" fill="${colors.background}"/>`;
             
-            // 모서리 삼각형들 (입체감)
+            // 왼쪽 위 삼각형만 남김 (포인트 효과)
             dots += `<polygon points="${x * totalDotSize},${y * totalDotSize} ${x * totalDotSize + 4},${y * totalDotSize} ${x * totalDotSize},${y * totalDotSize + 4}" fill="${colors.shadow}"/>`;
-            dots += `<polygon points="${(x + 1) * totalDotSize},${(y + 1) * totalDotSize} ${(x + 1) * totalDotSize - 4},${(y + 1) * totalDotSize} ${(x + 1) * totalDotSize},${(y + 1) * totalDotSize - 4}" fill="${colors.shadow}"/>`;
             
             // 중앙 원 (실제 flip dot)
             const dotColor = shouldFlip ? colors.dotOn : colors.dotOff;
-            const transform = shouldFlip ? 
-                `transform="rotate(0 ${centerX} ${centerY})"` : 
-                `transform="rotate(180 ${centerX} ${centerY}) scale(0.8)"`;
             
-            dots += `<circle cx="${centerX}" cy="${centerY}" r="${dotRadius}" fill="${dotColor}" ${transform}/>`;
+            // 애니메이션 지연 계산 (대각선 순서)
+            const animationDelay = (x + y) * 0.08; // 80ms씩 지연
+            const animationClass = shouldFlip ? 'dot-on' : 'dot-off';
+            
+            // 각 dot를 개별적으로 배치하고 transform-origin을 명시적으로 설정
+            dots += `<circle cx="${centerX}" cy="${centerY}" r="${dotRadius}" fill="${dotColor}" class="${animationClass}" 
+                       style="animation-delay: ${animationDelay}s; "/>`;
         }
     }
     
     return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${svgWidth}" height="${svgHeight}" viewBox="0 0 ${svgWidth} ${svgHeight}">
     <style>
-        .flip-dot-display { font-family: monospace; }
-        circle { transition: transform 0.3s ease-in-out; }
+        .flip-dot-display { 
+            font-family: monospace; 
+        }
+        
+        /* 켜진 dot들만 애니메이션 적용 */
+        .dot-on {
+            fill: ${colors.dotOn};
+            animation: sequentialFlip 0.5s ease-in-out forwards;
+            transform-box: content-box;
+            transform-origin: center center;
+        }
+        
+        /* 꺼진 dot들은 애니메이션 없이 정적 상태 */
+        .dot-off {
+            fill: ${colors.dotOff};
+            opacity: 1;
+            transform: none;
+        }
+        
+        /* 순차적 뒤집기 애니메이션 */
+        @keyframes sequentialFlip {
+            0% {
+                fill: ${colors.dotOff};
+                transform:         
+                    rotateZ(0deg)
+                    rotateY(0deg);
+                opacity: 1.0;
+            }
+            50% {
+                fill: ${colors.dotOff};
+                transform: 
+                    rotateZ(45deg)
+                    rotateY(90deg);
+                opacity: 1;
+            }
+            51% {
+                fill: ${colors.dotOn};
+                transform: 
+                    rotateZ(45deg)
+                    rotateY(90deg);
+                opacity: 1;
+            }
+            100% {
+                fill: ${colors.dotOn};
+                transform: 
+                    rotateZ(90deg)
+                    rotateY(180deg);
+                opacity: 1;
+            }
+        }
     </style>
     <rect width="100%" height="100%" fill="${colors.panelBackground}"/>
     ${dots}
@@ -135,13 +185,13 @@ function generateFlipDotSVG(pattern, options) {
 
 function getStyleColors(style) {
     const styles = {
-        basic: {
-            panelBackground: '#111111',
-            background: '#222222',
-            border: '#333333',
-            shadow: '#000000',
-            dotOn: '#EEEEEE',
-            dotOff: '#333333'
+        light: {
+            panelBackground: '#F5F5F5',
+            background: '#E0E0E0',
+            border: '#CCCCCC',
+            shadow: '#BBBBBB',
+            dotOn: '#000000',
+            dotOff: '#D0D0D0'
         },
         retro: {
             panelBackground: '#2D4A22',
@@ -158,8 +208,16 @@ function getStyleColors(style) {
             shadow: '#0A1426',
             dotOn: '#E94560',
             dotOff: '#1A1A2E'
+        },
+        dark: {
+            panelBackground: '#000000',
+            background: '#0A0A0A',
+            border: '#1A1A1A',
+            shadow: '#000000',
+            dotOn: '#FFFFFF',
+            dotOff: '#0F0F0F'
         }
     };
     
-    return styles[style] || styles.basic;
+    return styles[style] || styles.dark;
 }
