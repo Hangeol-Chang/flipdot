@@ -46,18 +46,35 @@ GitHub README.md에 직접 임베드할 수 있는 flip dot 이미지를 생성�
 
 ### 파라미터
 
+#### 기본 파라미터
 - `text`: 표시할 텍스트 (영문자, 숫자, 공백 지원)
 - `style`: 스타일 테마 (`light`, `retro`, `modern`, `dark`) - 기본값: `dark`
 - `dotSize`: 각 dot의 크기 (10-40px, 기본값: 20)
 - `spacing`: dot 간의 간격 (1-10px, 기본값: 2)
 
+#### 커스텀 색상 파라미터
+- `dotOn`: 켜진 dot의 색상 (hex 코드, # 생략 가능)
+  - 단일 색상: `ff0000` (빨간색)
+  - 그라디언트: `ff0000,00ff00,0000ff` (빨강→초록→파랑)
+- `dotOff`: 꺼진 dot의 색상 (hex 코드, # 생략 가능)
+- `background`: 배경 색상 (hex 코드, # 생략 가능)
+  - 설정 시 panelBackground, border, shadow 자동 생성
+
 ### 예제
 
+#### 기본 스타일
 ```markdown
 ![Light Style](https://flipdots.vercel.app/api/svg?text=HELLO&style=light&dotSize=20)
 ![Retro Style](https://flipdots.vercel.app/api/svg?text=WORLD&style=retro&dotSize=24)
 ![Modern Style](https://flipdots.vercel.app/api/svg?text=123&style=modern&dotSize=18)
 ![Dark Style](https://flipdots.vercel.app/api/svg?text=DARK&style=dark&dotSize=22)
+```
+
+#### 커스텀 색상
+```markdown
+![Custom Red](https://flipdots.vercel.app/api/svg?text=CUSTOM&dotOn=ff0000&background=000000)
+![Rainbow Gradient](https://flipdots.vercel.app/api/svg?text=RAINBOW&dotOn=ff0000,ff8000,ffff00,00ff00,0000ff,8000ff)
+![Style + Custom](https://flipdots.vercel.app/api/svg?text=HYBRID&style=retro&dotOn=ffff00)
 ```
 
 ## Usage guide

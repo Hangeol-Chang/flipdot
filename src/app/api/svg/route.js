@@ -7,9 +7,16 @@ export async function GET(request) {
     
     // URL 파라미터 파싱
     const text = searchParams.get('text') || 'HELLO';
-    const style = searchParams.get('style') || 'basic';
+    const style = searchParams.get('style') || 'dark';
     const dotSize = parseInt(searchParams.get('dotSize')) || 20;
     const spacing = parseInt(searchParams.get('spacing')) || 2;
+    
+    // 커스텀 색상 파라미터 (# 기호 자동 추가)
+    const customColors = {
+        dotOn: searchParams.get('dotOn') ? addHashToColor(searchParams.get('dotOn')) : null,
+        dotOff: searchParams.get('dotOff') ? addHashToColor(searchParams.get('dotOff')) : null,
+        background: searchParams.get('background') ? addHashToColor(searchParams.get('background')) : null
+    };
     
     // 텍스트를 dot 패턴으로 변환
     const textPattern = textToPattern(text.toUpperCase());
@@ -18,7 +25,8 @@ export async function GET(request) {
     const svg = generateFlipDotSVG(textPattern, {
         style,
         dotSize,
-        spacing
+        spacing,
+        customColors
     });
     
     return new NextResponse(svg, {
@@ -86,17 +94,20 @@ function textToPattern(text) {
 }
 
 function generateFlipDotSVG(pattern, options) {
-    const { dotSize, spacing, style } = options;
+    const { dotSize, spacing, style, customColors } = options;
     const dotRadius = dotSize / 2 - 1;
     const totalDotSize = dotSize + spacing;
     
     const svgWidth = pattern.width * totalDotSize;
     const svgHeight = pattern.height * totalDotSize;
     
-    // 스타일 설정
-    const colors = getStyleColors(style);
+    // 스타일 설정 (기본 스타일 먼저 적용, 그 다음 커스텀 색상으로 덮어쓰기)
+    const colors = getStyleColors(style, customColors);
     
     let dots = '';
+    
+    // dotOn이 여러 색상인 경우 처리
+    const dotOnColors = colors.dotOn.split(',').map(color => color.trim());
     
     for (let y = 0; y < pattern.height; y++) {
         for (let x = 0; x < pattern.width; x++) {
@@ -112,7 +123,13 @@ function generateFlipDotSVG(pattern, options) {
             dots += `<polygon points="${x * totalDotSize},${y * totalDotSize} ${x * totalDotSize + 4},${y * totalDotSize} ${x * totalDotSize},${y * totalDotSize + 4}" fill="${colors.shadow}"/>`;
             
             // 중앙 원 (실제 flip dot)
-            const dotColor = shouldFlip ? colors.dotOn : colors.dotOff;
+            let dotColor;
+            if (shouldFlip && dotOnColors.length > 1) {
+                // 전체 panel에서 해당 위치의 그라디언트 색상 계산
+                dotColor = calculateGradientColor(dotOnColors, x, pattern.width);
+            } else {
+                dotColor = shouldFlip ? colors.dotOn : colors.dotOff;
+            }
             
             // 애니메이션 지연 계산 (대각선 순서)
             const animationDelay = (x + y) * 0.08; // 80ms씩 지연
@@ -133,7 +150,6 @@ function generateFlipDotSVG(pattern, options) {
         
         /* 켜진 dot들만 애니메이션 적용 */
         .dot-on {
-            fill: ${colors.dotOn};
             animation: sequentialFlip 0.5s ease-in-out forwards;
             transform-box: content-box;
             transform-origin: center center;
@@ -163,14 +179,9 @@ function generateFlipDotSVG(pattern, options) {
                 opacity: 1;
             }
             51% {
-                fill: ${colors.dotOn};
-                transform: 
-                    rotateZ(45deg)
-                    rotateY(90deg);
                 opacity: 1;
             }
             100% {
-                fill: ${colors.dotOn};
                 transform: 
                     rotateZ(90deg)
                     rotateY(180deg);
@@ -183,7 +194,7 @@ function generateFlipDotSVG(pattern, options) {
 </svg>`;
 }
 
-function getStyleColors(style) {
+function getStyleColors(style, customColors = {}) {
     const styles = {
         light: {
             panelBackground: '#F5F5F5',
@@ -219,5 +230,109 @@ function getStyleColors(style) {
         }
     };
     
-    return styles[style] || styles.dark;
+    // 기본 스타일 적용
+    let colors = { ...styles[style] || styles.dark };
+    
+    // 커스텀 색상 덮어쓰기
+    if (customColors.dotOn) {
+        colors.dotOn = customColors.dotOn;
+    }
+    if (customColors.dotOff) {
+        colors.dotOff = customColors.dotOff;
+    }
+    if (customColors.background) {
+        // background를 기준으로 다른 색상들 자동 생성
+        colors.background = customColors.background;
+        colors.panelBackground = adjustBrightness(customColors.background, -20);
+        colors.border = adjustBrightness(customColors.background, 10);
+        colors.shadow = adjustBrightness(customColors.background, -30);
+    }
+    
+    return colors;
+}
+
+// 전체 panel에서 해당 위치의 그라디언트 색상 계산
+function calculateGradientColor(colors, x, totalWidth) {
+    if (colors.length < 2) return colors[0];
+    
+    // 현재 위치의 비율 계산 (0 ~ 1)
+    const position = x / (totalWidth - 1);
+    
+    // 색상 구간 찾기
+    const segmentSize = 1 / (colors.length - 1);
+    const segmentIndex = Math.floor(position / segmentSize);
+    const segmentPosition = (position % segmentSize) / segmentSize;
+    
+    // 경계값 처리
+    if (segmentIndex >= colors.length - 1) {
+        return colors[colors.length - 1];
+    }
+    
+    // 두 색상 사이의 보간
+    const color1 = colors[segmentIndex];
+    const color2 = colors[segmentIndex + 1];
+    
+    return interpolateColor(color1, color2, segmentPosition);
+}
+
+// 두 색상 사이의 선형 보간
+function interpolateColor(color1, color2, ratio) {
+    // # 제거
+    const hex1 = color1.replace('#', '');
+    const hex2 = color2.replace('#', '');
+    
+    // RGB로 변환
+    const r1 = parseInt(hex1.substr(0, 2), 16);
+    const g1 = parseInt(hex1.substr(2, 2), 16);
+    const b1 = parseInt(hex1.substr(4, 2), 16);
+    
+    const r2 = parseInt(hex2.substr(0, 2), 16);
+    const g2 = parseInt(hex2.substr(2, 2), 16);
+    const b2 = parseInt(hex2.substr(4, 2), 16);
+    
+    // 보간 계산
+    const r = Math.round(r1 + (r2 - r1) * ratio);
+    const g = Math.round(g1 + (g2 - g1) * ratio);
+    const b = Math.round(b1 + (b2 - b1) * ratio);
+    
+    // 다시 hex로 변환
+    const newR = r.toString(16).padStart(2, '0');
+    const newG = g.toString(16).padStart(2, '0');
+    const newB = b.toString(16).padStart(2, '0');
+    
+    return `#${newR}${newG}${newB}`;
+}
+
+// 색상 밝기 조정 함수
+function adjustBrightness(hexColor, percent) {
+    // # 제거
+    const hex = hexColor.replace('#', '');
+    
+    // RGB로 변환
+    const r = parseInt(hex.substr(0, 2), 16);
+    const g = parseInt(hex.substr(2, 2), 16);
+    const b = parseInt(hex.substr(4, 2), 16);
+    
+    // 밝기 조정
+    const adjustedR = Math.max(0, Math.min(255, r + (r * percent / 100)));
+    const adjustedG = Math.max(0, Math.min(255, g + (g * percent / 100)));
+    const adjustedB = Math.max(0, Math.min(255, b + (b * percent / 100)));
+    
+    // 다시 hex로 변환
+    const newR = Math.round(adjustedR).toString(16).padStart(2, '0');
+    const newG = Math.round(adjustedG).toString(16).padStart(2, '0');
+    const newB = Math.round(adjustedB).toString(16).padStart(2, '0');
+    
+    return `#${newR}${newG}${newB}`;
+}
+
+// 색상에 # 기호 추가 함수
+function addHashToColor(colorString) {
+    if (!colorString) return null;
+    
+    // 콤마로 구분된 여러 색상 처리
+    return colorString.split(',').map(color => {
+        const trimmed = color.trim();
+        return trimmed.startsWith('#') ? trimmed : `#${trimmed}`;
+    }).join(',');
 }
