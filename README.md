@@ -16,16 +16,48 @@
         try 💿 flip dot 💿 
     </a>         
 </div>
+
+<div align="center">
+    
+![Flip Dot Display](https://flipdots.vercel.app/api/svg?text=GITHUB%20README&style=modern&dotSize=16&spacing=2)
+
+</div>
+
 <hr>
 <div align="center">
     <h4> flip-dot display로 깃허브를 꾸며보세요! </h4>
-    다양하게 활용할 수 있는 api가 준비되어 있습니다.
+    이제 GitHub README.md에서 바로 사용할 수 있는 SVG API를 제공합니다!
     <br>
-    사실 아직 준비되어있지는 않은데, 열심히 만들고 있습니다!
+    <a href="https://flipdots.vercel.app/example">📖 API 사용법 보기</a>
 </div>
 <br>
 
 ![](./docs/description_image1.gif)
+
+## 🚀 새로운 SVG API 기능
+
+GitHub README.md에 직접 임베드할 수 있는 flip dot 이미지를 생성하는 API입니다.
+
+### 사용법
+
+```markdown
+![Flip Dot Display](https://flipdots.vercel.app/api/svg?text=YOUR_TEXT&style=basic)
+```
+
+### 파라미터
+
+- `text`: 표시할 텍스트 (영문자, 숫자, 공백 지원)
+- `style`: 스타일 테마 (`basic`, `retro`, `modern`)
+- `dotSize`: 각 dot의 크기 (10-40px, 기본값: 20)
+- `spacing`: dot 간의 간격 (1-10px, 기본값: 2)
+
+### 예제
+
+```markdown
+![Basic Style](https://flipdots.vercel.app/api/svg?text=HELLO&style=basic&dotSize=20)
+![Retro Style](https://flipdots.vercel.app/api/svg?text=WORLD&style=retro&dotSize=24)
+![Modern Style](https://flipdots.vercel.app/api/svg?text=123&style=modern&dotSize=18)
+```
 
 ## Usage guide
 > 더 밑으로 내리면 example이 준비되어 있습니다.
@@ -50,6 +82,10 @@
 ### hovering mode
 
 ### utc timestamp
+
+----
+### Special Thanks
+- Capsule-Render
 
 
 <hr>
