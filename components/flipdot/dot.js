@@ -6,10 +6,11 @@ const black3 = '#111111';
 
 const white1 = '#EEEEEE';
 
-function Circle({size, fliped, animationDelay = 0}) {
+function Circle({size, fliped, animationDelay = 0, animationMode = 'BASIC'}) {
     const [localFliped, setLocalFliped] = useState(false);
     const [isAnimationReady, setIsAnimationReady] = useState(false);
     const [hasInitialAnimationPlayed, setHasInitialAnimationPlayed] = useState(false);
+    const [breathingCycle, setBreathingCycle] = useState(0);
 
     useEffect(() => {
         // 초기 애니메이션 지연 후 준비 상태로 설정
@@ -26,8 +27,30 @@ function Circle({size, fliped, animationDelay = 0}) {
         return () => clearTimeout(timer);
     }, [animationDelay]);
 
+    // BREATHING 모드 효과
+    useEffect(() => {
+        if (animationMode !== 'BREATHING' || !hasInitialAnimationPlayed) return;
+
+        const breathingInterval = setInterval(() => {
+            // 3초마다 대각선 애니메이션 실행
+            const breathingTimer = setTimeout(() => {
+                setLocalFliped(true);
+                setTimeout(() => {
+                    setLocalFliped(false);
+                }, 400);
+            }, animationDelay);
+
+            setBreathingCycle(prev => prev + 1);
+
+            return () => clearTimeout(breathingTimer);
+        }, 3000); // 3초마다 반복
+
+        return () => clearInterval(breathingInterval);
+    }, [animationMode, hasInitialAnimationPlayed, animationDelay]);
+
     useEffect(() => {
         if(!hasInitialAnimationPlayed) return; // 초기 애니메이션이 끝나지 않았으면 무시
+        if(animationMode === 'BREATHING') return; // BREATHING 모드에서는 사용자 입력 무시
         
         if(fliped == true) {
             setLocalFliped(true);
@@ -35,7 +58,7 @@ function Circle({size, fliped, animationDelay = 0}) {
         else {
             setTimeout(function() {setLocalFliped(false)}, 500);
         }
-    }, [fliped, hasInitialAnimationPlayed]);
+    }, [fliped, hasInitialAnimationPlayed, animationMode]);
 
     return (
         <div 
@@ -59,7 +82,7 @@ function Circle({size, fliped, animationDelay = 0}) {
     );
 }
 
-export const Dot = forwardRef(({size=30, id, mod, row, col}, ref) => {
+export const Dot = forwardRef(({size=30, id, mod, row, col, animationMode = 'BASIC'}, ref) => {
     // export default function Dot ({size = 30, id, mod, ref}) {
     const [fliped, setFliped] = useState(false);
     
@@ -107,7 +130,7 @@ export const Dot = forwardRef(({size=30, id, mod, row, col}, ref) => {
             id={id}
         >
             <TopTriangle />
-            <Circle size={size} fliped={fliped} animationDelay={animationDelay}/>
+            <Circle size={size} fliped={fliped} animationDelay={animationDelay} animationMode={animationMode}/>
             <BotTriangle />
         </div>
     )
