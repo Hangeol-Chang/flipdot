@@ -113,19 +113,70 @@ function generateFlipDotSVG(pattern, options) {
             
             // 중앙 원 (실제 flip dot)
             const dotColor = shouldFlip ? colors.dotOn : colors.dotOff;
-            const transform = shouldFlip ? 
-                `transform="rotate(0 ${centerX} ${centerY})"` : 
-                `transform="rotate(180 ${centerX} ${centerY})"`;
             
-            dots += `<circle cx="${centerX}" cy="${centerY}" r="${dotRadius}" fill="${dotColor}" ${transform}/>`;
+            // 애니메이션 지연 계산 (대각선 순서)
+            const animationDelay = (x + y) * 0.08; // 80ms씩 지연
+            const animationClass = shouldFlip ? 'dot-on' : 'dot-off';
+            
+            // 각 dot를 개별적으로 배치하고 transform-origin을 명시적으로 설정
+            dots += `<circle cx="${centerX}" cy="${centerY}" r="${dotRadius}" fill="${dotColor}" class="${animationClass}" 
+                       style="animation-delay: ${animationDelay}s; "/>`;
         }
     }
     
     return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${svgWidth}" height="${svgHeight}" viewBox="0 0 ${svgWidth} ${svgHeight}">
     <style>
-        .flip-dot-display { font-family: monospace; }
-        circle { transition: transform 0.3s ease-in-out; }
+        .flip-dot-display { 
+            font-family: monospace; 
+        }
+        
+        /* 켜진 dot들만 애니메이션 적용 */
+        .dot-on {
+            fill: ${colors.dotOn};
+            animation: sequentialFlip 0.5s ease-in-out forwards;
+            transform-box: content-box;
+            transform-origin: center center;
+        }
+        
+        /* 꺼진 dot들은 애니메이션 없이 정적 상태 */
+        .dot-off {
+            fill: ${colors.dotOff};
+            opacity: 1;
+            transform: none;
+        }
+        
+        /* 순차적 뒤집기 애니메이션 */
+        @keyframes sequentialFlip {
+            0% {
+                fill: ${colors.dotOff};
+                transform:         
+                    rotateZ(0deg)
+                    rotateY(0deg);
+                opacity: 1.0;
+            }
+            50% {
+                fill: ${colors.dotOff};
+                transform: 
+                    rotateZ(45deg)
+                    rotateY(90deg);
+                opacity: 1;
+            }
+            51% {
+                fill: ${colors.dotOn};
+                transform: 
+                    rotateZ(45deg)
+                    rotateY(90deg);
+                opacity: 1;
+            }
+            100% {
+                fill: ${colors.dotOn};
+                transform: 
+                    rotateZ(90deg)
+                    rotateY(180deg);
+                opacity: 1;
+            }
+        }
     </style>
     <rect width="100%" height="100%" fill="${colors.panelBackground}"/>
     ${dots}
