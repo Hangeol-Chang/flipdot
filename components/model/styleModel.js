@@ -10,7 +10,7 @@ const styleModel = {
         if(styleTypes.hasOwnProperty(type)) {
             return styleTypes[type];
         } else {
-            throw new Error(`The value of 'type=${type}' is invalide.`);
+            throw new Error(`The value of 'type=${type}' is invalid.`);
         }
     },
     style : function(packet) {

@@ -119,10 +119,24 @@ export default function Home() {
                         color : 'white',
                         border : '1px solid',
                         padding : '10px',
-                        borderRadius : '50px'
+                        borderRadius : '50px',
+                        marginRight: '10px'
                     }}
                 >
                     fullscreen Mode
+                </button>
+                
+                <button
+                    onClick={() => window.open('/example', '_blank')}
+                    style={{
+                        backgroundColor : '#007ACC',
+                        color : 'white',
+                        border : '1px solid #007ACC',
+                        padding : '10px',
+                        borderRadius : '50px'
+                    }}
+                >
+                    SVG API 사용법
                 </button>
                 
                 <div style={{backgroundColor : '#111111', border : '15px solid', borderRadius : '10px'}}>
