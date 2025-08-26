@@ -134,13 +134,13 @@ function generateFlipDotSVG(pattern, options) {
 
 function getStyleColors(style) {
     const styles = {
-        basic: {
-            panelBackground: '#111111',
-            background: '#222222',
-            border: '#333333',
-            shadow: '#000000',
-            dotOn: '#EEEEEE',
-            dotOff: '#333333'
+        light: {
+            panelBackground: '#F5F5F5',
+            background: '#E0E0E0',
+            border: '#CCCCCC',
+            shadow: '#BBBBBB',
+            dotOn: '#000000',
+            dotOff: '#D0D0D0'
         },
         retro: {
             panelBackground: '#2D4A22',
@@ -157,8 +157,16 @@ function getStyleColors(style) {
             shadow: '#0A1426',
             dotOn: '#E94560',
             dotOff: '#1A1A2E'
+        },
+        dark: {
+            panelBackground: '#000000',
+            background: '#0A0A0A',
+            border: '#1A1A1A',
+            shadow: '#000000',
+            dotOn: '#FFFFFF',
+            dotOff: '#0F0F0F'
         }
     };
     
-    return styles[style] || styles.basic;
+    return styles[style] || styles.dark;
 }
