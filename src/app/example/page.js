@@ -69,6 +69,142 @@ export default function ExamplePage() {
             <h1>Flip Dot API Example</h1>
             <p>GitHub README.md에서 사용할 수 있는 flip dot 이미지를 생성하는 API입니다.</p>
             
+            {/* 예제 텍스트 - 태그 스타일 */}
+            <div style={{ 
+                marginBottom: '20px',
+                padding: '15px',
+                background: '#1a1a1a',
+                borderRadius: '8px',
+                border: '1px solid #333'
+            }}>
+                <h3 style={{ 
+                    margin: '0 0 10px 0', 
+                    color: '#fff',
+                    fontSize: '16px'
+                }}>
+                    🎯 Quick Examples - 클릭해서 바로 시작하세요!
+                </h3>
+                <div style={{ 
+                    display: 'flex', 
+                    flexWrap: 'wrap', 
+                    gap: '8px' 
+                }}>
+                    <button 
+                        onClick={() => {
+                            setMode('text');
+                            setText('Hello_World!');
+                        }}
+                        style={{
+                            backgroundColor: '#777',
+                            color: 'white',
+                            border: 'none',
+                            padding: '8px 12px',
+                            borderRadius: '20px',
+                            cursor: 'pointer',
+                            fontSize: '12px',
+                            fontWeight: '500',
+                            transition: 'all 0.2s',
+                            boxShadow: '0 2px 4px rgba(0,102,204,0.3)'
+                        }}
+                        onMouseOver={(e) => {
+                            e.target.style.backgroundColor = '#555';
+                            e.target.style.transform = 'translateY(-1px)';
+                        }}
+                        onMouseOut={(e) => {
+                            e.target.style.backgroundColor = '#777';
+                            e.target.style.transform = 'translateY(0)';
+                        }}
+                    >
+                        Hello World
+                    </button>
+                    <button 
+                        onClick={() => {
+                            setMode('text');
+                            setText('GitHub%0Profile');
+                        }}
+                        style={{
+                            backgroundColor: '#777',
+                            color: 'white',
+                            border: 'none',
+                            padding: '8px 12px',
+                            borderRadius: '20px',
+                            cursor: 'pointer',
+                            fontSize: '12px',
+                            fontWeight: '500',
+                            transition: 'all 0.2s',
+                            boxShadow: '0 2px 4px rgba(40,167,69,0.3)'
+                        }}
+                        onMouseOver={(e) => {
+                            e.target.style.backgroundColor = '#555';
+                            e.target.style.transform = 'translateY(-1px)';
+                        }}
+                        onMouseOut={(e) => {
+                            e.target.style.backgroundColor = '#777';
+                            e.target.style.transform = 'translateY(0)';
+                        }}
+                    >
+                        Multi-line Text
+                    </button>
+                    <button 
+                        onClick={() => {
+                            setMode('text');
+                            setText('Score:_95%');
+                        }}
+                        style={{
+                            backgroundColor: '#777',
+                            color: 'white',
+                            border: 'none',
+                            padding: '8px 12px',
+                            borderRadius: '20px',
+                            cursor: 'pointer',
+                            fontSize: '12px',
+                            fontWeight: '500',
+                            transition: 'all 0.2s',
+                            boxShadow: '0 2px 4px rgba(220,53,69,0.3)'
+                        }}
+                        onMouseOver={(e) => {
+                            e.target.style.backgroundColor = '#555';
+                            e.target.style.transform = 'translateY(-1px)';
+                        }}
+                        onMouseOut={(e) => {
+                            e.target.style.backgroundColor = '#777';
+                            e.target.style.transform = 'translateY(0)';
+                        }}
+                    >
+                        Score Display
+                    </button>
+                    <button 
+                        onClick={() => {
+                            setMode('custom');
+                            setCustomDots('00100000100,00010001000,00111111100,01101110110,11111111111,10111111101,10100000101,00011011000,');
+                            setText('');
+                        }}
+                        style={{
+                            backgroundColor: '#777',
+                            color: 'white',
+                            border: 'none',
+                            padding: '8px 12px',
+                            borderRadius: '20px',
+                            cursor: 'pointer',
+                            fontSize: '12px',
+                            fontWeight: '500',
+                            transition: 'all 0.2s',
+                            boxShadow: '0 2px 4px rgba(111,66,193,0.3)'
+                        }}
+                        onMouseOver={(e) => {
+                            e.target.style.backgroundColor = '#555';
+                            e.target.style.transform = 'translateY(-1px)';
+                        }}
+                        onMouseOut={(e) => {
+                            e.target.style.backgroundColor = '#777';
+                            e.target.style.transform = 'translateY(0)';
+                        }}
+                    >
+                        Custom Pattern
+                    </button>
+                </div>
+            </div>
+            
             <div style={{
                 display: 'flex',
                 flexDirection: isWideScreen ? 'row' : 'column',
@@ -139,7 +275,7 @@ export default function ExamplePage() {
                                     borderRadius: '4px',
                                     width: '100%'
                                 }}
-                                placeholder="예: Hello World 또는 여러줄은 %0A로 구분"
+                                placeholder="예: Hello World 또는 여러줄은 %0로 구분"
                             />
                         </div>
                     ) : (
@@ -550,79 +686,6 @@ export default function ExamplePage() {
                             <li><strong>background</strong>: 배경 색상</li>
                         </ul>
                     </div>
-                </div>
-                
-                <h3>예제 텍스트</h3>
-                <div style={{ marginTop: '10px' }}>
-                    <button 
-                        onClick={() => {
-                            setMode('text');
-                            setText('Hello_World!');
-                        }}
-                        style={{
-                            backgroundColor: '#444',
-                            color: 'white',
-                            border: 'none',
-                            padding: '5px 10px',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                            margin: '5px'
-                        }}
-                    >
-                        Hello_World!
-                    </button>
-                    <button 
-                        onClick={() => {
-                            setMode('text');
-                            setText('GitHub%0AProfile');
-                        }}
-                        style={{
-                            backgroundColor: '#444',
-                            color: 'white',
-                            border: 'none',
-                            padding: '5px 10px',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                            margin: '5px'
-                        }}
-                    >
-                        GitHub Profile (여러줄)
-                    </button>
-                    <button 
-                        onClick={() => {
-                            setMode('text');
-                            setText('Score:_95%');
-                        }}
-                        style={{
-                            backgroundColor: '#444',
-                            color: 'white',
-                            border: 'none',
-                            padding: '5px 10px',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                            margin: '5px'
-                        }}
-                    >
-                        Score:_95%
-                    </button>
-                    <button 
-                        onClick={() => {
-                            setMode('custom');
-                            setCustomDots('00100000100,00010001000,00111111100,01101110110,11111111111,10111111101,10100000101,00011011000,');
-                            setText('');
-                        }}
-                        style={{
-                            backgroundColor: '#444',
-                            color: 'white',
-                            border: 'none',
-                            padding: '5px 10px',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                            margin: '5px'
-                        }}
-                    >
-                        커스텀 도트
-                    </button>
                 </div>
             </div>
         </div>

@@ -77,9 +77,8 @@ export async function GET(request) {
 }
 
 function textToPattern(text) {
-    const patterns = [];
-    let totalWidth = 0;
-    let maxHeight = 0;
+    // %0을 구분자로 여러 줄 처리
+    const lines = text.split('%0');
     
     // URL 디코딩된 특수문자 처리를 위한 매핑
     const urlDecodedMap = {
@@ -106,11 +105,64 @@ function textToPattern(text) {
         '%2E': '.'
     };
     
-    // URL 인코딩된 특수문자 디코딩
-    let decodedText = text;
-    for (const [encoded, decoded] of Object.entries(urlDecodedMap)) {
-        decodedText = decodedText.replace(new RegExp(encoded, 'gi'), decoded);
+    // 각 줄을 처리하여 패턴 배열 생성
+    const linePatterns = [];
+    let maxWidth = 0;
+    let totalHeight = 0;
+    
+    for (const line of lines) {
+        // URL 인코딩된 특수문자 디코딩
+        let decodedText = line;
+        for (const [encoded, decoded] of Object.entries(urlDecodedMap)) {
+            decodedText = decodedText.replace(new RegExp(encoded, 'gi'), decoded);
+        }
+        
+        const linePattern = processSingleLine(decodedText);
+        linePatterns.push(linePattern);
+        maxWidth = Math.max(maxWidth, linePattern.width);
+        totalHeight += linePattern.height;
+        
+        // 줄 간격 추가 (마지막 줄이 아닌 경우)
+        if (lines.indexOf(line) < lines.length - 1) {
+            totalHeight += 1;
+        }
     }
+    
+    // 전체 패턴 배열 생성
+    const fullPattern = Array(totalHeight).fill().map(() => Array(maxWidth).fill(0));
+    
+    let currentY = 0;
+    for (let lineIndex = 0; lineIndex < linePatterns.length; lineIndex++) {
+        const linePattern = linePatterns[lineIndex];
+        
+        // 각 줄의 패턴을 전체 패턴에 복사
+        for (let y = 0; y < linePattern.height; y++) {
+            for (let x = 0; x < linePattern.width; x++) {
+                if (y < linePattern.data.length && x < linePattern.data[y].length) {
+                    fullPattern[currentY + y][x] = linePattern.data[y][x];
+                }
+            }
+        }
+        
+        currentY += linePattern.height;
+        
+        // 줄 간격 추가 (마지막 줄이 아닌 경우)
+        if (lineIndex < linePatterns.length - 1) {
+            currentY += 1;
+        }
+    }
+    
+    return {
+        width: maxWidth,
+        height: totalHeight,
+        data: fullPattern
+    };
+}
+
+function processSingleLine(decodedText) {
+    const patterns = [];
+    let totalWidth = 0;
+    let maxHeight = 0;
     
     // 각 문자의 패턴을 가져와서 연결
     for (let i = 0; i < decodedText.length; i++) {
