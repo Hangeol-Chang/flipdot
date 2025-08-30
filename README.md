@@ -129,7 +129,7 @@ GitHub README.md에 직접 임베드할 수 있는 flip dot 이미지를 생성�
 `%0`을 구분자로 사용하여 여러 줄 텍스트를 만들 수 있습니다. 각 줄 사이에는 1 dot 간격이 자동으로 추가됩니다.
 
 ### 기본 여러 줄
-![Multi-line Basic](https://flipdots.vercel.app/api/svg?text=HELLO%0WORLD&style=dark&dotSize=18&spacing=2&v=1)
+![Multi-line Basic](https://flipdots.vercel.app/api/svg?text=HELLO%0WORLD&style=dark&dotSize=18&spacing=2&v=2)
 ```markdown
 https://flipdots.vercel.app/api/svg?text=HELLO%0WORLD&style=dark&dotSize=18&spacing=2
 ```
@@ -179,7 +179,7 @@ https://flipdots.vercel.app/api/svg?customdots=01101100,11111110,11111110,011111
 ```
 
 ### 체크마크
-![Check Pattern](https://flipdots.vercel.app/api/svg?customdots=00000010,00000110,00001100,10011000,11110000,01100000&style=modern&dotOn=00ff00&dotSize=18&spacing=2&v=1)
+![Check Pattern](https://flipdots.vercel.app/api/svg?customdots=0000001,0000011,0000110,1001100,1111000,0110000&style=modern&dotOn=00ff00&dotSize=18&spacing=2&v=1)
 ```markdown
 https://flipdots.vercel.app/api/svg?customdots=00000010,00000110,00001100,10011000,11110000,01100000&style=modern&dotOn=00ff00&dotSize=18&spacing=2
 ```
@@ -220,15 +220,9 @@ https://flipdots.vercel.app/api/svg?customdots=10110,01001,10110&animationMode=s
 ```
 
 #### 현재 상태 표시
-![Current Status](https://flipdots.vercel.app/api/svg?text=CURRENTLY%0CODING&animationMode=scroll&style=modern&dotSize=18&spacing=2&v=1)
+![Current Status](https://flipdots.vercel.app/api/svg?text=CURRENTLY%0CODING&animationMode=scroll&style=modern&dotSize=18&spacing=2&v=1&speed=3)
 ```markdown
-![Status](https://flipdots.vercel.app/api/svg?text=CURRENTLY%0CODING&animationMode=scroll&style=modern&dotSize=18&spacing=2)
-```
-
-#### 개발자 정보
-![Developer Info](https://flipdots.vercel.app/api/svg?text=FULLSTACK%0DEVELOPER&style=retro&dotSize=16&spacing=2&justify=center&v=1)
-```markdown
-![Dev Info](https://flipdots.vercel.app/api/svg?text=FULLSTACK%0DEVELOPER&style=retro&dotSize=16&spacing=2&justify=center)
+![Status](https://flipdots.vercel.app/api/svg?text=CURRENTLY%0CODING&animationMode=scroll&style=modern&dotSize=18&spacing=2&speed=3)
 ```
 
 ### 프로젝트 README 헤더
@@ -237,12 +231,6 @@ https://flipdots.vercel.app/api/svg?customdots=10110,01001,10110&animationMode=s
 ![Project Title](https://flipdots.vercel.app/api/svg?text=MY_AWESOME%0PROJECT&animationMode=waterfall&style=modern&dotSize=20&spacing=2&justify=center&v=1)
 ```markdown
 ![Project](https://flipdots.vercel.app/api/svg?text=MY_AWESOME%0PROJECT&animationMode=waterfall&style=modern&dotSize=20&spacing=2&justify=center)
-```
-
-#### API 문서 헤더
-![API Header](https://flipdots.vercel.app/api/svg?text=REST%0API%0DOCS&style=dark&dotSize=18&spacing=2&align=center&justify=center&row=15&column=35&v=1)
-```markdown
-![API Docs](https://flipdots.vercel.app/api/svg?text=REST%0API%0DOCS&style=dark&dotSize=18&spacing=2&align=center&justify=center&row=15&column=35)
 ```
 
 ### 상태 배지 스타일
@@ -276,19 +264,10 @@ https://flipdots.vercel.app/api/svg?customdots=10110,01001,10110&animationMode=s
 ```
 
 #### 이메일 주소
-![Email](https://flipdots.vercel.app/api/svg?text=CONTACT%0ME@DOMAIN%2ECOM&style=modern&dotSize=14&spacing=1&v=1)
+![Email](https://flipdots.vercel.app/api/svg?text=CONTACTME%0@DOMAIN%2ECOM&style=modern&dotSize=14&spacing=1&v=1&animationMode=sequential)
 ```markdown
-![Email](https://flipdots.vercel.app/api/svg?text=CONTACT%0ME@DOMAIN.COM&style=modern&dotSize=14&spacing=1)
+![Email](https://flipdots.vercel.app/api/svg?text=CONTACTME%0@DOMAIN%2ECOM&style=modern&dotSize=14&spacing=1&animationMode=sequential)
 ```
-
-#### 기술 스택 표시
-![Tech Stack](https://flipdots.vercel.app/api/svg?text=REACT%0NODE%2EJS%0MONGODB&animationMode=sequential&style=retro&dotSize=16&spacing=2&justify=center&v=1)
-```markdown
-![Tech](https://flipdots.vercel.app/api/svg?text=REACT%0NODE.JS%0MONGODB&animationMode=sequential&style=retro&dotSize=16&spacing=2&justify=center)
-```
-
-#### 현재 학습 중
-![Learning](https://flipdots.vercel.app/api/svg?text=LEARNING%0RUST&animationMode=waterfall&dotOn=ce422b&background=000000&dotSize=18&spacing=2&v=1)
 
 ## 🛠️ 고급 사용법
 
@@ -346,6 +325,7 @@ https://flipdots.vercel.app/api/svg?text=RAINBOW&dotOn=ff0000,ff8000,ffff00,00ff
 
 <!-- 매우 빠른 애니메이션 -->
 &speed=3.0
+```
 
 ### 크기별 최적화
 용도에 따른 권장 크기 설정:
@@ -399,7 +379,7 @@ URL 끝에 버전 파라미터를 추가하여 캐싱을 제어하세요:
 ```
 
 ### 2. 특수문자 인코딩
-URL에서 특수문자는 자동으로 인코딩됩니다:
+URL에 특수문자가 오류를 일으키는 경우, 아래 예시처럼 치환하여 사용하세요
 - `%` → `%25`
 - `@` → `%40`  
 - `#` → `%23`
@@ -517,6 +497,9 @@ GET https://flipdots.vercel.app/api/svg
 - **Deployment**: Vercel
 - **Font Mapping**: Custom bitmap fonts
 
+----
+----
+
 ## 🤝 기여하기
 
 이 프로젝트는 오픈소스이며 여러분의 기여를 환영합니다!
@@ -540,7 +523,7 @@ GET https://flipdots.vercel.app/api/svg
 ### 버그 리포트
 버그를 발견하셨나요? [Issues](https://github.com/Hangeol-Chang/flipdot/issues)에서 리포트해주세요!
 
-## � 라이센스
+## 라이센스
 
 이 프로젝트는 MIT 라이센스 하에 배포됩니다. 자세한 내용은 [LICENSE](LICENSE) 파일을 참조하세요.
 
@@ -556,7 +539,7 @@ GET https://flipdots.vercel.app/api/svg
 
 **🎉 GitHub README를 flip-dot으로 멋지게 꾸며보세요! 🎉**
 
-[![Flip Dot Example](https://flipdots.vercel.app/api/svg?text=MADE_WITH%0FLIP_DOT&animationMode=sequential&style=retro&dotSize=16&spacing=2&justify=center&v=1)](https://flipdots.vercel.app/example)
+[![Flip Dot Example](https://flipdots.vercel.app/api/svg?text=MADE_WITH%0_FLIP_DOT_&animationMode=sequential&style=retro&dotSize=16&spacing=2&justify=center&v=1)](https://flipdots.vercel.app/example)
 
 버그 리포트와 아이디어 제안, 풀 리퀘스트는 언제나 환영합니다.
 <br>
