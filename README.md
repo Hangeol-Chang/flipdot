@@ -2,13 +2,7 @@
 
 ## 🌐 Other Languages
 - [🇰🇷 한국어 (Korean)](./readme/README_kr.md)
-- [🇯🇵 日本語 (Japanese)](./readme/README_jp![Multi-line Basic](https://flipdots.vercel![Multi-line Align](https://flipdots.vercel.app/api/svg?text=ALIGN%0A_BOTTOM%0ARIGHT&row=25&column=45&align=end&justify=end&style=retro&dotSize=16&spacing=2&v=1)
-```
-https://flipdots.vercel.app/api/svg?text=ALIGN%0A_BOTTOM%0ARIGHT&row=25&column=45&align=end&justify=end&style=retro&dotSize=16&spacing=2
-```app/api/svg?text=HELLO%0AWORLD&style=dark&dotSize=18&spacing=2&v=2)
-```
-https://flipdots.vercel.app/api/svg?text=HELLO%0AWORLD&style=dark&dotSize=18&spacing=2
-```md)
+- [🇯🇵 日本語 (Japanese)](./readme/README_jp.md)
 - [🇨🇳 中文 (Chinese)](./readme/README_cn.md)
 
 <div align="center">
@@ -35,7 +29,7 @@ https://flipdots.vercel.app/api/svg?text=HELLO%0AWORLD&style=dark&dotSize=18&spa
 
 <div align="center">
     
-![Flip Dot Display](https://flipdots.vercel.app/api/svg?text=FLIPDOT%0AREADME&style=dark&dotSize=16&spacing=2&animationMode=scroll&justify=center&v=1)
+![Flip Dot Display](https://flipdots.vercel.app/api/svg?text=FLIPDOT_README&style=dark&dotSize=16&spacing=2&animationMode=scroll&justify=center&v=1)
 
 </div>
 
@@ -59,7 +53,7 @@ An API that generates flip dot images that can be embedded directly into GitHub 
 Reproduces the operation of actual flip-dot hardware.
 
 ✨ **New Features**
-- 🔤 **Multi-line Text**: Line breaks with `%0A`
+- 🔤 **Multi-line Text**: Line breaks with `_`
 - 📐 **Alignment Options**: Vertical/horizontal alignment options
 - 🎨 **Custom Patterns**: Design your own dot patterns
 - 🎬 **4 Animation Modes**: static, sequential, scroll, waterfall
@@ -72,22 +66,22 @@ Reproduces the operation of actual flip-dot hardware.
 ```
 
 ### Multi-line Text
-![Multi-line](https://flipdots.vercel.app/api/svg?text=HELLO%0AWORLD&style=modern&dotSize=18&spacing=2&animationMode=sequential&v=2)
+![Multi-line](https://flipdots.vercel.app/api/svg?text=HELLO_WORLD&style=modern&dotSize=18&spacing=2&animationMode=sequential&v=2)
 ```markdown
-![Multi-line](https://flipdots.vercel.app/api/svg?text=HELLO%0AWORLD&style=modern&dotSize=18&spacing=2&animationMode=sequential)
+![Multi-line](https://flipdots.vercel.app/api/svg?text=HELLO_WORLD&style=modern&dotSize=18&spacing=2&animationMode=sequential)
 ```
 
 ### Animation
-![Animation](https://flipdots.vercel.app/api/svg?text=SCROLL_TEXT&animationMode=scroll&style=retro&dotSize=16&spacing=2)
+![Animation](https://flipdots.vercel.app/api/svg?text=SCROLL+TEXT&animationMode=scroll&style=retro&dotSize=16&spacing=2)
 ```markdown
-![Animation](https://flipdots.vercel.app/api/svg?text=SCROLL_TEXT&animationMode=scroll&style=retro&dotSize=16&spacing=2)
+![Animation](https://flipdots.vercel.app/api/svg?text=SCROLL+TEXT&animationMode=scroll&style=retro&dotSize=16&spacing=2)
 ```
 
 ## 📋 Parameters
 
 | Parameter | Description | Default | Example |
 |-----------|-------------|---------|---------|
-| **`text`** | Text to display (multi-line: separated by `%0A`) | `HELLO` | `HELLO%0AWORLD` |
+| **`text`** | Text to display (multi-line: separated by `_`, spaces: use `+`) | `HELLO` | `HELLO_WORLD` |
 | **`customdots`** | Custom dot pattern (1=on, 0=off) | - | `10110,01001,10110` |
 | **`style`** | Style theme | `dark` | `light`, `retro`, `modern`, `dark` |
 | **`dotSize`** | Dot size (px) | `20` | `10-40` |
@@ -137,30 +131,30 @@ Text falls from top to bottom
 
 ## 📝 Multi-line Text
 
-Use `%0A` as a delimiter to create multi-line text. A 1-dot spacing is automatically added between each line.
+Use `_` as a delimiter to create multi-line text. A 1-dot spacing is automatically added between each line.
 
 ### Basic Multi-line
-![Multi-line Basic](https://flipdots.vercel.app/api/svg?text=HELLO%0WORLD&style=dark&dotSize=18&spacing=2&v=2)
+![Multi-line Basic](https://flipdots.vercel.app/api/svg?text=HELLO_WORLD&style=dark&dotSize=18&spacing=2&v=2)
 ```markdown
-https://flipdots.vercel.app/api/svg?text=HELLO%0WORLD&style=dark&dotSize=18&spacing=2
+https://flipdots.vercel.app/api/svg?text=HELLO_WORLD&style=dark&dotSize=18&spacing=2
 ```
 
 ### 3-line Text
-![Three Lines](https://flipdots.vercel.app/api/svg?text=LINE1%0ALINE2%0ALINE3&style=modern&dotSize=16&spacing=2&v=1)
+![Three Lines](https://flipdots.vercel.app/api/svg?text=LINE1_LINE2_LINE3&style=modern&dotSize=16&spacing=2&v=1)
 ```
-https://flipdots.vercel.app/api/svg?text=LINE1%0ALINE2%0ALINE3&style=modern&dotSize=16&spacing=2
+https://flipdots.vercel.app/api/svg?text=LINE1_LINE2_LINE3&style=modern&dotSize=16&spacing=2
 ```
 ```markdown
-https://flipdots.vercel.app/api/svg?text=LINE1%0LINE2%0LINE3&style=modern&dotSize=16&spacing=2
+https://flipdots.vercel.app/api/svg?text=LINE1_LINE2_LINE3&style=modern&dotSize=16&spacing=2
 ```
 
 ### Multi-line + Animation
-![Multi-line Animation](https://flipdots.vercel.app/api/svg?text=GITHUB%0APROFILE%0AVISITOR&animationMode=sequential&style=retro&dotSize=16&spacing=2&v=1)
+![Multi-line Animation](https://flipdots.vercel.app/api/svg?text=GITHUB_PROFILE_VISITOR&animationMode=sequential&style=retro&dotSize=16&spacing=2&v=1)
 ```
-https://flipdots.vercel.app/api/svg?text=GITHUB%0APROFILE%0AVISITOR&animationMode=sequential&style=retro&dotSize=16&spacing=2
+https://flipdots.vercel.app/api/svg?text=GITHUB_PROFILE_VISITOR&animationMode=sequential&style=retro&dotSize=16&spacing=2
 ```
 ```markdown
-https://flipdots.vercel.app/api/svg?text=GITHUB%0PROFILE%0VISITOR&animationMode=sequential&style=retro&dotSize=16&spacing=2
+https://flipdots.vercel.app/api/svg?text=GITHUB_PROFILE_VISITOR&animationMode=sequential&style=retro&dotSize=16&spacing=2
 ```
 
 ## 📐 Size Limits and Alignment
@@ -180,9 +174,9 @@ https://flipdots.vercel.app/api/svg?text=CENTER&row=12&column=30&align=center&ju
 ```
 
 ### Multi-line Alignment
-![Multi-line Align](https://flipdots.vercel.app/api/svg?text=ALIGN%0_BOTTOM%0RIGHT&row=25&column=45&align=end&justify=end&style=retro&dotSize=16&spacing=2&v=1)
+![Multi-line Align](https://flipdots.vercel.app/api/svg?text=ALIGN_BOTTOM_RIGHT&row=25&column=45&align=end&justify=end&style=retro&dotSize=16&spacing=2&v=1)
 ```markdown
-https://flipdots.vercel.app/api/svg?text=ALIGN%0_BOTTOM%0RIGHT&row=25&column=45&align=end&justify=end&style=retro&dotSize=16&spacing=2
+https://flipdots.vercel.app/api/svg?text=ALIGN_BOTTOM_RIGHT&row=25&column=45&align=end&justify=end&style=retro&dotSize=16&spacing=2
 ```
 
 ## 🎨 Custom Dot Patterns
@@ -231,59 +225,59 @@ https://flipdots.vercel.app/api/svg?customdots=10110,01001,10110&animationMode=s
 ### GitHub Profile Decoration
 
 #### Visitor Welcome Message
-![Welcome Message](https://flipdots.vercel.app/api/svg?text=WELCOME%0TO%0MY%0GITHUB&animationMode=sequential&style=dark&dotSize=16&spacing=2&justify=center&v=1)
+![Welcome Message](https://flipdots.vercel.app/api/svg?text=WELCOME_TO_MY_GITHUB&animationMode=sequential&style=dark&dotSize=16&spacing=2&justify=center&v=1)
 ```markdown
-![Welcome](https://flipdots.vercel.app/api/svg?text=WELCOME%0TO%0MY%0GITHUB&animationMode=sequential&style=dark&dotSize=16&spacing=2&justify=center)
+![Welcome](https://flipdots.vercel.app/api/svg?text=WELCOME_TO_MY_GITHUB&animationMode=sequential&style=dark&dotSize=16&spacing=2&justify=center)
 ```
 
 #### Current Status Display
-![Current Status](https://flipdots.vercel.app/api/svg?text=CURRENTLY%0CODING&animationMode=scroll&style=modern&dotSize=18&spacing=2&v=1&speed=3)
+![Current Status](https://flipdots.vercel.app/api/svg?text=CURRENTLY_CODING&animationMode=scroll&style=modern&dotSize=18&spacing=2&v=1&speed=3)
 ```markdown
-![Status](https://flipdots.vercel.app/api/svg?text=CURRENTLY%0CODING&animationMode=scroll&style=modern&dotSize=18&spacing=2&speed=3)
+![Status](https://flipdots.vercel.app/api/svg?text=CURRENTLY_CODING&animationMode=scroll&style=modern&dotSize=18&spacing=2&speed=3)
 ```
 
 ### Project README Headers
 
 #### Project Title
-![Project Title](https://flipdots.vercel.app/api/svg?text=MY_AWESOME%0PROJECT&animationMode=waterfall&style=modern&dotSize=20&spacing=2&justify=center&v=1)
+![Project Title](https://flipdots.vercel.app/api/svg?text=MY+AWESOME_PROJECT&animationMode=waterfall&style=modern&dotSize=20&spacing=2&justify=center&v=1)
 ```markdown
-![Project](https://flipdots.vercel.app/api/svg?text=MY_AWESOME%0PROJECT&animationMode=waterfall&style=modern&dotSize=20&spacing=2&justify=center)
+![Project](https://flipdots.vercel.app/api/svg?text=MY+AWESOME_PROJECT&animationMode=waterfall&style=modern&dotSize=20&spacing=2&justify=center)
 ```
 
 ### Status Badge Style
 
 #### Build Status
-![Build Success](https://flipdots.vercel.app/api/svg?text=BUILD%0PASSING&dotOn=00ff00&background=000000&dotSize=14&spacing=1&v=1)
-![Build Failed](https://flipdots.vercel.app/api/svg?text=BUILD%0FAILED&dotOn=ff0000&background=000000&dotSize=14&spacing=1&v=1)
+![Build Success](https://flipdots.vercel.app/api/svg?text=BUILD_PASSING&dotOn=00ff00&background=000000&dotSize=14&spacing=1&v=1)
+![Build Failed](https://flipdots.vercel.app/api/svg?text=BUILD_FAILED&dotOn=ff0000&background=000000&dotSize=14&spacing=1&v=1)
 ```markdown
-![Build Status](https://flipdots.vercel.app/api/svg?text=BUILD%0PASSING&dotOn=00ff00&background=000000&dotSize=14&spacing=1)
-![Build Failed](https://flipdots.vercel.app/api/svg?text=BUILD%0FAILED&dotOn=ff0000&background=000000&dotSize=14&spacing=1)
+![Build Status](https://flipdots.vercel.app/api/svg?text=BUILD_PASSING&dotOn=00ff00&background=000000&dotSize=14&spacing=1)
+![Build Failed](https://flipdots.vercel.app/api/svg?text=BUILD_FAILED&dotOn=ff0000&background=000000&dotSize=14&spacing=1)
 ```
 
 #### Version Information
-![Version](https://flipdots.vercel.app/api/svg?text=VERSION%0V2%2E1%2E0&style=modern&dotSize=16&spacing=2&v=1)
+![Version](https://flipdots.vercel.app/api/svg?text=VERSION_V2%2E1%2E0&style=modern&dotSize=16&spacing=2&v=1)
 ```markdown
-![Version](https://flipdots.vercel.app/api/svg?text=VERSION%0V2.1.0&style=modern&dotSize=16&spacing=2)
+![Version](https://flipdots.vercel.app/api/svg?text=VERSION_V2.1.0&style=modern&dotSize=16&spacing=2)
 ```
 
 #### Progress Display
-![Progress](https://flipdots.vercel.app/api/svg?text=PROGRESS%095%25&dotOn=00ff00,ffff00,ff8000&style=dark&dotSize=16&spacing=2&v=1)
+![Progress](https://flipdots.vercel.app/api/svg?text=PROGRESS_95%25&dotOn=00ff00,ffff00,ff8000&style=dark&dotSize=16&spacing=2&v=1)
 ```markdown
-![Progress](https://flipdots.vercel.app/api/svg?text=PROGRESS%095%25&dotOn=00ff00,ffff00,ff8000&style=dark&dotSize=16&spacing=2)
+![Progress](https://flipdots.vercel.app/api/svg?text=PROGRESS_95%25&dotOn=00ff00,ffff00,ff8000&style=dark&dotSize=16&spacing=2)
 ```
 
 ### Creative Uses
 
 #### Social Media Links
-![Social](https://flipdots.vercel.app/api/svg?text=FOLLOW%0@USERNAME&animationMode=scroll&dotOn=1da1f2&background=000000&dotSize=16&spacing=2&v=1)
+![Social](https://flipdots.vercel.app/api/svg?text=FOLLOW_@USERNAME&animationMode=scroll&dotOn=1da1f2&background=000000&dotSize=16&spacing=2&v=1)
 ```markdown
-![Social](https://flipdots.vercel.app/api/svg?text=FOLLOW%0@USERNAME&animationMode=scroll&dotOn=1da1f2&background=000000&dotSize=16&spacing=2)
+![Social](https://flipdots.vercel.app/api/svg?text=FOLLOW_@USERNAME&animationMode=scroll&dotOn=1da1f2&background=000000&dotSize=16&spacing=2)
 ```
 
 #### Email Address
-![Email](https://flipdots.vercel.app/api/svg?text=CONTACTME%0@DOMAIN%2ECOM&style=modern&dotSize=14&spacing=1&v=1&animationMode=sequential)
+![Email](https://flipdots.vercel.app/api/svg?text=CONTACTME_@DOMAIN%2ECOM&style=modern&dotSize=14&spacing=1&v=1&animationMode=sequential)
 ```markdown
-![Email](https://flipdots.vercel.app/api/svg?text=CONTACTME%0@DOMAIN%2ECOM&style=modern&dotSize=14&spacing=1&animationMode=sequential)
+![Email](https://flipdots.vercel.app/api/svg?text=CONTACTME_@DOMAIN%2ECOM&style=modern&dotSize=14&spacing=1&animationMode=sequential)
 ```
 
 ## 🛠️ Advanced Usage
@@ -405,10 +399,10 @@ If special characters cause errors in URLs, use these substitutions:
 ### 3. Multi-line Text Alignment Optimization
 ```markdown
 <!-- Center alignment when each line has different lengths -->
-text=SHORT%0VERY_LONG_LINE%0MID&justify=center
+text=SHORT_VERY_LONG_LINE_MID&justify=center
 
 <!-- Title and subtitle style -->
-text=MAIN_TITLE%0SUBTITLE&justify=center&row=12&column=40
+text=MAIN_TITLE_SUBTITLE&justify=center&row=12&column=40
 ```
 
 ### 4. Animation Combinations
@@ -556,7 +550,7 @@ This project is distributed under the MIT License. See the [LICENSE](LICENSE) fi
 
 **🎉 Make your GitHub README awesome with flip-dot! 🎉**
 
-[![Flip Dot Example](https://flipdots.vercel.app/api/svg?text=MADE_WITH%0_FLIP_DOT_&animationMode=sequential&style=retro&dotSize=16&spacing=2&justify=center&v=1)](https://flipdots.vercel.app/example)
+[![Flip Dot Example](https://flipdots.vercel.app/api/svg?text=MADE+WITH_FLIP+DOT&animationMode=sequential&style=retro&dotSize=16&spacing=2&justify=center&v=1)](https://flipdots.vercel.app/example)
 
 Bug reports, ideas, and pull requests are always welcome.
 <br>
