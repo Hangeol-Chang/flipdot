@@ -83,9 +83,6 @@ export async function GET(request) {
 }
 
 function textToPattern(text, justify = 'start') {
-    // %0을 구분자로 여러 줄 처리
-    const lines = text.split('%0');
-    
     // URL 디코딩된 특수문자 처리를 위한 매핑
     const urlDecodedMap = {
         '%21': '!',
@@ -111,25 +108,31 @@ function textToPattern(text, justify = 'start') {
         '%2E': '.'
     };
     
+    // 먼저 URL 인코딩된 특수문자 디코딩
+    let decodedText = text;
+    for (const [encoded, decoded] of Object.entries(urlDecodedMap)) {
+        decodedText = decodedText.replace(new RegExp(encoded, 'gi'), decoded);
+    }
+    
+    // 디코딩된 텍스트에서 %0A과 _을 구분자로 여러 줄 처리
+    const lines = decodedText.split(/(%0A|_)/);
+    
+    // 빈 문자열 제거하고 실제 라인만 남기기
+    const actualLines = lines.filter(line => line !== '%0A' && line !== '_' && line !== '');
+    
     // 각 줄을 처리하여 패턴 배열 생성
     const linePatterns = [];
     let maxWidth = 0;
     let totalHeight = 0;
     
-    for (const line of lines) {
-        // URL 인코딩된 특수문자 디코딩
-        let decodedText = line;
-        for (const [encoded, decoded] of Object.entries(urlDecodedMap)) {
-            decodedText = decodedText.replace(new RegExp(encoded, 'gi'), decoded);
-        }
-        
-        const linePattern = processSingleLine(decodedText);
+    for (const line of actualLines) {
+        const linePattern = processSingleLine(line);
         linePatterns.push(linePattern);
         maxWidth = Math.max(maxWidth, linePattern.width);
         totalHeight += linePattern.height;
         
         // 줄 간격 추가 (마지막 줄이 아닌 경우)
-        if (lines.indexOf(line) < lines.length - 1) {
+        if (actualLines.indexOf(line) < actualLines.length - 1) {
             totalHeight += 1;
         }
     }
@@ -192,8 +195,8 @@ function processSingleLine(decodedText) {
         const char = decodedText[i];
         let pattern = null;
         
-        if (char === ' ' || char === '_') {
-            // 공백 및 언더스코어(_)를 띄어쓰기로 처리 (3 column)
+        if (char === ' ' || char === '+') {
+            // 공백 및 플러스(+)를 띄어쓰기로 처리 (3 column)
             pattern = {
                 size: [7, 3],
                 data: Array(7).fill().map(() => Array(3).fill(0))

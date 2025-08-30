@@ -96,7 +96,7 @@ export default function ExamplePage() {
                     <button 
                         onClick={() => {
                             setMode('text');
-                            setText('Hello_World!');
+                            setText('Hello_World!!');
                         }}
                         style={{
                             backgroundColor: '#777',
@@ -124,7 +124,7 @@ export default function ExamplePage() {
                     <button 
                         onClick={() => {
                             setMode('text');
-                            setText('GitHub%0Profile');
+                            setText('GitHub_Profile');
                         }}
                         style={{
                             backgroundColor: '#777',
@@ -152,7 +152,7 @@ export default function ExamplePage() {
                     <button 
                         onClick={() => {
                             setMode('text');
-                            setText('Score:_95%');
+                            setText('SCORE:95%');
                         }}
                         style={{
                             backgroundColor: '#777',
@@ -175,8 +175,9 @@ export default function ExamplePage() {
                             e.target.style.transform = 'translateY(0)';
                         }}
                     >
-                        Score Display
+                        score: 95%
                     </button>
+                   
                     <button 
                         onClick={() => {
                             setMode('custom');
@@ -279,7 +280,7 @@ export default function ExamplePage() {
                                     borderRadius: '4px',
                                     width: '100%'
                                 }}
-                                placeholder="예: Hello World 또는 여러줄은 %0로 구분"
+                                placeholder="예: Hello+World (띄어쓰기는 +, 줄바꿈은 _ 또는 %0A)"
                             />
                         </div>
                     ) : (
