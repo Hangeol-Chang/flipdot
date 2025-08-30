@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { FD_TEXT_MAP_ENG } from '../../../../components/types/textmapEng.js';
+import { FD_TEXT_MAP_ENG, FD_TEXT_MAP_ENG_LOWER } from '../../../../components/types/textmapEng.js';
 import { FD_TEXT_MAP_NUM } from '../../../../components/types/textmapNum.js';
 import { FD_TEXT_MAP_SPECIAL } from '../../../../components/types/textmapSpecial.js';
 
@@ -12,6 +12,17 @@ export async function GET(request) {
     const dotSize = parseInt(searchParams.get('dotSize')) || 20;
     const spacing = parseInt(searchParams.get('spacing')) || 2;
     const animationMode = searchParams.get('animationMode') || 'static';
+    const speed = parseFloat(searchParams.get('speed')) || 1.0; // 기본값 1.0 (보통 속도)
+    const customDots = searchParams.get('customdots'); // 커스텀 dot 패턴
+    const direction = searchParams.get('direction') || 'normal'; // 'normal', 'reverse'
+    
+    // 정렬 파라미터
+    const align = searchParams.get('align') || 'start'; // 'start', 'center', 'end' - 세로 정렬
+    const justify = searchParams.get('justify') || 'start'; // 'start', 'center', 'end' - 가로 정렬
+    
+    // 고정 매트릭스 크기 파라미터
+    const fixedRows = searchParams.get('row') ? parseInt(searchParams.get('row')) : null;
+    const fixedCols = searchParams.get('column') ? parseInt(searchParams.get('column')) : null;
     
     // 커스텀 색상 파라미터 (# 기호 자동 추가)
     const customColors = {
@@ -20,17 +31,47 @@ export async function GET(request) {
         background: searchParams.get('background') ? addHashToColor(searchParams.get('background')) : null
     };
     
-    // 텍스트를 dot 패턴으로 변환
-    const textPattern = textToPattern(text.toUpperCase());
+    // 텍스트를 dot 패턴으로 변환 (대소문자 구분) 또는 커스텀 패턴 사용
+    let textPattern;
+    if (customDots) {
+        textPattern = customDotsToPattern(customDots);
+    } else {
+        textPattern = textToPattern(text, justify);
+    }
+    
+    // 고정 크기가 지정된 경우 패턴을 자르거나 패딩
+    // scroll/waterfall 모드에서는 각각 column/row 고정 시 텍스트를 자르지 않고 화면 크기만 제한
+    let finalPattern;
+    if (animationMode === 'scroll' && fixedCols && !fixedRows) {
+        // scroll 모드에서 column만 고정된 경우: 원본 텍스트 유지, 화면 너비만 제한
+        finalPattern = textPattern;
+    } else if (animationMode === 'waterfall' && fixedRows && !fixedCols) {
+        // waterfall 모드에서 row만 고정된 경우: 원본 텍스트 유지, 화면 높이만 제한
+        finalPattern = textPattern;
+    } else if (animationMode === 'waterfall') {
+        // waterfall 모드에서는 항상 원본 텍스트 유지 (위에서 아래로 스크롤하기 위해)
+        finalPattern = textPattern;
+    } else {
+        // 일반적인 경우: 고정 크기에 맞춰 자르거나 패딩
+        finalPattern = fixedRows || fixedCols ? 
+            cropOrPadPattern(textPattern, fixedRows, fixedCols, align, justify) : 
+            textPattern;
+    }
     
     // SVG 생성
-    const svg = generateFlipDotSVG(textPattern, {
+    const svg = generateFlipDotSVG(finalPattern, {
         style,
         dotSize,
         spacing,
         customColors,
         animationMode,
-        text
+        text,
+        speed,
+        fixedCols,
+        fixedRows,
+        direction,
+        align,
+        justify
     });
     
     return new NextResponse(svg, {
@@ -41,10 +82,9 @@ export async function GET(request) {
     });
 }
 
-function textToPattern(text) {
-    const patterns = [];
-    let totalWidth = 0;
-    let maxHeight = 0;
+function textToPattern(text, justify = 'start') {
+    // %0을 구분자로 여러 줄 처리
+    const lines = text.split('%0');
     
     // URL 디코딩된 특수문자 처리를 위한 매핑
     const urlDecodedMap = {
@@ -71,11 +111,81 @@ function textToPattern(text) {
         '%2E': '.'
     };
     
-    // URL 인코딩된 특수문자 디코딩
-    let decodedText = text;
-    for (const [encoded, decoded] of Object.entries(urlDecodedMap)) {
-        decodedText = decodedText.replace(new RegExp(encoded, 'gi'), decoded);
+    // 각 줄을 처리하여 패턴 배열 생성
+    const linePatterns = [];
+    let maxWidth = 0;
+    let totalHeight = 0;
+    
+    for (const line of lines) {
+        // URL 인코딩된 특수문자 디코딩
+        let decodedText = line;
+        for (const [encoded, decoded] of Object.entries(urlDecodedMap)) {
+            decodedText = decodedText.replace(new RegExp(encoded, 'gi'), decoded);
+        }
+        
+        const linePattern = processSingleLine(decodedText);
+        linePatterns.push(linePattern);
+        maxWidth = Math.max(maxWidth, linePattern.width);
+        totalHeight += linePattern.height;
+        
+        // 줄 간격 추가 (마지막 줄이 아닌 경우)
+        if (lines.indexOf(line) < lines.length - 1) {
+            totalHeight += 1;
+        }
     }
+    
+    // 전체 패턴 배열 생성
+    const fullPattern = Array(totalHeight).fill().map(() => Array(maxWidth).fill(0));
+    
+    let currentY = 0;
+    for (let lineIndex = 0; lineIndex < linePatterns.length; lineIndex++) {
+        const linePattern = linePatterns[lineIndex];
+        
+        // justify 정렬을 위한 시작 X 위치 계산
+        let startX = 0;
+        if (linePattern.width < maxWidth) {
+            switch (justify) {
+                case 'center':
+                    startX = Math.floor((maxWidth - linePattern.width) / 2);
+                    break;
+                case 'end':
+                    startX = maxWidth - linePattern.width;
+                    break;
+                case 'start':
+                default:
+                    startX = 0;
+                    break;
+            }
+        }
+        
+        // 각 줄의 패턴을 정렬된 위치에 복사
+        for (let y = 0; y < linePattern.height; y++) {
+            for (let x = 0; x < linePattern.width; x++) {
+                if (y < linePattern.data.length && x < linePattern.data[y].length) {
+                    fullPattern[currentY + y][startX + x] = linePattern.data[y][x];
+                }
+            }
+        }
+        
+        currentY += linePattern.height;
+        
+        // 줄 간격 추가 (마지막 줄이 아닌 경우)
+        if (lineIndex < linePatterns.length - 1) {
+            currentY += 1;
+        }
+    }
+    
+    return {
+        width: maxWidth,
+        height: totalHeight,
+        data: fullPattern
+    };
+}
+
+function processSingleLine(decodedText) {
+    const patterns = [];
+    let totalWidth = 0;
+    let maxHeight = 0;
     
     // 각 문자의 패턴을 가져와서 연결
     for (let i = 0; i < decodedText.length; i++) {
@@ -89,10 +199,16 @@ function textToPattern(text) {
                 data: Array(7).fill().map(() => Array(3).fill(0))
             };
         } else if (FD_TEXT_MAP_ENG[char]) {
+            // 대문자 처리
             pattern = FD_TEXT_MAP_ENG[char];
+        } else if (FD_TEXT_MAP_ENG_LOWER[char]) {
+            // 소문자 처리
+            pattern = FD_TEXT_MAP_ENG_LOWER[char];
         } else if (FD_TEXT_MAP_NUM[char]) {
+            // 숫자 처리
             pattern = FD_TEXT_MAP_NUM[char];
         } else if (FD_TEXT_MAP_SPECIAL[char]) {
+            // 특수문자 처리
             pattern = FD_TEXT_MAP_SPECIAL[char];
         }
         
@@ -130,26 +246,172 @@ function textToPattern(text) {
     };
 }
 
+function customDotsToPattern(customDots) {
+    // customdots 파라미터를 파싱하여 dot 패턴 생성
+    // 예: "10110,01001,10110" -> 3x5 패턴
+    
+    if (!customDots || typeof customDots !== 'string') {
+        // 기본 패턴 반환 (빈 패턴)
+        return {
+            width: 1,
+            height: 1,
+            data: [[0]]
+        };
+    }
+    
+    // 콤마로 구분된 행들을 분리
+    const rows = customDots.split(',');
+    
+    if (rows.length === 0) {
+        return {
+            width: 1,
+            height: 1,
+            data: [[0]]
+        };
+    }
+    
+    // 각 행을 0/1 배열로 변환
+    const patternData = [];
+    let maxWidth = 0;
+    
+    for (const row of rows) {
+        const rowData = [];
+        for (const char of row.trim()) {
+            if (char === '1') {
+                rowData.push(1);
+            } else if (char === '0') {
+                rowData.push(0);
+            }
+            // 다른 문자는 무시
+        }
+        
+        if (rowData.length > 0) {
+            patternData.push(rowData);
+            maxWidth = Math.max(maxWidth, rowData.length);
+        }
+    }
+    
+    // 모든 행의 길이를 maxWidth로 맞춤 (짧은 행은 0으로 패딩)
+    for (const row of patternData) {
+        while (row.length < maxWidth) {
+            row.push(0);
+        }
+    }
+    
+    return {
+        width: maxWidth,
+        height: patternData.length,
+        data: patternData
+    };
+}
+
+function cropOrPadPattern(pattern, fixedRows, fixedCols, align = 'start', justify = 'start') {
+    // 기본값 설정: 지정되지 않은 경우 원본 크기 사용
+    const targetRows = fixedRows || pattern.height;
+    const targetCols = fixedCols || pattern.width;
+    
+    // 새로운 패턴 배열 생성 (모든 값을 0으로 초기화)
+    const newPattern = Array(targetRows).fill().map(() => Array(targetCols).fill(0));
+    
+    // 정렬 계산
+    let startY = 0;
+    let startX = 0;
+    
+    // 세로 정렬 (align) - row가 텍스트 높이보다 클 때
+    if (fixedRows && pattern.height < targetRows) {
+        switch (align) {
+            case 'center':
+                startY = Math.floor((targetRows - pattern.height) / 2);
+                break;
+            case 'end':
+                startY = targetRows - pattern.height;
+                break;
+            case 'start':
+            default:
+                startY = 0;
+                break;
+        }
+    }
+    
+    // 가로 정렬 (justify) - column이 텍스트 너비보다 클 때
+    if (fixedCols && pattern.width < targetCols) {
+        switch (justify) {
+            case 'center':
+                startX = Math.floor((targetCols - pattern.width) / 2);
+                break;
+            case 'end':
+                startX = targetCols - pattern.width;
+                break;
+            case 'start':
+            default:
+                startX = 0;
+                break;
+        }
+    }
+    
+    // 원본 패턴을 정렬된 위치에 복사
+    const copyRows = Math.min(targetRows - startY, pattern.height);
+    const copyCols = Math.min(targetCols - startX, pattern.width);
+    
+    for (let y = 0; y < copyRows; y++) {
+        for (let x = 0; x < copyCols; x++) {
+            if (y < pattern.data.length && x < pattern.data[y].length) {
+                newPattern[startY + y][startX + x] = pattern.data[y][x];
+            }
+        }
+    }
+    
+    return {
+        width: targetCols,
+        height: targetRows,
+        data: newPattern
+    };
+}
+
 function generateFlipDotSVG(pattern, options) {
-    const { dotSize, spacing, style, customColors, animationMode = 'static', text = '' } = options;
+    const { dotSize, spacing, style, customColors, animationMode = 'static', text = '', speed = 1.0, fixedCols = null, fixedRows = null, direction = 'normal', align = 'start', justify = 'start' } = options;
     const dotRadius = dotSize / 2 - 1;
     const totalDotSize = dotSize + spacing;
     
-    // scroll 모드일 때는 더 넓은 캔버스 사용
-    let svgWidth, svgHeight, displayWidth;
+    // scroll/waterfall 모드일 때는 더 넓은/높은 캔버스 사용
+    let svgWidth, svgHeight, displayWidth, displayHeight;
     const padding = 4; // 패딩 크기
     const borderWidth = 4; // 테두리 크기
     const borderRadius = 4; // 모서리 둥글기
     const totalPadding = padding + borderWidth; // 총 여백
     
     if (animationMode === 'scroll') {
-        displayWidth = Math.max(pattern.width, 20); // 텍스트 길이나 최소 20개 중 더 큰 값
+        // fixedCols가 지정된 경우 해당 값 사용, 아니면 기본 로직
+        if (fixedCols) {
+            displayWidth = fixedCols;
+        } else {
+            displayWidth = Math.max(pattern.width, 20); // 텍스트 길이나 최소 20개 중 더 큰 값
+        }
         svgWidth = displayWidth * totalDotSize + totalPadding * 2;
         svgHeight = pattern.height * totalDotSize + totalPadding * 2;
+        displayHeight = pattern.height;
+    } else if (animationMode === 'waterfall') {
+        // fixedRows가 지정된 경우 해당 값 사용, 아니면 텍스트 높이 사용
+        if (fixedRows) {
+            displayHeight = fixedRows;
+        } else {
+            displayHeight = pattern.height; // 텍스트 높이 그대로 사용
+        }
+        // fixedCols가 지정된 경우 해당 값 사용, 아니면 텍스트 너비 사용
+        if (fixedCols) {
+            displayWidth = fixedCols;
+            svgWidth = displayWidth * totalDotSize + totalPadding * 2;
+        } else {
+            displayWidth = pattern.width;
+            svgWidth = pattern.width * totalDotSize + totalPadding * 2;
+        }
+        svgHeight = displayHeight * totalDotSize + totalPadding * 2;
+        displayWidth = pattern.width;
     } else {
         svgWidth = pattern.width * totalDotSize + totalPadding * 2;
         svgHeight = pattern.height * totalDotSize + totalPadding * 2;
         displayWidth = pattern.width;
+        displayHeight = pattern.height;
     }
     
     // 스타일 설정 (기본 스타일 먼저 적용, 그 다음 커스텀 색상으로 덮어쓰기)
@@ -183,6 +445,31 @@ function generateFlipDotSVG(pattern, options) {
                 
                 dots += `<circle cx="${centerX}" cy="${centerY}" r="${dotRadius}" fill="${colors.dotOff}" 
                            class="scroll-dot" data-x="${x}" data-y="${y}" data-on-color="${dotColor}"/>`;
+            }
+        }
+    } else if (animationMode === 'waterfall') {
+        // waterfall 모드: 고정된 화면 크기에 위에서 아래로 스크롤링 텍스트
+        for (let y = 0; y < displayHeight; y++) {
+            for (let x = 0; x < displayWidth; x++) {
+                const centerX = x * totalDotSize + dotSize / 2 + totalPadding;
+                const centerY = y * totalDotSize + dotSize / 2 + totalPadding;
+                
+                // 배경 사각형 (dot holder)
+                dots += `<rect x="${x * totalDotSize + totalPadding}" y="${y * totalDotSize + totalPadding}" width="${dotSize}" height="${dotSize}" fill="${colors.background}"/>`;
+                
+                // 왼쪽 위 삼각형 (포인트 효과)
+                dots += `<polygon points="${x * totalDotSize + totalPadding},${y * totalDotSize + totalPadding} ${x * totalDotSize + 4 + totalPadding},${y * totalDotSize + totalPadding} ${x * totalDotSize + totalPadding},${y * totalDotSize + 4 + totalPadding}" fill="${colors.shadow}"/>`;
+                
+                // 중앙 원 (실제 flip dot) - waterfall 애니메이션 적용
+                let dotColor = colors.dotOff;
+                if (dotOnColors.length > 1) {
+                    dotColor = calculateGradientColor(dotOnColors, x, displayWidth);
+                } else {
+                    dotColor = colors.dotOn;
+                }
+                
+                dots += `<circle cx="${centerX}" cy="${centerY}" r="${dotRadius}" fill="${colors.dotOff}" 
+                           class="waterfall-dot" data-x="${x}" data-y="${y}" data-on-color="${dotColor}"/>`;
             }
         }
     } else {
@@ -220,7 +507,8 @@ function generateFlipDotSVG(pattern, options) {
         }
     }
     
-    const scrollAnimationCSS = animationMode === 'scroll' ? generateScrollAnimation(pattern, displayWidth, colors, text) : '';
+    const scrollAnimationCSS = animationMode === 'scroll' ? generateScrollAnimation(pattern, displayWidth, colors, text, speed, direction) : '';
+    const waterfallAnimationCSS = animationMode === 'waterfall' ? generateWaterfallAnimation(pattern, displayHeight, displayWidth, colors, text, speed, fixedRows, direction) : '';
     
     return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${svgWidth}" height="${svgHeight}" viewBox="0 0 ${svgWidth} ${svgHeight}">
@@ -238,42 +526,79 @@ function generateFlipDotSVG(pattern, options) {
         }
         
         ${scrollAnimationCSS}
-        ` : `
-        /* 켜진 dot들만 애니메이션 적용 */
-        .dot-on {
-            animation: sequentialFlip 0.5s ease-in-out forwards;
+        ` : animationMode === 'waterfall' ? `
+        /* 워터폴 모드 애니메이션 */
+        .waterfall-dot {
+            animation-fill-mode: forwards;
             transform-box: content-box;
             transform-origin: center center;
         }
         
-        /* 꺼진 dot들은 애니메이션 없이 정적 상태 */
+        ${waterfallAnimationCSS}
+        ` : animationMode === 'sequential' ? `
+        /* Sequential 모드: 순차적 반복 애니메이션 */
+        .dot-on {
+            animation: sequentialFlip ${5 / speed}s ease-in-out infinite;
+            transform-box: content-box;
+            transform-origin: center center;
+        }
+        
         .dot-off {
             fill: ${colors.dotOff};
             opacity: 1;
             transform: none;
         }
         
-        /* 순차적 뒤집기 애니메이션 */
         @keyframes sequentialFlip {
+            0%, 100% {
+                fill: ${colors.dotOff};
+                transform: rotateZ(0deg) rotateY(0deg);
+                opacity: 1.0;
+            }
+            10%, 90% {
+                fill: ${colors.dotOff};
+                transform: rotateZ(45deg) rotateY(90deg);
+                opacity: 1;
+            }
+            20% {
+                fill: ${colors.dotOn};
+                transform: rotateZ(90deg) rotateY(180deg);
+                opacity: 1;
+            }
+            80% {
+                fill: ${colors.dotOn};
+                transform: rotateZ(90deg) rotateY(180deg);
+                opacity: 1;
+            }
+        }
+        ` : `
+        /* Static/Basic 모드: 한 번만 실행되는 애니메이션 */
+        .dot-on {
+            animation: staticFlip 0.8s ease-out forwards;
+            transform-box: content-box;
+            transform-origin: center center;
+        }
+        
+        .dot-off {
+            fill: ${colors.dotOff};
+            opacity: 1;
+            transform: none;
+        }
+        
+        @keyframes staticFlip {
             0% {
                 fill: ${colors.dotOff};
-                transform:         
-                    rotateZ(0deg)
-                    rotateY(0deg);
-                opacity: 1.0;
+                transform: rotateZ(0deg) rotateY(0deg);
+                opacity: 1;
             }
             50% {
                 fill: ${colors.dotOff};
-                transform: 
-                    rotateZ(45deg)
-                    rotateY(90deg);
+                transform: rotateZ(45deg) rotateY(90deg);
                 opacity: 1;
             }
             100% {
                 fill: ${colors.dotOn};
-                transform: 
-                    rotateZ(90deg)
-                    rotateY(180deg);
+                transform: rotateZ(90deg) rotateY(180deg);
                 opacity: 1;
             }
         }
@@ -343,14 +668,14 @@ function getStyleColors(style, customColors = {}) {
 }
 
 // 스크롤 애니메이션 CSS 생성
-function generateScrollAnimation(pattern, displayWidth, colors, text) {
+function generateScrollAnimation(pattern, displayWidth, colors, text, speed = 1.0, direction = 'normal') {
     const totalTextWidth = pattern.width;
     const scrollSteps = totalTextWidth + displayWidth; // 전체 스크롤 단계
-    const flipDuration = 0.3; // flip 애니메이션 시간
-    const holdDuration = 0.5; // 읽을 시간
-    const stepInterval = 0.3; // 각 스텝 간격 (동시 애니메이션을 위해)
+    const flipDuration = 0.3 / speed; // flip 애니메이션 시간 (speed 적용)
+    const holdDuration = 0.5 / speed; // 읽을 시간 (speed 적용)
+    const stepInterval = 0.3 / speed; // 각 스텝 간격 (speed 적용)
     const totalScrollTime = scrollSteps * stepInterval;
-    const pauseTime = 2; // 반복 전 대기 시간
+    const pauseTime = 2 / speed; // 반복 전 대기 시간 (speed 적용)
     const totalCycleDuration = totalScrollTime + pauseTime;
     
     let animationCSS = '';
@@ -363,7 +688,14 @@ function generateScrollAnimation(pattern, displayWidth, colors, text) {
             // 이 dot가 켜져야 하는 모든 스텝을 찾기
             let activeSteps = [];
             for (let step = 0; step < scrollSteps; step++) {
-                const textPosition = step - displayWidth + x + 1;
+                let textPosition;
+                if (direction === 'reverse') {
+                    // 왼쪽에서 오른쪽으로 스크롤 (교환됨)
+                    textPosition = totalTextWidth - 1 - (step - x);
+                } else {
+                    // 오른쪽에서 왼쪽으로 스크롤 (교환됨, 기존 normal)
+                    textPosition = step - displayWidth + x + 1;
+                }
                 if (textPosition >= 0 && textPosition < totalTextWidth) {
                     const shouldFlip = pattern.data[y] && pattern.data[y][textPosition] === 1;
                     if (shouldFlip) {
@@ -445,6 +777,125 @@ function generateScrollAnimation(pattern, displayWidth, colors, text) {
             // dot에 애니메이션 적용
             animationCSS += `.scroll-dot[data-x="${x}"][data-y="${y}"] {\n`;
             animationCSS += `  animation: scroll-${x}-${y} ${totalCycleDuration}s infinite ease-in-out;\n`;
+            animationCSS += `  transform-box: content-box;\n`;
+            animationCSS += `  transform-origin: center center;\n`;
+            animationCSS += `}\n\n`;
+        }
+    }
+    
+    return animationCSS;
+}
+
+// 워터폴 애니메이션 CSS 생성 (위에서 아래로 스크롤)
+function generateWaterfallAnimation(pattern, displayHeight, displayWidth, colors, text, speed = 1.0, fixedRows = null, direction = 'normal') {
+    const totalTextHeight = pattern.height;
+    const scrollSteps = totalTextHeight + displayHeight; // 전체 스크롤 단계
+    const flipDuration = 0.3 / speed; // flip 애니메이션 시간 (speed 적용)
+    const holdDuration = 0.5 / speed; // 읽을 시간 (speed 적용)
+    const stepInterval = 0.3 / speed; // 각 스텝 간격 (speed 적용)
+    const totalScrollTime = scrollSteps * stepInterval;
+    const pauseTime = 2 / speed; // 반복 전 대기 시간 (speed 적용)
+    const totalCycleDuration = totalScrollTime + pauseTime;
+    
+    let animationCSS = '';
+    
+    // 각 display 위치의 dot별로 애니메이션 생성
+    for (let y = 0; y < displayHeight; y++) {
+        for (let x = 0; x < displayWidth; x++) {
+            let keyframes = `@keyframes waterfall-${x}-${y} {\n  0% { fill: ${colors.dotOff}; }\n`;
+            
+            // 이 dot가 켜져야 하는 모든 스텝을 찾기
+            let activeSteps = [];
+            for (let step = 0; step < scrollSteps; step++) {
+                let textPosition;
+                if (direction === 'reverse') {
+                    // 위에서 아래로 스크롤 (교환됨)
+                    textPosition = step - displayHeight + y + 1;
+                } else {
+                    // 아래에서 위로 스크롤 (교환됨, 기존 normal)
+                    textPosition = totalTextHeight - 1 - (step - y);
+                }
+                if (textPosition >= 0 && textPosition < totalTextHeight && x < pattern.width) {
+                    const shouldFlip = pattern.data[textPosition] && pattern.data[textPosition][x] === 1;
+                    if (shouldFlip) {
+                        activeSteps.push(step);
+                    }
+                }
+            }
+            
+            // 각 활성 스텝에 대해 애니메이션 생성
+            for (let i = 0; i < activeSteps.length; i++) {
+                const step = activeSteps[i];
+                const stepStartTime = step * stepInterval;
+                const stepStartPercent = (stepStartTime / totalCycleDuration) * 100;
+                
+                // 다음 스텝이 연속인지 확인
+                const isNextConsecutive = i < activeSteps.length - 1 && activeSteps[i + 1] === step + 1;
+                const isPrevConsecutive = i > 0 && activeSteps[i - 1] === step - 1;
+                
+                if (isPrevConsecutive) {
+                    // 이전 스텝과 연속이면 계속 켜진 상태 유지
+                    continue;
+                }
+                
+                // 켜지는 애니메이션 시작
+                const flipOnStart = stepStartPercent;
+                const flipOnMid = stepStartPercent + (flipDuration / 2 / totalCycleDuration) * 100;
+                const flipOnEnd = stepStartPercent + (flipDuration / totalCycleDuration) * 100;
+                
+                keyframes += `  ${flipOnStart}% { 
+                    fill: ${colors.dotOff}; 
+                    transform: rotateZ(0deg) rotateY(0deg);
+                }\n`;
+                keyframes += `  ${flipOnMid}% { 
+                    fill: ${colors.dotOff}; 
+                    transform: rotateZ(45deg) rotateY(90deg);
+                }\n`;
+                keyframes += `  ${flipOnEnd}% { 
+                    fill: ${colors.dotOn}; 
+                    transform: rotateZ(90deg) rotateY(180deg);
+                }\n`;
+                
+                // 연속 구간의 끝을 찾기
+                let lastConsecutiveStep = step;
+                while (i < activeSteps.length - 1 && activeSteps[i + 1] === lastConsecutiveStep + 1) {
+                    i++;
+                    lastConsecutiveStep = activeSteps[i];
+                }
+                
+                // 꺼지는 애니메이션 (연속 구간의 마지막에서)
+                const lastStepTime = lastConsecutiveStep * stepInterval;
+                const holdEndTime = lastStepTime + holdDuration;
+                const flipOffEndTime = holdEndTime + flipDuration;
+                
+                const holdEndPercent = (holdEndTime / totalCycleDuration) * 100;
+                const flipOffMidPercent = ((holdEndTime + flipDuration / 2) / totalCycleDuration) * 100;
+                const flipOffEndPercent = (flipOffEndTime / totalCycleDuration) * 100;
+                
+                keyframes += `  ${holdEndPercent}% { 
+                    fill: ${colors.dotOn}; 
+                    transform: rotateZ(90deg) rotateY(180deg);
+                }\n`;
+                keyframes += `  ${flipOffMidPercent}% { 
+                    fill: ${colors.dotOff}; 
+                    transform: rotateZ(45deg) rotateY(90deg);
+                }\n`;
+                keyframes += `  ${flipOffEndPercent}% { 
+                    fill: ${colors.dotOff}; 
+                    transform: rotateZ(0deg) rotateY(0deg);
+                }\n`;
+            }
+            
+            const scrollEndPercent = (totalScrollTime / totalCycleDuration) * 100;
+            keyframes += `  ${scrollEndPercent}% { fill: ${colors.dotOff}; }\n`;
+            keyframes += `  100% { fill: ${colors.dotOff}; }\n`;
+            keyframes += `}\n\n`;
+            
+            animationCSS += keyframes;
+            
+            // dot에 애니메이션 적용
+            animationCSS += `.waterfall-dot[data-x="${x}"][data-y="${y}"] {\n`;
+            animationCSS += `  animation: waterfall-${x}-${y} ${totalCycleDuration}s infinite ease-in-out;\n`;
             animationCSS += `  transform-box: content-box;\n`;
             animationCSS += `  transform-origin: center center;\n`;
             animationCSS += `}\n\n`;

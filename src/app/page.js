@@ -50,23 +50,23 @@ export default function Home() {
 
     const displayRef = useRef();
     
-    const flip = (r, c, flag) => {
-        displayRef.current.flip(r, c, flag);
-    }
+    // const flip = (r, c, flag) => {
+    //     displayRef.current.flip(r, c, flag);
+    // }
     
-    const resetFlip = useCallback((r, c) => {
-        flip(r, c, false);
-    }, []);
+    // const resetFlip = useCallback((r, c) => {
+    //     flip(r, c, false);
+    // }, []);
 
-    const interval = 300;
-    const randomFlip = useCallback(() => {
-        const rR = Math.floor(Math.random() * dotCount[0]);
-        const rC = Math.floor(Math.random() * dotCount[1]); 
+    // const interval = 300;
+    // const randomFlip = useCallback(() => {
+    //     const rR = Math.floor(Math.random() * dotCount[0]);
+    //     const rC = Math.floor(Math.random() * dotCount[1]); 
         
-        flip(rR, rC, true);
-        setTimeout(() => {resetFlip(rR, rC)}, interval);
-        setTimeout(() => {randomFlip()}, interval);
-    }, [dotCount, resetFlip]);
+    //     flip(rR, rC, true);
+    //     setTimeout(() => {resetFlip(rR, rC)}, interval);
+    //     setTimeout(() => {randomFlip()}, interval);
+    // }, [dotCount, resetFlip]);
 
     const refreshAll = (r = 0, c = 0) => {
         // 전체 false처리 해버리는 코드.
@@ -74,9 +74,9 @@ export default function Home() {
         setTimeout();
     }
 
-    useEffect(() => {
-        randomFlip();
-    }, [randomFlip])
+    // useEffect(() => {
+    //     randomFlip();
+    // }, [randomFlip])
 
     
     const handleResize = useCallback(() => {
@@ -112,10 +112,55 @@ export default function Home() {
                     display : 'flex',
                     flexDirection : 'column',
                     alignItems : 'center', 
+                    gap: '20px',
                     // margin : 30,
                 }}
             >
+                <h1 style={{ 
+                    color: 'white', 
+                    textAlign: 'center',
+                    fontSize: '28px'
+                }}>
+                    Flip-Dot Display
+                </h1>
+                <h3 style={{ 
+                    color: '#CCCCCC', 
+                    textAlign: 'center',
+                    fontSize: '20px'
+                }}>
+                    for your Github-Readme
+                </h3>
+
                 <button
+                    onClick={() => window.open('/example', '_blank')}
+                    style={{
+                        backgroundColor : '#007ACC',
+                        color : 'white',
+                        border : '1px solid #007ACC',
+                        padding : '6px 10px',
+                        borderRadius : '50px',
+                        cursor: 'pointer'
+                    }}
+                >
+                    HOW TO USE
+                </button>
+
+                    {/* Sequential Animation */}
+
+                <div style={{ marginBottom: '15px' }}>
+                    <img 
+                        src="/api/svg?text=Hello%20World&animationMode=sequential&style=dark&dotSize=18&spacing=2&speed=1.2" 
+                        alt="Hello World Flip-Dot Display - Sequential"
+                        style={{
+                            display: 'block',
+                            margin: '0 auto',
+                            border: '3px solid #444',
+                            borderRadius: '8px',
+                            backgroundColor: '#111'
+                        }}
+                    />
+                </div>
+                {/* <button
                     onClick={() => setFullScreenMode(!fullScreenMode)}
                     style={{
                         backgroundColor : 'black',
@@ -127,9 +172,9 @@ export default function Home() {
                     }}
                 >
                     fullscreen Mode
-                </button>
+                </button> */}
                 
-                <button
+                {/* <button
                     onClick={() => setAnimationMode(animationMode === 'BASIC' ? 'BREATHING' : 'BASIC')}
                     style={{
                         backgroundColor : animationMode === 'BREATHING' ? '#28a745' : '#6c757d',
@@ -141,24 +186,11 @@ export default function Home() {
                     }}
                 >
                     {animationMode} MODE
-                </button>
+                </button> */}
                 
-                <button
-                    onClick={() => window.open('/example', '_blank')}
-                    style={{
-                        backgroundColor : '#007ACC',
-                        color : 'white',
-                        border : '1px solid #007ACC',
-                        padding : '10px',
-                        borderRadius : '50px'
-                    }}
-                >
-                    SVG API 사용법
-                </button>
-                
-                <div style={{backgroundColor : '#111111', border : '15px solid', borderRadius : '10px'}}>
+                {/* <div style={{backgroundColor : '#111111', border : '15px solid', borderRadius : '10px'}}>
                     <DotDisplay ROW={dotCount[0]} COL={dotCount[1]} DOTSIZE={dotSize} animationMode={animationMode} ref={displayRef} />
-                </div>
+                </div> */}
             </div>
         </main>
     )
