@@ -37,7 +37,7 @@
 ## 🚀 새로운 SVG API 기능
 
 GitHub README.md에 직접 임베드할 수 있는 flip dot 이미지를 생성하는 API입니다.
-실제 flip-dot 하드웨어의 동작을 재현한 3가지 애니메이션 모드를 지원합니다.
+실제 flip-dot 하드웨어의 동작을 재현한 4가지 애니메이션 모드를 지원합니다.
 
 ### 기본 사용법
 ![BASIC](https://flipdots.vercel.app/api/svg?text=YOUR_TEXT&style=dark)
@@ -146,7 +146,6 @@ https://flipdots.vercel.app/api/svg?text=SEQUENTIAL&animationMode=sequential&sty
 ![Scroll Animation](https://flipdots.vercel.app/api/svg?text=HELLO_WORLD!&animationMode=scroll&style=modern&dotSize=16&spacing=1&v=1)
 ```markdown
 https://flipdots.vercel.app/api/svg?text=HELLO_WORLD!&animationMode=scroll&style=modern&dotSize=16&spacing=1
-```
 
 ### Waterfall Animation (폭포 애니메이션)
 텍스트가 위에서 아래로 떨어지는 애니메이션
@@ -340,7 +339,6 @@ https://flipdots.vercel.app/api/svg?text=SCORE:_100%25&style=retro&dotSize=18&sp
 ![Learning](https://flipdots.vercel.app/api/svg?text=LEARNING%0RUST&animationMode=waterfall&dotOn=ce422b&background=000000&dotSize=18&spacing=2&v=1)
 ```markdown
 ![Learning](https://flipdots.vercel.app/api/svg?text=LEARNING%0RUST&animationMode=waterfall&dotOn=ce422b&background=000000&dotSize=18&spacing=2)
-```
 
 ## 🛠️ 고급 사용법
 
@@ -386,7 +384,6 @@ https://flipdots.vercel.app/api/svg?text=RAINBOW&dotOn=ff0000,ff8000,ffff00,00ff
 
 ### 애니메이션 속도 조절
 속도 파라미터로 애니메이션의 빠르기를 조절할 수 있습니다:
-
 ```markdown
 <!-- 느린 애니메이션 -->
 &speed=0.5
@@ -399,7 +396,6 @@ https://flipdots.vercel.app/api/svg?text=RAINBOW&dotOn=ff0000,ff8000,ffff00,00ff
 
 <!-- 매우 빠른 애니메이션 -->
 &speed=3.0
-```
 
 ### 크기별 최적화
 용도에 따른 권장 크기 설정:
