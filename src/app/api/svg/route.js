@@ -12,6 +12,11 @@ export async function GET(request) {
     const dotSize = parseInt(searchParams.get('dotSize')) || 20;
     const spacing = parseInt(searchParams.get('spacing')) || 2;
     const animationMode = searchParams.get('animationMode') || 'static';
+    const speed = parseFloat(searchParams.get('speed')) || 1.0; // 기본값 1.0 (보통 속도)
+    
+    // 고정 매트릭스 크기 파라미터
+    const fixedRows = searchParams.get('row') ? parseInt(searchParams.get('row')) : null;
+    const fixedCols = searchParams.get('column') ? parseInt(searchParams.get('column')) : null;
     
     // 커스텀 색상 파라미터 (# 기호 자동 추가)
     const customColors = {
@@ -23,14 +28,20 @@ export async function GET(request) {
     // 텍스트를 dot 패턴으로 변환
     const textPattern = textToPattern(text.toUpperCase());
     
+    // 고정 크기가 지정된 경우 패턴을 자르거나 패딩
+    const finalPattern = fixedRows || fixedCols ? 
+        cropOrPadPattern(textPattern, fixedRows, fixedCols) : 
+        textPattern;
+    
     // SVG 생성
-    const svg = generateFlipDotSVG(textPattern, {
+    const svg = generateFlipDotSVG(finalPattern, {
         style,
         dotSize,
         spacing,
         customColors,
         animationMode,
-        text
+        text,
+        speed
     });
     
     return new NextResponse(svg, {
@@ -130,8 +141,32 @@ function textToPattern(text) {
     };
 }
 
+function cropOrPadPattern(pattern, fixedRows, fixedCols) {
+    // 기본값 설정: 지정되지 않은 경우 원본 크기 사용
+    const targetRows = fixedRows || pattern.height;
+    const targetCols = fixedCols || pattern.width;
+    
+    // 새로운 패턴 배열 생성 (모든 값을 0으로 초기화)
+    const newPattern = Array(targetRows).fill().map(() => Array(targetCols).fill(0));
+    
+    // 원본 패턴을 새 패턴에 복사 (범위를 벗어나는 부분은 자동으로 잘림)
+    for (let y = 0; y < Math.min(targetRows, pattern.height); y++) {
+        for (let x = 0; x < Math.min(targetCols, pattern.width); x++) {
+            if (y < pattern.data.length && x < pattern.data[y].length) {
+                newPattern[y][x] = pattern.data[y][x];
+            }
+        }
+    }
+    
+    return {
+        width: targetCols,
+        height: targetRows,
+        data: newPattern
+    };
+}
+
 function generateFlipDotSVG(pattern, options) {
-    const { dotSize, spacing, style, customColors, animationMode = 'static', text = '' } = options;
+    const { dotSize, spacing, style, customColors, animationMode = 'static', text = '', speed = 1.0 } = options;
     const dotRadius = dotSize / 2 - 1;
     const totalDotSize = dotSize + spacing;
     
@@ -220,7 +255,7 @@ function generateFlipDotSVG(pattern, options) {
         }
     }
     
-    const scrollAnimationCSS = animationMode === 'scroll' ? generateScrollAnimation(pattern, displayWidth, colors, text) : '';
+    const scrollAnimationCSS = animationMode === 'scroll' ? generateScrollAnimation(pattern, displayWidth, colors, text, speed) : '';
     
     return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${svgWidth}" height="${svgHeight}" viewBox="0 0 ${svgWidth} ${svgHeight}">
@@ -238,42 +273,70 @@ function generateFlipDotSVG(pattern, options) {
         }
         
         ${scrollAnimationCSS}
-        ` : `
-        /* 켜진 dot들만 애니메이션 적용 */
+        ` : animationMode === 'sequential' ? `
+        /* Sequential 모드: 순차적 반복 애니메이션 */
         .dot-on {
-            animation: sequentialFlip 0.5s ease-in-out forwards;
+            animation: sequentialFlip ${5 / speed}s ease-in-out infinite;
             transform-box: content-box;
             transform-origin: center center;
         }
         
-        /* 꺼진 dot들은 애니메이션 없이 정적 상태 */
         .dot-off {
             fill: ${colors.dotOff};
             opacity: 1;
             transform: none;
         }
         
-        /* 순차적 뒤집기 애니메이션 */
         @keyframes sequentialFlip {
+            0%, 100% {
+                fill: ${colors.dotOff};
+                transform: rotateZ(0deg) rotateY(0deg);
+                opacity: 1.0;
+            }
+            10%, 90% {
+                fill: ${colors.dotOff};
+                transform: rotateZ(45deg) rotateY(90deg);
+                opacity: 1;
+            }
+            20% {
+                fill: ${colors.dotOn};
+                transform: rotateZ(90deg) rotateY(180deg);
+                opacity: 1;
+            }
+            80% {
+                fill: ${colors.dotOn};
+                transform: rotateZ(90deg) rotateY(180deg);
+                opacity: 1;
+            }
+        }
+        ` : `
+        /* Static/Basic 모드: 한 번만 실행되는 애니메이션 */
+        .dot-on {
+            animation: staticFlip 0.8s ease-out forwards;
+            transform-box: content-box;
+            transform-origin: center center;
+        }
+        
+        .dot-off {
+            fill: ${colors.dotOff};
+            opacity: 1;
+            transform: none;
+        }
+        
+        @keyframes staticFlip {
             0% {
                 fill: ${colors.dotOff};
-                transform:         
-                    rotateZ(0deg)
-                    rotateY(0deg);
-                opacity: 1.0;
+                transform: rotateZ(0deg) rotateY(0deg);
+                opacity: 1;
             }
             50% {
                 fill: ${colors.dotOff};
-                transform: 
-                    rotateZ(45deg)
-                    rotateY(90deg);
+                transform: rotateZ(45deg) rotateY(90deg);
                 opacity: 1;
             }
             100% {
                 fill: ${colors.dotOn};
-                transform: 
-                    rotateZ(90deg)
-                    rotateY(180deg);
+                transform: rotateZ(90deg) rotateY(180deg);
                 opacity: 1;
             }
         }
@@ -343,14 +406,14 @@ function getStyleColors(style, customColors = {}) {
 }
 
 // 스크롤 애니메이션 CSS 생성
-function generateScrollAnimation(pattern, displayWidth, colors, text) {
+function generateScrollAnimation(pattern, displayWidth, colors, text, speed = 1.0) {
     const totalTextWidth = pattern.width;
     const scrollSteps = totalTextWidth + displayWidth; // 전체 스크롤 단계
-    const flipDuration = 0.3; // flip 애니메이션 시간
-    const holdDuration = 0.5; // 읽을 시간
-    const stepInterval = 0.3; // 각 스텝 간격 (동시 애니메이션을 위해)
+    const flipDuration = 0.3 / speed; // flip 애니메이션 시간 (speed 적용)
+    const holdDuration = 0.5 / speed; // 읽을 시간 (speed 적용)
+    const stepInterval = 0.3 / speed; // 각 스텝 간격 (speed 적용)
     const totalScrollTime = scrollSteps * stepInterval;
-    const pauseTime = 2; // 반복 전 대기 시간
+    const pauseTime = 2 / speed; // 반복 전 대기 시간 (speed 적용)
     const totalCycleDuration = totalScrollTime + pauseTime;
     
     let animationCSS = '';
