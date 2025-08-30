@@ -576,11 +576,11 @@ function generateScrollAnimation(pattern, displayWidth, colors, text, speed = 1.
             for (let step = 0; step < scrollSteps; step++) {
                 let textPosition;
                 if (direction === 'reverse') {
-                    // 오른쪽에서 왼쪽으로 스크롤 (기존)
-                    textPosition = step - displayWidth + x + 1;
-                } else {
-                    // 왼쪽에서 오른쪽으로 스크롤 (reverse)
+                    // 왼쪽에서 오른쪽으로 스크롤 (교환됨)
                     textPosition = totalTextWidth - 1 - (step - x);
+                } else {
+                    // 오른쪽에서 왼쪽으로 스크롤 (교환됨, 기존 normal)
+                    textPosition = step - displayWidth + x + 1;
                 }
                 if (textPosition >= 0 && textPosition < totalTextWidth) {
                     const shouldFlip = pattern.data[y] && pattern.data[y][textPosition] === 1;
@@ -695,11 +695,11 @@ function generateWaterfallAnimation(pattern, displayHeight, displayWidth, colors
             for (let step = 0; step < scrollSteps; step++) {
                 let textPosition;
                 if (direction === 'reverse') {
-                    // 아래에서 위로 스크롤 (reverse)
-                    textPosition = totalTextHeight - 1 - (step - y);
-                } else {
-                    // 위에서 아래로 스크롤 (normal)
+                    // 위에서 아래로 스크롤 (교환됨)
                     textPosition = step - displayHeight + y + 1;
+                } else {
+                    // 아래에서 위로 스크롤 (교환됨, 기존 normal)
+                    textPosition = totalTextHeight - 1 - (step - y);
                 }
                 if (textPosition >= 0 && textPosition < totalTextHeight && x < pattern.width) {
                     const shouldFlip = pattern.data[textPosition] && pattern.data[textPosition][x] === 1;

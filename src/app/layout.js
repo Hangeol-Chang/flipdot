@@ -1,5 +1,5 @@
 import Footer from '../../components/layout/footer'
-import Header from '../../components/layout/header'
+import Header from '../../components/layout/header'  
 import RecoilRootWrapper from '../../wrappers/RecoilRootWrapper'
 import './globals.css'
 import { Inter } from 'next/font/google'
