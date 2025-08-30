@@ -29,7 +29,7 @@
 
 <div align="center">
     
-![Flip Dot Display](https://flipdots.vercel.app/api/svg?text=FLIPDOT%0README&style=dark&dotSize=16&spacing=2&animationMode=scroll&justify=center&v=1)
+![Flip Dot Display](https://flipdots.vercel.app/api/svg?text=FLIPDOT_README&style=dark&dotSize=16&spacing=2&animationMode=scroll&justify=center&v=1)
 
 </div>
 
@@ -53,7 +53,7 @@ GitHub README.md에 직접 임베드할 수 있는 flip dot 이미지를 생성�
 실제 flip-dot 하드웨어의 동작을 재현합니다.
 
 ✨ **새로운 기능들**
-- 🔤 **여러 줄 텍스트**: `%0`으로 줄바꿈
+- 🔤 **여러 줄 텍스트**: `_`으로 줄바꿈
 - 📐 **정렬 기능**: 세로/가로 정렬 옵션
 - 🎨 **커스텀 패턴**: 직접 도트 패턴 설계
 - 🎬 **4가지 애니메이션**: static, sequential, scroll, waterfall
@@ -66,9 +66,9 @@ GitHub README.md에 직접 임베드할 수 있는 flip dot 이미지를 생성�
 ```
 
 ### 여러 줄 텍스트
-![Multi-line](https://flipdots.vercel.app/api/svg?text=HELLO%0WORLD&style=modern&dotSize=18&spacing=2&animationMode=sequential)
+![Multi-line](https://flipdots.vercel.app/api/svg?text=HELLO_WORLD&style=modern&dotSize=18&spacing=2&animationMode=sequential)
 ```markdown
-![Multi-line](https://flipdots.vercel.app/api/svg?text=HELLO%0WORLD&style=modern&dotSize=18&spacing=2&animationMode=sequential)
+![Multi-line](https://flipdots.vercel.app/api/svg?text=HELLO_WORLD&style=modern&dotSize=18&spacing=2&animationMode=sequential)
 ```
 
 ### 애니메이션
@@ -81,7 +81,7 @@ GitHub README.md에 직접 임베드할 수 있는 flip dot 이미지를 생성�
 
 | 파라미터 | 설명 | 기본값 | 예시 |
 |---------|------|--------|------|
-| **`text`** | 표시할 텍스트 (여러 줄: `%0`으로 구분) | `HELLO` | `HELLO%0WORLD` |
+| **`text`** | 표시할 텍스트 (여러 줄: `_`으로 구분) | `HELLO` | `HELLO_WORLD` |
 | **`customdots`** | 커스텀 도트 패턴 (1=켜짐, 0=꺼짐) | - | `10110,01001,10110` |
 | **`style`** | 스타일 테마 | `dark` | `light`, `retro`, `modern`, `dark` |
 | **`dotSize`** | 도트 크기 (px) | `20` | `10-40` |
@@ -131,24 +131,30 @@ GitHub README.md에 직접 임베드할 수 있는 flip dot 이미지를 생성�
 
 ## 📝 여러 줄 텍스트
 
-`%0`을 구분자로 사용하여 여러 줄 텍스트를 만들 수 있습니다. 각 줄 사이에는 1 dot 간격이 자동으로 추가됩니다.
+`_`을 구분자로 사용하여 여러 줄 텍스트를 만들 수 있습니다. 각 줄 사이에는 1 dot 간격이 자동으로 추가됩니다.
 
 ### 기본 여러 줄
-![Multi-line Basic](https://flipdots.vercel.app/api/svg?text=HELLO%0WORLD&style=dark&dotSize=18&spacing=2&v=2)
+![Multi-line Basic](https://flipdots.vercel.app/api/svg?text=HELLO_WORLD&style=dark&dotSize=18&spacing=2&v=2)
 ```markdown
-https://flipdots.vercel.app/api/svg?text=HELLO%0WORLD&style=dark&dotSize=18&spacing=2
+https://flipdots.vercel.app/api/svg?text=HELLO_WORLD&style=dark&dotSize=18&spacing=2
 ```
 
 ### 3줄 텍스트
-![Three Lines](https://flipdots.vercel.app/api/svg?text=LINE1%0LINE2%0LINE3&style=modern&dotSize=16&spacing=2&v=1)
+![Three Lines](https://flipdots.vercel.app/api/svg?text=LINE1_LINE2_LINE3&style=modern&dotSize=16&spacing=2&v=1)
+```
+https://flipdots.vercel.app/api/svg?text=LINE1_LINE2_LINE3&style=modern&dotSize=16&spacing=2
+```
 ```markdown
-https://flipdots.vercel.app/api/svg?text=LINE1%0LINE2%0LINE3&style=modern&dotSize=16&spacing=2
+https://flipdots.vercel.app/api/svg?text=LINE1_LINE2_LINE3&style=modern&dotSize=16&spacing=2
 ```
 
 ### 여러 줄 + 애니메이션
-![Multi-line Animation](https://flipdots.vercel.app/api/svg?text=GITHUB%0PROFILE%0VISITOR&animationMode=sequential&style=retro&dotSize=16&spacing=2&v=1)
+![Multi-line Animation](https://flipdots.vercel.app/api/svg?text=GITHUB_PROFILE_VISITOR&animationMode=sequential&style=retro&dotSize=16&spacing=2&v=1)
+```
+https://flipdots.vercel.app/api/svg?text=GITHUB_PROFILE_VISITOR&animationMode=sequential&style=retro&dotSize=16&spacing=2
+```
 ```markdown
-https://flipdots.vercel.app/api/svg?text=GITHUB%0PROFILE%0VISITOR&animationMode=sequential&style=retro&dotSize=16&spacing=2
+https://flipdots.vercel.app/api/svg?text=GITHUB_PROFILE_VISITOR&animationMode=sequential&style=retro&dotSize=16&spacing=2
 ```
 
 ## 📐 크기 제한 및 정렬
@@ -168,9 +174,9 @@ https://flipdots.vercel.app/api/svg?text=CENTER&row=12&column=30&align=center&ju
 ```
 
 ### 여러 줄 정렬
-![Multi-line Align](https://flipdots.vercel.app/api/svg?text=ALIIGN%0_BOTTOM%0RIGHT&row=25&column=45&align=end&justify=end&style=retro&dotSize=16&spacing=2&v=1)
+![Multi-line Align](https://flipdots.vercel.app/api/svg?text=ALIGN_BOTTOM_RIGHT&row=25&column=45&align=end&justify=end&style=retro&dotSize=16&spacing=2&v=1)
 ```markdown
-https://flipdots.vercel.app/api/svg?text=ALIIGN%0_BOTTOM%0RIGHT&row=25&column=45&align=end&justify=end&style=retro&dotSize=16&spacing=2&v=1
+https://flipdots.vercel.app/api/svg?text=ALIGN_BOTTOM_RIGHT&row=25&column=45&align=end&justify=end&style=retro&dotSize=16&spacing=2&v=1
 ```
 
 ## 🎨 커스텀 도트 패턴
@@ -219,43 +225,43 @@ https://flipdots.vercel.app/api/svg?customdots=10110,01001,10110&animationMode=s
 ### GitHub 프로필 꾸미기
 
 #### 방문자 환영 메시지
-![Welcome Message](https://flipdots.vercel.app/api/svg?text=WELCOME%0TO%0MY%0GITHUB&animationMode=sequential&style=dark&dotSize=16&spacing=2&justify=center&v=1)
+![Welcome Message](https://flipdots.vercel.app/api/svg?text=WELCOME_TO_MY_GITHUB&animationMode=sequential&style=dark&dotSize=16&spacing=2&justify=center&v=1)
 ```markdown
-![Welcome](https://flipdots.vercel.app/api/svg?text=WELCOME%0TO%0MY%0GITHUB&animationMode=sequential&style=dark&dotSize=16&spacing=2&justify=center)
+![Welcome](https://flipdots.vercel.app/api/svg?text=WELCOME_TO_MY_GITHUB&animationMode=sequential&style=dark&dotSize=16&spacing=2&justify=center)
 ```
 
 #### 현재 상태 표시
-![Current Status](https://flipdots.vercel.app/api/svg?text=CURRENTLY%0CODING&animationMode=scroll&style=modern&dotSize=18&spacing=2&v=1&speed=3)
+![Current Status](https://flipdots.vercel.app/api/svg?text=CURRENTLY_CODING&animationMode=scroll&style=modern&dotSize=18&spacing=2&v=1&speed=3)
 ```markdown
-![Status](https://flipdots.vercel.app/api/svg?text=CURRENTLY%0CODING&animationMode=scroll&style=modern&dotSize=18&spacing=2&speed=3)
+![Status](https://flipdots.vercel.app/api/svg?text=CURRENTLY_CODING&animationMode=scroll&style=modern&dotSize=18&spacing=2&speed=3)
 ```
 
 ### 프로젝트 README 헤더
 
 #### 프로젝트 제목
-![Project Title](https://flipdots.vercel.app/api/svg?text=MY_AWESOME%0PROJECT&animationMode=waterfall&style=modern&dotSize=20&spacing=2&justify=center&v=1)
+![Project Title](https://flipdots.vercel.app/api/svg?text=MY+AWESOME_PROJECT&animationMode=waterfall&style=modern&dotSize=20&spacing=2&justify=center&v=1)
 ```markdown
-![Project](https://flipdots.vercel.app/api/svg?text=MY_AWESOME%0PROJECT&animationMode=waterfall&style=modern&dotSize=20&spacing=2&justify=center)
+![Project](https://flipdots.vercel.app/api/svg?text=MY+AWESOME_PROJECT&animationMode=waterfall&style=modern&dotSize=20&spacing=2&justify=center)
 ```
 
 ### 상태 배지 스타일
 
 #### 빌드 상태
-![Build Success](https://flipdots.vercel.app/api/svg?text=BUILD%0PASSING&dotOn=00ff00&background=000000&dotSize=14&spacing=1&v=1)
-![Build Failed](https://flipdots.vercel.app/api/svg?text=BUILD%0FAILED&dotOn=ff0000&background=000000&dotSize=14&spacing=1&v=1)
+![Build Success](https://flipdots.vercel.app/api/svg?text=BUILD_PASSING&dotOn=00ff00&background=000000&dotSize=14&spacing=1&v=1)
+![Build Failed](https://flipdots.vercel.app/api/svg?text=BUILD_FAILED&dotOn=ff0000&background=000000&dotSize=14&spacing=1&v=1)
 ```markdown
-![Build Status](https://flipdots.vercel.app/api/svg?text=BUILD%0PASSING&dotOn=00ff00&background=000000&dotSize=14&spacing=1)
-![Build Failed](https://flipdots.vercel.app/api/svg?text=BUILD%0FAILED&dotOn=ff0000&background=000000&dotSize=14&spacing=1)
+![Build Status](https://flipdots.vercel.app/api/svg?text=BUILD_PASSING&dotOn=00ff00&background=000000&dotSize=14&spacing=1)
+![Build Failed](https://flipdots.vercel.app/api/svg?text=BUILD_FAILED&dotOn=ff0000&background=000000&dotSize=14&spacing=1)
 ```
 
 #### 버전 정보
-![Version](https://flipdots.vercel.app/api/svg?text=VERSION%0V2%2E1%2E0&style=modern&dotSize=16&spacing=2&v=1)
+![Version](https://flipdots.vercel.app/api/svg?text=VERSION_V2%2E1%2E0&style=modern&dotSize=16&spacing=2&v=1)
 ```markdown
-![Version](https://flipdots.vercel.app/api/svg?text=VERSION%0V2.1.0&style=modern&dotSize=16&spacing=2)
+![Version](https://flipdots.vercel.app/api/svg?text=VERSION_V2.1.0&style=modern&dotSize=16&spacing=2)
 ```
 
 #### 완료율 표시
-![Progress](https://flipdots.vercel.app/api/svg?text=PROGRESS%095%25&dotOn=00ff00,ffff00,ff8000&style=dark&dotSize=16&spacing=2&v=1)
+![Progress](https://flipdots.vercel.app/api/svg?text=PROGRESS_95%25&dotOn=00ff00,ffff00,ff8000&style=dark&dotSize=16&spacing=2&v=1)
 ```markdown
 ![Progress](https://flipdots.vercel.app/api/svg?text=PROGRESS%095%25&dotOn=00ff00,ffff00,ff8000&style=dark&dotSize=16&spacing=2)
 ```

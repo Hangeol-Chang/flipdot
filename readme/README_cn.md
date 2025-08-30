@@ -29,7 +29,7 @@
 
 <div align="center">
     
-![Flip Dot Display](https://flipdots.vercel.app/api/svg?text=FLIPDOT%0README&style=dark&dotSize=16&spacing=2&animationMode=scroll&justify=center&v=1)
+![Flip Dot Display](https://flipdots.vercel.app/api/svg?text=FLIPDOT_README&style=dark&dotSize=16&spacing=2&animationMode=scroll&justify=center&v=1)
 
 </div>
 
@@ -53,7 +53,7 @@
 再现真实flip-dot硬件的操作。
 
 ✨ **新功能**
-- 🔤 **多行文本**: 用`%0`换行
+- 🔤 **多行文本**: 用`_`换行
 - 📐 **对齐选项**: 垂直/水平对齐选项
 - 🎨 **自定义图案**: 设计您自己的点阵图案
 - 🎬 **4种动画模式**: static、sequential、scroll、waterfall
@@ -66,9 +66,9 @@
 ```
 
 ### 多行文本
-![Multi-line](https://flipdots.vercel.app/api/svg?text=HELLO%0WORLD&style=modern&dotSize=18&spacing=2&animationMode=sequential)
+![Multi-line](https://flipdots.vercel.app/api/svg?text=HELLO_WORLD&style=modern&dotSize=18&spacing=2&animationMode=sequential)
 ```markdown
-![Multi-line](https://flipdots.vercel.app/api/svg?text=HELLO%0WORLD&style=modern&dotSize=18&spacing=2&animationMode=sequential)
+![Multi-line](https://flipdots.vercel.app/api/svg?text=HELLO_WORLD&style=modern&dotSize=18&spacing=2&animationMode=sequential)
 ```
 
 ### 动画
@@ -81,7 +81,7 @@
 
 | 参数 | 描述 | 默认值 | 示例 |
 |------|------|--------|------|
-| **`text`** | 要显示的文本（多行：用`%0`分隔） | `HELLO` | `HELLO%0WORLD` |
+| **`text`** | 要显示的文本（多行：用`_`分隔） | `HELLO` | `HELLO_WORLD` |
 | **`customdots`** | 自定义点阵图案（1=开，0=关） | - | `10110,01001,10110` |
 | **`style`** | 样式主题 | `dark` | `light`, `retro`, `modern`, `dark` |
 | **`dotSize`** | 点大小（px） | `20` | `10-40` |
@@ -131,16 +131,16 @@
 
 ## 📝 多行文本
 
-使用`%0`作为分隔符创建多行文本。每行之间会自动添加1个点的间距。
+使用`_`作为分隔符创建多行文本。每行之间会自动添加1个点的间距。
 
 ### 基本多行
-![Multi-line Basic](https://flipdots.vercel.app/api/svg?text=HELLO%0WORLD&style=dark&dotSize=18&spacing=2&v=2)
+![Multi-line Basic](https://flipdots.vercel.app/api/svg?text=HELLO_WORLD&style=dark&dotSize=18&spacing=2&v=2)
 
 ### 3行文本
-![Three Lines](https://flipdots.vercel.app/api/svg?text=LINE1%0LINE2%0LINE3&style=modern&dotSize=16&spacing=2&v=1)
+![Three Lines](https://flipdots.vercel.app/api/svg?text=LINE1_LINE2_LINE3&style=modern&dotSize=16&spacing=2&v=1)
 
 ### 多行 + 动画
-![Multi-line Animation](https://flipdots.vercel.app/api/svg?text=GITHUB%0PROFILE%0VISITOR&animationMode=sequential&style=retro&dotSize=16&spacing=2&v=1)
+![Multi-line Animation](https://flipdots.vercel.app/api/svg?text=GITHUB_PROFILE_VISITOR&animationMode=sequential&style=retro&dotSize=16&spacing=2&v=1)
 
 ## 📐 尺寸限制和对齐
 
@@ -153,7 +153,7 @@
 ![Center Align](https://flipdots.vercel.app/api/svg?text=CENTER&row=12&column=45&align=center&justify=center&style=modern&dotSize=18&spacing=2&animationMode=sequential&v=1)
 
 ### 多行对齐
-![Multi-line Align](https://flipdots.vercel.app/api/svg?text=ALIGN%0_BOTTOM%0RIGHT&row=25&column=45&align=end&justify=end&style=retro&dotSize=16&spacing=2&v=1)
+![Multi-line Align](https://flipdots.vercel.app/api/svg?text=ALIGN_BOTTOM_RIGHT&row=25&column=45&align=end&justify=end&style=retro&dotSize=16&spacing=2&v=1)
 
 ## 🎨 自定义点阵图案
 
@@ -189,27 +189,27 @@
 ### GitHub个人资料装饰
 
 #### 访客欢迎信息
-![Welcome Message](https://flipdots.vercel.app/api/svg?text=WELCOME%0TO%0MY%0GITHUB&animationMode=sequential&style=dark&dotSize=16&spacing=2&justify=center&v=1)
+![Welcome Message](https://flipdots.vercel.app/api/svg?text=WELCOME_TO_MY_GITHUB&animationMode=sequential&style=dark&dotSize=16&spacing=2&justify=center&v=1)
 
 #### 当前状态显示
-![Current Status](https://flipdots.vercel.app/api/svg?text=CURRENTLY%0CODING&animationMode=scroll&style=modern&dotSize=18&spacing=2&v=1&speed=3)
+![Current Status](https://flipdots.vercel.app/api/svg?text=CURRENTLY_CODING&animationMode=scroll&style=modern&dotSize=18&spacing=2&v=1&speed=3)
 
 ### 项目README标题
 
 #### 项目标题
-![Project Title](https://flipdots.vercel.app/api/svg?text=MY_AWESOME%0PROJECT&animationMode=waterfall&style=modern&dotSize=20&spacing=2&justify=center&v=1)
+![Project Title](https://flipdots.vercel.app/api/svg?text=MY+AWESOME_PROJECT&animationMode=waterfall&style=modern&dotSize=20&spacing=2&justify=center&v=1)
 
 ### 状态徽章样式
 
 #### 构建状态
-![Build Success](https://flipdots.vercel.app/api/svg?text=BUILD%0PASSING&dotOn=00ff00&background=000000&dotSize=14&spacing=1&v=1)
-![Build Failed](https://flipdots.vercel.app/api/svg?text=BUILD%0FAILED&dotOn=ff0000&background=000000&dotSize=14&spacing=1&v=1)
+![Build Success](https://flipdots.vercel.app/api/svg?text=BUILD_PASSING&dotOn=00ff00&background=000000&dotSize=14&spacing=1&v=1)
+![Build Failed](https://flipdots.vercel.app/api/svg?text=BUILD_FAILED&dotOn=ff0000&background=000000&dotSize=14&spacing=1&v=1)
 
 #### 版本信息
-![Version](https://flipdots.vercel.app/api/svg?text=VERSION%0V2%2E1%2E0&style=modern&dotSize=16&spacing=2&v=1)
+![Version](https://flipdots.vercel.app/api/svg?text=VERSION_V2%2E1%2E0&style=modern&dotSize=16&spacing=2&v=1)
 
 #### 进度显示
-![Progress](https://flipdots.vercel.app/api/svg?text=PROGRESS%095%25&dotOn=00ff00,ffff00,ff8000&style=dark&dotSize=16&spacing=2&v=1)
+![Progress](https://flipdots.vercel.app/api/svg?text=PROGRESS_95%25&dotOn=00ff00,ffff00,ff8000&style=dark&dotSize=16&spacing=2&v=1)
 
 ## 🛠️ 高级用法
 
@@ -293,7 +293,7 @@ text=VERY_LONG_COMPLEX_TEXT_WITH_MANY_CHARACTERS  （慢）
 - **数字**: 0-9
 - **特殊字符**: `! ? . , : ; - + = * / \ ( ) [ ] @ # $ % &`
 - **空格**: 空格，下划线(_)
-- **多行**: %0分隔符
+- **多行**: _分隔符
 
 ### 动画特性
 - **Sequential**: 对角线顺序的顺序动画（0.08秒间隔）
@@ -386,7 +386,7 @@ GET https://flipdots.vercel.app/api/svg
 
 **🎉 用flip-dot让您的GitHub README更精彩！🎉**
 
-[![Flip Dot Example](https://flipdots.vercel.app/api/svg?text=MADE_WITH%0_FLIP_DOT_&animationMode=sequential&style=retro&dotSize=16&spacing=2&justify=center&v=1)](https://flipdots.vercel.app/example)
+[![Flip Dot Example](https://flipdots.vercel.app/api/svg?text=MADE+WITH_FLIP_DOT_&animationMode=sequential&style=retro&dotSize=16&spacing=2&justify=center&v=1)](https://flipdots.vercel.app/example)
 
 欢迎随时提交bug报告、想法和pull request。
 <br>
