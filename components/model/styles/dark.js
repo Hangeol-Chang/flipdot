@@ -7,7 +7,7 @@ const dark = () => {
         border: '#1A1A1A',
         shadow: '#000000',
         dotOn: '#FFFFFF',
-        dotOff: '#0F0F0F'
+        dotOff: '#222222'
     };
 }
 
