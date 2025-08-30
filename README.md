@@ -20,6 +20,7 @@
 <div align="center">
     
 ![Flip Dot Display](https://flipdots.vercel.app/api/svg?text=GITHUB%20README&style=dark&dotSize=16&spacing=2&animationMode=scroll&v=1)
+![Flip Dot Display](https://flipdots.vercel.app/api/svg?text=GITHUB%20README&style=dark&dotSize=16&spacing=2&animationMode=scroll&v=1)
 
 </div>
 
@@ -41,13 +42,17 @@ GitHub README.md에 직접 임베드할 수 있는 flip dot 이미지를 생성�
 
 ### 기본 사용법
 ![BASIC](https://flipdots.vercel.app/api/svg?text=YOUR_TEXT&style=dark)
+![BASIC](https://flipdots.vercel.app/api/svg?text=YOUR_TEXT&style=dark)
 ```markdown
+https://flipdots.vercel.app/api/svg?text=YOUR_TEXT&style=dark
 https://flipdots.vercel.app/api/svg?text=YOUR_TEXT&style=dark
 ```
 
 ### 애니메이션 사용법
 ![SCROLL_EX1](https://flipdots.vercel.app/api/svg?text=HELLO%20WORLD&animationMode=scroll&style=retro)
+![SCROLL_EX1](https://flipdots.vercel.app/api/svg?text=HELLO%20WORLD&animationMode=scroll&style=retro)
 ```markdown
+https://flipdots.vercel.app/api/svg?text=HELLO%20WORLD&animationMode=scroll&style=retro
 https://flipdots.vercel.app/api/svg?text=HELLO%20WORLD&animationMode=scroll&style=retro
 ```
 
@@ -97,7 +102,19 @@ https://flipdots.vercel.app/api/svg?text=HELLO%20WORLD&animationMode=scroll&styl
 ```markdown
 https://flipdots.vercel.app/api/svg?text=LIGHT&style=light&dotSize=20&spacing=2
 ```
+![Light Style](https://flipdots.vercel.app/api/svg?text=LIGHT&style=light&dotSize=20&spacing=2&v=1)
+```markdown
+https://flipdots.vercel.app/api/svg?text=LIGHT&style=light&dotSize=20&spacing=2
+```
 
+![Retro Style](https://flipdots.vercel.app/api/svg?text=RETRO&style=retro&dotSize=20&spacing=2&v=1)
+```markdown
+https://flipdots.vercel.app/api/svg?text=RETRO&style=retro&dotSize=20&spacing=2
+```
+![Modern Style](https://flipdots.vercel.app/api/svg?text=MODERN&style=modern&dotSize=20&spacing=2&v=1)
+```markdown
+https://flipdots.vercel.app/api/svg?text=MODERN&style=modern&dotSize=20&spacing=2
+```
 ![Retro Style](https://flipdots.vercel.app/api/svg?text=RETRO&style=retro&dotSize=20&spacing=2&v=1)
 ```markdown
 https://flipdots.vercel.app/api/svg?text=RETRO&style=retro&dotSize=20&spacing=2
@@ -112,9 +129,18 @@ https://flipdots.vercel.app/api/svg?text=MODERN&style=modern&dotSize=20&spacing=
 https://flipdots.vercel.app/api/svg?text=DARK&style=dark&dotSize=20&spacing=2
 ```
 
+![Dark Style](https://flipdots.vercel.app/api/svg?text=DARK&style=dark&dotSize=20&spacing=2&v=1)
+```markdown
+https://flipdots.vercel.app/api/svg?text=DARK&style=dark&dotSize=20&spacing=2
+```
+
 
 ### 커스텀 색상
 
+![Custom Red](https://flipdots.vercel.app/api/svg?text=CUSTOM&dotOn=ff0000&background=000000&dotSize=20&spacing=2&v=1)
+```markdown
+https://flipdots.vercel.app/api/svg?text=CUSTOM&dotOn=ff0000&background=000000&dotSize=20&spacing=2
+```
 ![Custom Red](https://flipdots.vercel.app/api/svg?text=CUSTOM&dotOn=ff0000&background=000000&dotSize=20&spacing=2&v=1)
 ```markdown
 https://flipdots.vercel.app/api/svg?text=CUSTOM&dotOn=ff0000&background=000000&dotSize=20&spacing=2
@@ -124,7 +150,15 @@ https://flipdots.vercel.app/api/svg?text=CUSTOM&dotOn=ff0000&background=000000&d
 ```markdown
 https://flipdots.vercel.app/api/svg?text=RAINBOW&dotOn=ff0000,ff8000,ffff00,00ff00,0000ff,8000ff&background=000000&dotSize=18&spacing=2
 ```
+![Rainbow Gradient](https://flipdots.vercel.app/api/svg?text=RAINBOW&dotOn=ff0000,ff8000,ffff00,00ff00,0000ff,8000ff&background=000000&dotSize=18&spacing=2&v=1)
+```markdown
+https://flipdots.vercel.app/api/svg?text=RAINBOW&dotOn=ff0000,ff8000,ffff00,00ff00,0000ff,8000ff&background=000000&dotSize=18&spacing=2
+```
 
+![Purple Theme](https://flipdots.vercel.app/api/svg?text=PURPLE&dotOn=ff00ff&dotOff=330033&background=1a0a1a&dotSize=22&spacing=2&v=1)
+```markdown
+https://flipdots.vercel.app/api/svg?text=PURPLE&dotOn=ff00ff&dotOff=330033&background=1a0a1a&dotSize=22&spacing=2
+```
 ![Purple Theme](https://flipdots.vercel.app/api/svg?text=PURPLE&dotOn=ff00ff&dotOff=330033&background=1a0a1a&dotSize=22&spacing=2&v=1)
 ```markdown
 https://flipdots.vercel.app/api/svg?text=PURPLE&dotOn=ff00ff&dotOff=330033&background=1a0a1a&dotSize=22&spacing=2
@@ -136,7 +170,9 @@ https://flipdots.vercel.app/api/svg?text=PURPLE&dotOn=ff00ff&dotOff=330033&backg
 실제 flip-dot처럼 각 dot가 순차적으로 뒤집히는 애니메이션
 
 ![Sequential Animation](https://flipdots.vercel.app/api/svg?text=SEQUENTIAL&animationMode=sequential&style=retro&dotSize=18&spacing=2&v=1)
+![Sequential Animation](https://flipdots.vercel.app/api/svg?text=SEQUENTIAL&animationMode=sequential&style=retro&dotSize=18&spacing=2&v=1)
 ```markdown
+https://flipdots.vercel.app/api/svg?text=SEQUENTIAL&animationMode=sequential&style=retro&dotSize=18&spacing=2
 https://flipdots.vercel.app/api/svg?text=SEQUENTIAL&animationMode=sequential&style=retro&dotSize=18&spacing=2
 ```
 
@@ -244,14 +280,24 @@ https://flipdots.vercel.app/api/svg?customdots=10110,01001,10110&animationMode=s
 ```markdown
 https://flipdots.vercel.app/api/svg?text=HELLO_WORLD!&style=dark&dotSize=18&spacing=2
 ```
+![Special Characters](https://flipdots.vercel.app/api/svg?text=HELLO_WORLD!&style=dark&dotSize=18&spacing=2&v=1)
+```markdown
+https://flipdots.vercel.app/api/svg?text=HELLO_WORLD!&style=dark&dotSize=18&spacing=2
+```
 
+![URL Example](https://flipdots.vercel.app/api/svg?text=GITHUB.COM/USER&style=modern&dotSize=16&spacing=2&v=1)
+```markdown
+https://flipdots.vercel.app/api/svg?text=GITHUB.COM/USER&style=modern&dotSize=16&spacing=2
+```
 ![URL Example](https://flipdots.vercel.app/api/svg?text=GITHUB.COM/USER&style=modern&dotSize=16&spacing=2&v=1)
 ```markdown
 https://flipdots.vercel.app/api/svg?text=GITHUB.COM/USER&style=modern&dotSize=16&spacing=2
 ```
 
 ![Score Example](https://flipdots.vercel.app/api/svg?text=SCORE:_100%25&style=retro&dotSize=18&spacing=2&v=1)
+![Score Example](https://flipdots.vercel.app/api/svg?text=SCORE:_100%25&style=retro&dotSize=18&spacing=2&v=1)
 ```markdown
+https://flipdots.vercel.app/api/svg?text=SCORE:_100%25&style=retro&dotSize=18&spacing=2
 https://flipdots.vercel.app/api/svg?text=SCORE:_100%25&style=retro&dotSize=18&spacing=2
 ```
 
