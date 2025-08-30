@@ -2,7 +2,13 @@
 
 ## 🌐 Other Languages
 - [🇰🇷 한국어 (Korean)](./readme/README_kr.md)
-- [🇯🇵 日本語 (Japanese)](./readme/README_jp.md)
+- [🇯🇵 日本語 (Japanese)](./readme/README_jp![Multi-line Basic](https://flipdots.vercel![Multi-line Align](https://flipdots.vercel.app/api/svg?text=ALIGN%0A_BOTTOM%0ARIGHT&row=25&column=45&align=end&justify=end&style=retro&dotSize=16&spacing=2&v=1)
+```
+https://flipdots.vercel.app/api/svg?text=ALIGN%0A_BOTTOM%0ARIGHT&row=25&column=45&align=end&justify=end&style=retro&dotSize=16&spacing=2
+```app/api/svg?text=HELLO%0AWORLD&style=dark&dotSize=18&spacing=2&v=2)
+```
+https://flipdots.vercel.app/api/svg?text=HELLO%0AWORLD&style=dark&dotSize=18&spacing=2
+```md)
 - [🇨🇳 中文 (Chinese)](./readme/README_cn.md)
 
 <div align="center">
@@ -29,7 +35,7 @@
 
 <div align="center">
     
-![Flip Dot Display](https://flipdots.vercel.app/api/svg?text=FLIPDOT%0README&style=dark&dotSize=16&spacing=2&animationMode=scroll&justify=center&v=1)
+![Flip Dot Display](https://flipdots.vercel.app/api/svg?text=FLIPDOT%0AREADME&style=dark&dotSize=16&spacing=2&animationMode=scroll&justify=center&v=1)
 
 </div>
 
@@ -53,7 +59,7 @@ An API that generates flip dot images that can be embedded directly into GitHub 
 Reproduces the operation of actual flip-dot hardware.
 
 ✨ **New Features**
-- 🔤 **Multi-line Text**: Line breaks with `%0`
+- 🔤 **Multi-line Text**: Line breaks with `%0A`
 - 📐 **Alignment Options**: Vertical/horizontal alignment options
 - 🎨 **Custom Patterns**: Design your own dot patterns
 - 🎬 **4 Animation Modes**: static, sequential, scroll, waterfall
@@ -66,9 +72,9 @@ Reproduces the operation of actual flip-dot hardware.
 ```
 
 ### Multi-line Text
-![Multi-line](https://flipdots.vercel.app/api/svg?text=HELLO%0WORLD&style=modern&dotSize=18&spacing=2&animationMode=sequential)
+![Multi-line](https://flipdots.vercel.app/api/svg?text=HELLO%0AWORLD&style=modern&dotSize=18&spacing=2&animationMode=sequential&v=2)
 ```markdown
-![Multi-line](https://flipdots.vercel.app/api/svg?text=HELLO%0WORLD&style=modern&dotSize=18&spacing=2&animationMode=sequential)
+![Multi-line](https://flipdots.vercel.app/api/svg?text=HELLO%0AWORLD&style=modern&dotSize=18&spacing=2&animationMode=sequential)
 ```
 
 ### Animation
@@ -81,7 +87,7 @@ Reproduces the operation of actual flip-dot hardware.
 
 | Parameter | Description | Default | Example |
 |-----------|-------------|---------|---------|
-| **`text`** | Text to display (multi-line: separated by `%0`) | `HELLO` | `HELLO%0WORLD` |
+| **`text`** | Text to display (multi-line: separated by `%0A`) | `HELLO` | `HELLO%0AWORLD` |
 | **`customdots`** | Custom dot pattern (1=on, 0=off) | - | `10110,01001,10110` |
 | **`style`** | Style theme | `dark` | `light`, `retro`, `modern`, `dark` |
 | **`dotSize`** | Dot size (px) | `20` | `10-40` |
@@ -131,7 +137,7 @@ Text falls from top to bottom
 
 ## 📝 Multi-line Text
 
-Use `%0` as a delimiter to create multi-line text. A 1-dot spacing is automatically added between each line.
+Use `%0A` as a delimiter to create multi-line text. A 1-dot spacing is automatically added between each line.
 
 ### Basic Multi-line
 ![Multi-line Basic](https://flipdots.vercel.app/api/svg?text=HELLO%0WORLD&style=dark&dotSize=18&spacing=2&v=2)
@@ -140,13 +146,19 @@ https://flipdots.vercel.app/api/svg?text=HELLO%0WORLD&style=dark&dotSize=18&spac
 ```
 
 ### 3-line Text
-![Three Lines](https://flipdots.vercel.app/api/svg?text=LINE1%0LINE2%0LINE3&style=modern&dotSize=16&spacing=2&v=1)
+![Three Lines](https://flipdots.vercel.app/api/svg?text=LINE1%0ALINE2%0ALINE3&style=modern&dotSize=16&spacing=2&v=1)
+```
+https://flipdots.vercel.app/api/svg?text=LINE1%0ALINE2%0ALINE3&style=modern&dotSize=16&spacing=2
+```
 ```markdown
 https://flipdots.vercel.app/api/svg?text=LINE1%0LINE2%0LINE3&style=modern&dotSize=16&spacing=2
 ```
 
 ### Multi-line + Animation
-![Multi-line Animation](https://flipdots.vercel.app/api/svg?text=GITHUB%0PROFILE%0VISITOR&animationMode=sequential&style=retro&dotSize=16&spacing=2&v=1)
+![Multi-line Animation](https://flipdots.vercel.app/api/svg?text=GITHUB%0APROFILE%0AVISITOR&animationMode=sequential&style=retro&dotSize=16&spacing=2&v=1)
+```
+https://flipdots.vercel.app/api/svg?text=GITHUB%0APROFILE%0AVISITOR&animationMode=sequential&style=retro&dotSize=16&spacing=2
+```
 ```markdown
 https://flipdots.vercel.app/api/svg?text=GITHUB%0PROFILE%0VISITOR&animationMode=sequential&style=retro&dotSize=16&spacing=2
 ```
