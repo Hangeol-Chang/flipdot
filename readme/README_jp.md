@@ -29,7 +29,7 @@
 
 <div align="center">
     
-![Flip Dot Display](https://flipdots.vercel.app/api/svg?text=FLIPDOT%0README&style=dark&dotSize=16&spacing=2&animationMode=scroll&justify=center&v=1)
+![Flip Dot Display](https://flipdots.vercel.app/api/svg?text=FLIPDOT%0AREADME&style=dark&dotSize=16&spacing=2&animationMode=scroll&justify=center&v=1)
 
 </div>
 
@@ -53,7 +53,7 @@ GitHub README.mdに直接埋め込むことができるflip dotイメージを�
 実際のflip-dotハードウェアの動作を再現します。
 
 ✨ **新機能**
-- 🔤 **複数行テキスト**: `%0`で改行
+- 🔤 **複数行テキスト**: `%0A`で改行
 - 📐 **配置オプション**: 縦/横配置オプション
 - 🎨 **カスタムパターン**: 独自のドットパターンを設計
 - 🎬 **4つのアニメーションモード**: static、sequential、scroll、waterfall
@@ -66,9 +66,9 @@ GitHub README.mdに直接埋め込むことができるflip dotイメージを�
 ```
 
 ### 複数行テキスト
-![Multi-line](https://flipdots.vercel.app/api/svg?text=HELLO%0WORLD&style=modern&dotSize=18&spacing=2&animationMode=sequential)
+![Multi-line](https://flipdots.vercel.app/api/svg?text=HELLO%0AWORLD&style=modern&dotSize=18&spacing=2&animationMode=sequential)
 ```markdown
-![Multi-line](https://flipdots.vercel.app/api/svg?text=HELLO%0WORLD&style=modern&dotSize=18&spacing=2&animationMode=sequential)
+![Multi-line](https://flipdots.vercel.app/api/svg?text=HELLO%0AWORLD&style=modern&dotSize=18&spacing=2&animationMode=sequential)
 ```
 
 ### アニメーション
@@ -81,7 +81,7 @@ GitHub README.mdに直接埋め込むことができるflip dotイメージを�
 
 | パラメータ | 説明 | デフォルト | 例 |
 |-----------|------|----------|---|
-| **`text`** | 表示するテキスト（複数行：`%0`で区切り） | `HELLO` | `HELLO%0WORLD` |
+| **`text`** | 表示するテキスト（複数行：`%0A`で区切り） | `HELLO` | `HELLO%0AWORLD` |
 | **`customdots`** | カスタムドットパターン（1=オン、0=オフ） | - | `10110,01001,10110` |
 | **`style`** | スタイルテーマ | `dark` | `light`, `retro`, `modern`, `dark` |
 | **`dotSize`** | ドットサイズ（px） | `20` | `10-40` |
@@ -131,16 +131,16 @@ GitHub README.mdに直接埋め込むことができるflip dotイメージを�
 
 ## 📝 複数行テキスト
 
-`%0`を区切り文字として使用して複数行テキストを作成できます。各行の間には1ドットの間隔が自動的に追加されます。
+`%0A`を区切り文字として使用して複数行テキストを作成できます。各行の間には1ドットの間隔が自動的に追加されます。
 
 ### 基本的な複数行
-![Multi-line Basic](https://flipdots.vercel.app/api/svg?text=HELLO%0WORLD&style=dark&dotSize=18&spacing=2&v=2)
+![Multi-line Basic](https://flipdots.vercel.app/api/svg?text=HELLO%0AWORLD&style=dark&dotSize=18&spacing=2&v=2)
 
 ### 3行テキスト
-![Three Lines](https://flipdots.vercel.app/api/svg?text=LINE1%0LINE2%0LINE3&style=modern&dotSize=16&spacing=2&v=1)
+![Three Lines](https://flipdots.vercel.app/api/svg?text=LINE1%0ALINE2%0ALINE3&style=modern&dotSize=16&spacing=2&v=1)
 
 ### 複数行 + アニメーション
-![Multi-line Animation](https://flipdots.vercel.app/api/svg?text=GITHUB%0PROFILE%0VISITOR&animationMode=sequential&style=retro&dotSize=16&spacing=2&v=1)
+![Multi-line Animation](https://flipdots.vercel.app/api/svg?text=GITHUB%0APROFILE%0AVISITOR&animationMode=sequential&style=retro&dotSize=16&spacing=2&v=1)
 
 ## 📐 サイズ制限と配置
 
@@ -153,7 +153,7 @@ GitHub README.mdに直接埋め込むことができるflip dotイメージを�
 ![Center Align](https://flipdots.vercel.app/api/svg?text=CENTER&row=12&column=45&align=center&justify=center&style=modern&dotSize=18&spacing=2&animationMode=sequential&v=1)
 
 ### 複数行配置
-![Multi-line Align](https://flipdots.vercel.app/api/svg?text=ALIGN%0_BOTTOM%0RIGHT&row=25&column=45&align=end&justify=end&style=retro&dotSize=16&spacing=2&v=1)
+![Multi-line Align](https://flipdots.vercel.app/api/svg?text=ALIGN%0A_BOTTOM%0ARIGHT&row=25&column=45&align=end&justify=end&style=retro&dotSize=16&spacing=2&v=1)
 
 ## 🎨 カスタムドットパターン
 
@@ -189,21 +189,21 @@ GitHub README.mdに直接埋め込むことができるflip dotイメージを�
 ### GitHubプロフィール装飾
 
 #### 訪問者歓迎メッセージ
-![Welcome Message](https://flipdots.vercel.app/api/svg?text=WELCOME%0TO%0MY%0GITHUB&animationMode=sequential&style=dark&dotSize=16&spacing=2&justify=center&v=1)
+![Welcome Message](https://flipdots.vercel.app/api/svg?text=WELCOME%0ATO%0AMY%0AGITHUB&animationMode=sequential&style=dark&dotSize=16&spacing=2&justify=center&v=1)
 
 #### 現在のステータス表示
-![Current Status](https://flipdots.vercel.app/api/svg?text=CURRENTLY%0CODING&animationMode=scroll&style=modern&dotSize=18&spacing=2&v=1&speed=3)
+![Current Status](https://flipdots.vercel.app/api/svg?text=CURRENTLY%0ACODING&animationMode=scroll&style=modern&dotSize=18&spacing=2&v=1&speed=3)
 
 ### プロジェクトREADMEヘッダー
 
 #### プロジェクトタイトル
-![Project Title](https://flipdots.vercel.app/api/svg?text=MY_AWESOME%0PROJECT&animationMode=waterfall&style=modern&dotSize=20&spacing=2&justify=center&v=1)
+![Project Title](https://flipdots.vercel.app/api/svg?text=MY_AWESOME%0APROJECT&animationMode=waterfall&style=modern&dotSize=20&spacing=2&justify=center&v=1)
 
 ### ステータスバッジスタイル
 
 #### ビルドステータス
-![Build Success](https://flipdots.vercel.app/api/svg?text=BUILD%0PASSING&dotOn=00ff00&background=000000&dotSize=14&spacing=1&v=1)
-![Build Failed](https://flipdots.vercel.app/api/svg?text=BUILD%0FAILED&dotOn=ff0000&background=000000&dotSize=14&spacing=1&v=1)
+![Build Success](https://flipdots.vercel.app/api/svg?text=BUILD%0APASSING&dotOn=00ff00&background=000000&dotSize=14&spacing=1&v=1)
+![Build Failed](https://flipdots.vercel.app/api/svg?text=BUILD%0AFAILED&dotOn=ff0000&background=000000&dotSize=14&spacing=1&v=1)
 
 #### バージョン情報
 ![Version](https://flipdots.vercel.app/api/svg?text=VERSION%0V2%2E1%2E0&style=modern&dotSize=16&spacing=2&v=1)

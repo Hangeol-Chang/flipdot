@@ -3,7 +3,13 @@
 ## 🌐 Other Languages
 - [🇺🇸 English](../README.md)
 - [🇯🇵 日本語 (Japanese)](./README_jp.md)
-- [🇨🇳 中文 (Chinese)](./README_cn.md)
+- [🇨🇳 中文 (Chi![Multi-line Basic](https://flipdots.vercel![Multi-line Align](https://flipdots.vercel.app/api/svg?text=ALIGN%0A_BOTTOM%0ARIGHT&row=25&column=45&align=end&justify=end&style=retro&dotSize=16&spacing=2&v=1)
+```
+https://flipdots.vercel.app/api/svg?text=ALIGN%0A_BOTTOM%0ARIGHT&row=25&column=45&align=end&justify=end&style=retro&dotSize=16&spacing=2&v=1
+```app/api/svg?text=HELLO%0AWORLD&style=dark&dotSize=18&spacing=2&v=2)
+```
+https://flipdots.vercel.app/api/svg?text=HELLO%0AWORLD&style=dark&dotSize=18&spacing=2
+```ese)](./README_cn.md)
 
 <div align="center">
     <a href="https://flipdots.vercel.app/example"
@@ -29,7 +35,7 @@
 
 <div align="center">
     
-![Flip Dot Display](https://flipdots.vercel.app/api/svg?text=FLIPDOT%0README&style=dark&dotSize=16&spacing=2&animationMode=scroll&justify=center&v=1)
+![Flip Dot Display](https://flipdots.vercel.app/api/svg?text=FLIPDOT%0AREADME&style=dark&dotSize=16&spacing=2&animationMode=scroll&justify=center&v=1)
 
 </div>
 
@@ -53,7 +59,7 @@ GitHub README.md에 직접 임베드할 수 있는 flip dot 이미지를 생성�
 실제 flip-dot 하드웨어의 동작을 재현합니다.
 
 ✨ **새로운 기능들**
-- 🔤 **여러 줄 텍스트**: `%0`으로 줄바꿈
+- 🔤 **여러 줄 텍스트**: `%0A`으로 줄바꿈
 - 📐 **정렬 기능**: 세로/가로 정렬 옵션
 - 🎨 **커스텀 패턴**: 직접 도트 패턴 설계
 - 🎬 **4가지 애니메이션**: static, sequential, scroll, waterfall
@@ -66,9 +72,9 @@ GitHub README.md에 직접 임베드할 수 있는 flip dot 이미지를 생성�
 ```
 
 ### 여러 줄 텍스트
-![Multi-line](https://flipdots.vercel.app/api/svg?text=HELLO%0WORLD&style=modern&dotSize=18&spacing=2&animationMode=sequential)
+![Multi-line](https://flipdots.vercel.app/api/svg?text=HELLO%0AWORLD&style=modern&dotSize=18&spacing=2&animationMode=sequential)
 ```markdown
-![Multi-line](https://flipdots.vercel.app/api/svg?text=HELLO%0WORLD&style=modern&dotSize=18&spacing=2&animationMode=sequential)
+![Multi-line](https://flipdots.vercel.app/api/svg?text=HELLO%0AWORLD&style=modern&dotSize=18&spacing=2&animationMode=sequential)
 ```
 
 ### 애니메이션
@@ -81,7 +87,7 @@ GitHub README.md에 직접 임베드할 수 있는 flip dot 이미지를 생성�
 
 | 파라미터 | 설명 | 기본값 | 예시 |
 |---------|------|--------|------|
-| **`text`** | 표시할 텍스트 (여러 줄: `%0`으로 구분) | `HELLO` | `HELLO%0WORLD` |
+| **`text`** | 표시할 텍스트 (여러 줄: `%0A`으로 구분) | `HELLO` | `HELLO%0AWORLD` |
 | **`customdots`** | 커스텀 도트 패턴 (1=켜짐, 0=꺼짐) | - | `10110,01001,10110` |
 | **`style`** | 스타일 테마 | `dark` | `light`, `retro`, `modern`, `dark` |
 | **`dotSize`** | 도트 크기 (px) | `20` | `10-40` |
@@ -131,7 +137,7 @@ GitHub README.md에 직접 임베드할 수 있는 flip dot 이미지를 생성�
 
 ## 📝 여러 줄 텍스트
 
-`%0`을 구분자로 사용하여 여러 줄 텍스트를 만들 수 있습니다. 각 줄 사이에는 1 dot 간격이 자동으로 추가됩니다.
+`%0A`을 구분자로 사용하여 여러 줄 텍스트를 만들 수 있습니다. 각 줄 사이에는 1 dot 간격이 자동으로 추가됩니다.
 
 ### 기본 여러 줄
 ![Multi-line Basic](https://flipdots.vercel.app/api/svg?text=HELLO%0WORLD&style=dark&dotSize=18&spacing=2&v=2)
@@ -140,13 +146,19 @@ https://flipdots.vercel.app/api/svg?text=HELLO%0WORLD&style=dark&dotSize=18&spac
 ```
 
 ### 3줄 텍스트
-![Three Lines](https://flipdots.vercel.app/api/svg?text=LINE1%0LINE2%0LINE3&style=modern&dotSize=16&spacing=2&v=1)
+![Three Lines](https://flipdots.vercel.app/api/svg?text=LINE1%0ALINE2%0ALINE3&style=modern&dotSize=16&spacing=2&v=1)
+```
+https://flipdots.vercel.app/api/svg?text=LINE1%0ALINE2%0ALINE3&style=modern&dotSize=16&spacing=2
+```
 ```markdown
 https://flipdots.vercel.app/api/svg?text=LINE1%0LINE2%0LINE3&style=modern&dotSize=16&spacing=2
 ```
 
 ### 여러 줄 + 애니메이션
-![Multi-line Animation](https://flipdots.vercel.app/api/svg?text=GITHUB%0PROFILE%0VISITOR&animationMode=sequential&style=retro&dotSize=16&spacing=2&v=1)
+![Multi-line Animation](https://flipdots.vercel.app/api/svg?text=GITHUB%0APROFILE%0AVISITOR&animationMode=sequential&style=retro&dotSize=16&spacing=2&v=1)
+```
+https://flipdots.vercel.app/api/svg?text=GITHUB%0APROFILE%0AVISITOR&animationMode=sequential&style=retro&dotSize=16&spacing=2
+```
 ```markdown
 https://flipdots.vercel.app/api/svg?text=GITHUB%0PROFILE%0VISITOR&animationMode=sequential&style=retro&dotSize=16&spacing=2
 ```
