@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { FD_TEXT_MAP_ENG } from '../../../../components/types/textmapEng.js';
+import { FD_TEXT_MAP_ENG, FD_TEXT_MAP_ENG_LOWER } from '../../../../components/types/textmapEng.js';
 import { FD_TEXT_MAP_NUM } from '../../../../components/types/textmapNum.js';
 import { FD_TEXT_MAP_SPECIAL } from '../../../../components/types/textmapSpecial.js';
 
@@ -25,8 +25,8 @@ export async function GET(request) {
         background: searchParams.get('background') ? addHashToColor(searchParams.get('background')) : null
     };
     
-    // 텍스트를 dot 패턴으로 변환
-    const textPattern = textToPattern(text.toUpperCase());
+    // 텍스트를 dot 패턴으로 변환 (대소문자 구분)
+    const textPattern = textToPattern(text);
     
     // 고정 크기가 지정된 경우 패턴을 자르거나 패딩
     const finalPattern = fixedRows || fixedCols ? 
@@ -100,10 +100,16 @@ function textToPattern(text) {
                 data: Array(7).fill().map(() => Array(3).fill(0))
             };
         } else if (FD_TEXT_MAP_ENG[char]) {
+            // 대문자 처리
             pattern = FD_TEXT_MAP_ENG[char];
+        } else if (FD_TEXT_MAP_ENG_LOWER[char]) {
+            // 소문자 처리
+            pattern = FD_TEXT_MAP_ENG_LOWER[char];
         } else if (FD_TEXT_MAP_NUM[char]) {
+            // 숫자 처리
             pattern = FD_TEXT_MAP_NUM[char];
         } else if (FD_TEXT_MAP_SPECIAL[char]) {
+            // 특수문자 처리
             pattern = FD_TEXT_MAP_SPECIAL[char];
         }
         
@@ -171,7 +177,7 @@ function generateFlipDotSVG(pattern, options) {
     const totalDotSize = dotSize + spacing;
     
     // scroll 모드일 때는 더 넓은 캔버스 사용
-    let svgWidth, svgHeight, displayWidth;
+    let svgWidth, svgHeight, displayWidth, displayHeight;
     const padding = 4; // 패딩 크기
     const borderWidth = 4; // 테두리 크기
     const borderRadius = 4; // 모서리 둥글기
@@ -181,10 +187,17 @@ function generateFlipDotSVG(pattern, options) {
         displayWidth = Math.max(pattern.width, 20); // 텍스트 길이나 최소 20개 중 더 큰 값
         svgWidth = displayWidth * totalDotSize + totalPadding * 2;
         svgHeight = pattern.height * totalDotSize + totalPadding * 2;
+        displayHeight = pattern.height;
+    } else if (animationMode === 'waterfall') {
+        displayHeight = Math.max(pattern.height, 10); // 텍스트 높이나 최소 10개 중 더 큰 값
+        svgWidth = pattern.width * totalDotSize + totalPadding * 2;
+        svgHeight = displayHeight * totalDotSize + totalPadding * 2;
+        displayWidth = pattern.width;
     } else {
         svgWidth = pattern.width * totalDotSize + totalPadding * 2;
         svgHeight = pattern.height * totalDotSize + totalPadding * 2;
         displayWidth = pattern.width;
+        displayHeight = pattern.height;
     }
     
     // 스타일 설정 (기본 스타일 먼저 적용, 그 다음 커스텀 색상으로 덮어쓰기)
@@ -218,6 +231,31 @@ function generateFlipDotSVG(pattern, options) {
                 
                 dots += `<circle cx="${centerX}" cy="${centerY}" r="${dotRadius}" fill="${colors.dotOff}" 
                            class="scroll-dot" data-x="${x}" data-y="${y}" data-on-color="${dotColor}"/>`;
+            }
+        }
+    } else if (animationMode === 'waterfall') {
+        // waterfall 모드: 고정된 화면 크기에 위에서 아래로 스크롤링 텍스트
+        for (let y = 0; y < displayHeight; y++) {
+            for (let x = 0; x < pattern.width; x++) {
+                const centerX = x * totalDotSize + dotSize / 2 + totalPadding;
+                const centerY = y * totalDotSize + dotSize / 2 + totalPadding;
+                
+                // 배경 사각형 (dot holder)
+                dots += `<rect x="${x * totalDotSize + totalPadding}" y="${y * totalDotSize + totalPadding}" width="${dotSize}" height="${dotSize}" fill="${colors.background}"/>`;
+                
+                // 왼쪽 위 삼각형 (포인트 효과)
+                dots += `<polygon points="${x * totalDotSize + totalPadding},${y * totalDotSize + totalPadding} ${x * totalDotSize + 4 + totalPadding},${y * totalDotSize + totalPadding} ${x * totalDotSize + totalPadding},${y * totalDotSize + 4 + totalPadding}" fill="${colors.shadow}"/>`;
+                
+                // 중앙 원 (실제 flip dot) - waterfall 애니메이션 적용
+                let dotColor = colors.dotOff;
+                if (dotOnColors.length > 1) {
+                    dotColor = calculateGradientColor(dotOnColors, x, pattern.width);
+                } else {
+                    dotColor = colors.dotOn;
+                }
+                
+                dots += `<circle cx="${centerX}" cy="${centerY}" r="${dotRadius}" fill="${colors.dotOff}" 
+                           class="waterfall-dot" data-x="${x}" data-y="${y}" data-on-color="${dotColor}"/>`;
             }
         }
     } else {
@@ -256,6 +294,7 @@ function generateFlipDotSVG(pattern, options) {
     }
     
     const scrollAnimationCSS = animationMode === 'scroll' ? generateScrollAnimation(pattern, displayWidth, colors, text, speed) : '';
+    const waterfallAnimationCSS = animationMode === 'waterfall' ? generateWaterfallAnimation(pattern, displayHeight, colors, text, speed) : '';
     
     return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${svgWidth}" height="${svgHeight}" viewBox="0 0 ${svgWidth} ${svgHeight}">
@@ -273,6 +312,15 @@ function generateFlipDotSVG(pattern, options) {
         }
         
         ${scrollAnimationCSS}
+        ` : animationMode === 'waterfall' ? `
+        /* 워터폴 모드 애니메이션 */
+        .waterfall-dot {
+            animation-fill-mode: forwards;
+            transform-box: content-box;
+            transform-origin: center center;
+        }
+        
+        ${waterfallAnimationCSS}
         ` : animationMode === 'sequential' ? `
         /* Sequential 모드: 순차적 반복 애니메이션 */
         .dot-on {
@@ -508,6 +556,120 @@ function generateScrollAnimation(pattern, displayWidth, colors, text, speed = 1.
             // dot에 애니메이션 적용
             animationCSS += `.scroll-dot[data-x="${x}"][data-y="${y}"] {\n`;
             animationCSS += `  animation: scroll-${x}-${y} ${totalCycleDuration}s infinite ease-in-out;\n`;
+            animationCSS += `  transform-box: content-box;\n`;
+            animationCSS += `  transform-origin: center center;\n`;
+            animationCSS += `}\n\n`;
+        }
+    }
+    
+    return animationCSS;
+}
+
+// 워터폴 애니메이션 CSS 생성 (위에서 아래로 스크롤)
+function generateWaterfallAnimation(pattern, displayHeight, colors, text, speed = 1.0) {
+    const totalTextHeight = pattern.height;
+    const scrollSteps = totalTextHeight + displayHeight; // 전체 스크롤 단계
+    const flipDuration = 0.3 / speed; // flip 애니메이션 시간 (speed 적용)
+    const holdDuration = 0.5 / speed; // 읽을 시간 (speed 적용)
+    const stepInterval = 0.3 / speed; // 각 스텝 간격 (speed 적용)
+    const totalScrollTime = scrollSteps * stepInterval;
+    const pauseTime = 2 / speed; // 반복 전 대기 시간 (speed 적용)
+    const totalCycleDuration = totalScrollTime + pauseTime;
+    
+    let animationCSS = '';
+    
+    // 각 display 위치의 dot별로 애니메이션 생성
+    for (let y = 0; y < displayHeight; y++) {
+        for (let x = 0; x < pattern.width; x++) {
+            let keyframes = `@keyframes waterfall-${x}-${y} {\n  0% { fill: ${colors.dotOff}; }\n`;
+            
+            // 이 dot가 켜져야 하는 모든 스텝을 찾기
+            let activeSteps = [];
+            for (let step = 0; step < scrollSteps; step++) {
+                // 위에서 아래로 스크롤: 스크롤 방향만 반대로 변경
+                // 텍스트는 그대로 두고 스크롤 순서만 바꿈
+                const textRow = (scrollSteps - 1 - step) + y - displayHeight + 1;
+                if (textRow >= 0 && textRow < totalTextHeight) {
+                    const shouldFlip = pattern.data[textRow] && pattern.data[textRow][x] === 1;
+                    if (shouldFlip) {
+                        activeSteps.push(step);
+                    }
+                }
+            }
+            
+            // 각 활성 스텝에 대해 애니메이션 생성
+            for (let i = 0; i < activeSteps.length; i++) {
+                const step = activeSteps[i];
+                const stepStartTime = step * stepInterval;
+                const stepStartPercent = (stepStartTime / totalCycleDuration) * 100;
+                
+                // 다음 스텝이 연속인지 확인
+                const isNextConsecutive = i < activeSteps.length - 1 && activeSteps[i + 1] === step + 1;
+                const isPrevConsecutive = i > 0 && activeSteps[i - 1] === step - 1;
+                
+                if (isPrevConsecutive) {
+                    // 이전 스텝과 연속이면 계속 켜진 상태 유지
+                    continue;
+                }
+                
+                // 켜지는 애니메이션 시작
+                const flipOnStart = stepStartPercent;
+                const flipOnMid = stepStartPercent + (flipDuration / 2 / totalCycleDuration) * 100;
+                const flipOnEnd = stepStartPercent + (flipDuration / totalCycleDuration) * 100;
+                
+                keyframes += `  ${flipOnStart}% { 
+                    fill: ${colors.dotOff}; 
+                    transform: rotateZ(0deg) rotateY(0deg);
+                }\n`;
+                keyframes += `  ${flipOnMid}% { 
+                    fill: ${colors.dotOff}; 
+                    transform: rotateZ(45deg) rotateY(90deg);
+                }\n`;
+                keyframes += `  ${flipOnEnd}% { 
+                    fill: ${colors.dotOn}; 
+                    transform: rotateZ(90deg) rotateY(180deg);
+                }\n`;
+                
+                // 연속 구간의 끝을 찾기
+                let lastConsecutiveStep = step;
+                while (i < activeSteps.length - 1 && activeSteps[i + 1] === lastConsecutiveStep + 1) {
+                    i++;
+                    lastConsecutiveStep = activeSteps[i];
+                }
+                
+                // 꺼지는 애니메이션 (연속 구간의 마지막에서)
+                const lastStepTime = lastConsecutiveStep * stepInterval;
+                const holdEndTime = lastStepTime + holdDuration;
+                const flipOffEndTime = holdEndTime + flipDuration;
+                
+                const holdEndPercent = (holdEndTime / totalCycleDuration) * 100;
+                const flipOffMidPercent = ((holdEndTime + flipDuration / 2) / totalCycleDuration) * 100;
+                const flipOffEndPercent = (flipOffEndTime / totalCycleDuration) * 100;
+                
+                keyframes += `  ${holdEndPercent}% { 
+                    fill: ${colors.dotOn}; 
+                    transform: rotateZ(90deg) rotateY(180deg);
+                }\n`;
+                keyframes += `  ${flipOffMidPercent}% { 
+                    fill: ${colors.dotOff}; 
+                    transform: rotateZ(45deg) rotateY(90deg);
+                }\n`;
+                keyframes += `  ${flipOffEndPercent}% { 
+                    fill: ${colors.dotOff}; 
+                    transform: rotateZ(0deg) rotateY(0deg);
+                }\n`;
+            }
+            
+            const scrollEndPercent = (totalScrollTime / totalCycleDuration) * 100;
+            keyframes += `  ${scrollEndPercent}% { fill: ${colors.dotOff}; }\n`;
+            keyframes += `  100% { fill: ${colors.dotOff}; }\n`;
+            keyframes += `}\n\n`;
+            
+            animationCSS += keyframes;
+            
+            // dot에 애니메이션 적용
+            animationCSS += `.waterfall-dot[data-x="${x}"][data-y="${y}"] {\n`;
+            animationCSS += `  animation: waterfall-${x}-${y} ${totalCycleDuration}s infinite ease-in-out;\n`;
             animationCSS += `  transform-box: content-box;\n`;
             animationCSS += `  transform-origin: center center;\n`;
             animationCSS += `}\n\n`;
