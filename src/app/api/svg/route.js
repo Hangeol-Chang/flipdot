@@ -13,6 +13,8 @@ export async function GET(request) {
     const spacing = parseInt(searchParams.get('spacing')) || 2;
     const animationMode = searchParams.get('animationMode') || 'static';
     const speed = parseFloat(searchParams.get('speed')) || 1.0; // 기본값 1.0 (보통 속도)
+    const customDots = searchParams.get('customdots'); // 커스텀 dot 패턴
+    const direction = searchParams.get('direction') || 'normal'; // 'normal', 'reverse'
     
     // 고정 매트릭스 크기 파라미터
     const fixedRows = searchParams.get('row') ? parseInt(searchParams.get('row')) : null;
@@ -25,13 +27,32 @@ export async function GET(request) {
         background: searchParams.get('background') ? addHashToColor(searchParams.get('background')) : null
     };
     
-    // 텍스트를 dot 패턴으로 변환 (대소문자 구분)
-    const textPattern = textToPattern(text);
+    // 텍스트를 dot 패턴으로 변환 (대소문자 구분) 또는 커스텀 패턴 사용
+    let textPattern;
+    if (customDots) {
+        textPattern = customDotsToPattern(customDots);
+    } else {
+        textPattern = textToPattern(text);
+    }
     
     // 고정 크기가 지정된 경우 패턴을 자르거나 패딩
-    const finalPattern = fixedRows || fixedCols ? 
-        cropOrPadPattern(textPattern, fixedRows, fixedCols) : 
-        textPattern;
+    // scroll/waterfall 모드에서는 각각 column/row 고정 시 텍스트를 자르지 않고 화면 크기만 제한
+    let finalPattern;
+    if (animationMode === 'scroll' && fixedCols && !fixedRows) {
+        // scroll 모드에서 column만 고정된 경우: 원본 텍스트 유지, 화면 너비만 제한
+        finalPattern = textPattern;
+    } else if (animationMode === 'waterfall' && fixedRows && !fixedCols) {
+        // waterfall 모드에서 row만 고정된 경우: 원본 텍스트 유지, 화면 높이만 제한
+        finalPattern = textPattern;
+    } else if (animationMode === 'waterfall') {
+        // waterfall 모드에서는 항상 원본 텍스트 유지 (위에서 아래로 스크롤하기 위해)
+        finalPattern = textPattern;
+    } else {
+        // 일반적인 경우: 고정 크기에 맞춰 자르거나 패딩
+        finalPattern = fixedRows || fixedCols ? 
+            cropOrPadPattern(textPattern, fixedRows, fixedCols) : 
+            textPattern;
+    }
     
     // SVG 생성
     const svg = generateFlipDotSVG(finalPattern, {
@@ -41,7 +62,10 @@ export async function GET(request) {
         customColors,
         animationMode,
         text,
-        speed
+        speed,
+        fixedCols,
+        fixedRows,
+        direction
     });
     
     return new NextResponse(svg, {
@@ -147,6 +171,65 @@ function textToPattern(text) {
     };
 }
 
+function customDotsToPattern(customDots) {
+    // customdots 파라미터를 파싱하여 dot 패턴 생성
+    // 예: "10110,01001,10110" -> 3x5 패턴
+    
+    if (!customDots || typeof customDots !== 'string') {
+        // 기본 패턴 반환 (빈 패턴)
+        return {
+            width: 1,
+            height: 1,
+            data: [[0]]
+        };
+    }
+    
+    // 콤마로 구분된 행들을 분리
+    const rows = customDots.split(',');
+    
+    if (rows.length === 0) {
+        return {
+            width: 1,
+            height: 1,
+            data: [[0]]
+        };
+    }
+    
+    // 각 행을 0/1 배열로 변환
+    const patternData = [];
+    let maxWidth = 0;
+    
+    for (const row of rows) {
+        const rowData = [];
+        for (const char of row.trim()) {
+            if (char === '1') {
+                rowData.push(1);
+            } else if (char === '0') {
+                rowData.push(0);
+            }
+            // 다른 문자는 무시
+        }
+        
+        if (rowData.length > 0) {
+            patternData.push(rowData);
+            maxWidth = Math.max(maxWidth, rowData.length);
+        }
+    }
+    
+    // 모든 행의 길이를 maxWidth로 맞춤 (짧은 행은 0으로 패딩)
+    for (const row of patternData) {
+        while (row.length < maxWidth) {
+            row.push(0);
+        }
+    }
+    
+    return {
+        width: maxWidth,
+        height: patternData.length,
+        data: patternData
+    };
+}
+
 function cropOrPadPattern(pattern, fixedRows, fixedCols) {
     // 기본값 설정: 지정되지 않은 경우 원본 크기 사용
     const targetRows = fixedRows || pattern.height;
@@ -172,11 +255,11 @@ function cropOrPadPattern(pattern, fixedRows, fixedCols) {
 }
 
 function generateFlipDotSVG(pattern, options) {
-    const { dotSize, spacing, style, customColors, animationMode = 'static', text = '', speed = 1.0 } = options;
+    const { dotSize, spacing, style, customColors, animationMode = 'static', text = '', speed = 1.0, fixedCols = null, fixedRows = null, direction = 'normal' } = options;
     const dotRadius = dotSize / 2 - 1;
     const totalDotSize = dotSize + spacing;
     
-    // scroll 모드일 때는 더 넓은 캔버스 사용
+    // scroll/waterfall 모드일 때는 더 넓은/높은 캔버스 사용
     let svgWidth, svgHeight, displayWidth, displayHeight;
     const padding = 4; // 패딩 크기
     const borderWidth = 4; // 테두리 크기
@@ -184,13 +267,30 @@ function generateFlipDotSVG(pattern, options) {
     const totalPadding = padding + borderWidth; // 총 여백
     
     if (animationMode === 'scroll') {
-        displayWidth = Math.max(pattern.width, 20); // 텍스트 길이나 최소 20개 중 더 큰 값
+        // fixedCols가 지정된 경우 해당 값 사용, 아니면 기본 로직
+        if (fixedCols) {
+            displayWidth = fixedCols;
+        } else {
+            displayWidth = Math.max(pattern.width, 20); // 텍스트 길이나 최소 20개 중 더 큰 값
+        }
         svgWidth = displayWidth * totalDotSize + totalPadding * 2;
         svgHeight = pattern.height * totalDotSize + totalPadding * 2;
         displayHeight = pattern.height;
     } else if (animationMode === 'waterfall') {
-        displayHeight = Math.max(pattern.height, 10); // 텍스트 높이나 최소 10개 중 더 큰 값
-        svgWidth = pattern.width * totalDotSize + totalPadding * 2;
+        // fixedRows가 지정된 경우 해당 값 사용, 아니면 텍스트 높이 사용
+        if (fixedRows) {
+            displayHeight = fixedRows;
+        } else {
+            displayHeight = pattern.height; // 텍스트 높이 그대로 사용
+        }
+        // fixedCols가 지정된 경우 해당 값 사용, 아니면 텍스트 너비 사용
+        if (fixedCols) {
+            displayWidth = fixedCols;
+            svgWidth = displayWidth * totalDotSize + totalPadding * 2;
+        } else {
+            displayWidth = pattern.width;
+            svgWidth = pattern.width * totalDotSize + totalPadding * 2;
+        }
         svgHeight = displayHeight * totalDotSize + totalPadding * 2;
         displayWidth = pattern.width;
     } else {
@@ -236,7 +336,7 @@ function generateFlipDotSVG(pattern, options) {
     } else if (animationMode === 'waterfall') {
         // waterfall 모드: 고정된 화면 크기에 위에서 아래로 스크롤링 텍스트
         for (let y = 0; y < displayHeight; y++) {
-            for (let x = 0; x < pattern.width; x++) {
+            for (let x = 0; x < displayWidth; x++) {
                 const centerX = x * totalDotSize + dotSize / 2 + totalPadding;
                 const centerY = y * totalDotSize + dotSize / 2 + totalPadding;
                 
@@ -249,7 +349,7 @@ function generateFlipDotSVG(pattern, options) {
                 // 중앙 원 (실제 flip dot) - waterfall 애니메이션 적용
                 let dotColor = colors.dotOff;
                 if (dotOnColors.length > 1) {
-                    dotColor = calculateGradientColor(dotOnColors, x, pattern.width);
+                    dotColor = calculateGradientColor(dotOnColors, x, displayWidth);
                 } else {
                     dotColor = colors.dotOn;
                 }
@@ -293,8 +393,8 @@ function generateFlipDotSVG(pattern, options) {
         }
     }
     
-    const scrollAnimationCSS = animationMode === 'scroll' ? generateScrollAnimation(pattern, displayWidth, colors, text, speed) : '';
-    const waterfallAnimationCSS = animationMode === 'waterfall' ? generateWaterfallAnimation(pattern, displayHeight, colors, text, speed) : '';
+    const scrollAnimationCSS = animationMode === 'scroll' ? generateScrollAnimation(pattern, displayWidth, colors, text, speed, direction) : '';
+    const waterfallAnimationCSS = animationMode === 'waterfall' ? generateWaterfallAnimation(pattern, displayHeight, displayWidth, colors, text, speed, fixedRows, direction) : '';
     
     return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${svgWidth}" height="${svgHeight}" viewBox="0 0 ${svgWidth} ${svgHeight}">
@@ -454,7 +554,7 @@ function getStyleColors(style, customColors = {}) {
 }
 
 // 스크롤 애니메이션 CSS 생성
-function generateScrollAnimation(pattern, displayWidth, colors, text, speed = 1.0) {
+function generateScrollAnimation(pattern, displayWidth, colors, text, speed = 1.0, direction = 'normal') {
     const totalTextWidth = pattern.width;
     const scrollSteps = totalTextWidth + displayWidth; // 전체 스크롤 단계
     const flipDuration = 0.3 / speed; // flip 애니메이션 시간 (speed 적용)
@@ -474,7 +574,14 @@ function generateScrollAnimation(pattern, displayWidth, colors, text, speed = 1.
             // 이 dot가 켜져야 하는 모든 스텝을 찾기
             let activeSteps = [];
             for (let step = 0; step < scrollSteps; step++) {
-                const textPosition = step - displayWidth + x + 1;
+                let textPosition;
+                if (direction === 'reverse') {
+                    // 오른쪽에서 왼쪽으로 스크롤 (기존)
+                    textPosition = step - displayWidth + x + 1;
+                } else {
+                    // 왼쪽에서 오른쪽으로 스크롤 (reverse)
+                    textPosition = totalTextWidth - 1 - (step - x);
+                }
                 if (textPosition >= 0 && textPosition < totalTextWidth) {
                     const shouldFlip = pattern.data[y] && pattern.data[y][textPosition] === 1;
                     if (shouldFlip) {
@@ -566,7 +673,7 @@ function generateScrollAnimation(pattern, displayWidth, colors, text, speed = 1.
 }
 
 // 워터폴 애니메이션 CSS 생성 (위에서 아래로 스크롤)
-function generateWaterfallAnimation(pattern, displayHeight, colors, text, speed = 1.0) {
+function generateWaterfallAnimation(pattern, displayHeight, displayWidth, colors, text, speed = 1.0, fixedRows = null, direction = 'normal') {
     const totalTextHeight = pattern.height;
     const scrollSteps = totalTextHeight + displayHeight; // 전체 스크롤 단계
     const flipDuration = 0.3 / speed; // flip 애니메이션 시간 (speed 적용)
@@ -580,17 +687,22 @@ function generateWaterfallAnimation(pattern, displayHeight, colors, text, speed 
     
     // 각 display 위치의 dot별로 애니메이션 생성
     for (let y = 0; y < displayHeight; y++) {
-        for (let x = 0; x < pattern.width; x++) {
+        for (let x = 0; x < displayWidth; x++) {
             let keyframes = `@keyframes waterfall-${x}-${y} {\n  0% { fill: ${colors.dotOff}; }\n`;
             
             // 이 dot가 켜져야 하는 모든 스텝을 찾기
             let activeSteps = [];
             for (let step = 0; step < scrollSteps; step++) {
-                // 위에서 아래로 스크롤: 스크롤 방향만 반대로 변경
-                // 텍스트는 그대로 두고 스크롤 순서만 바꿈
-                const textRow = (scrollSteps - 1 - step) + y - displayHeight + 1;
-                if (textRow >= 0 && textRow < totalTextHeight) {
-                    const shouldFlip = pattern.data[textRow] && pattern.data[textRow][x] === 1;
+                let textPosition;
+                if (direction === 'reverse') {
+                    // 아래에서 위로 스크롤 (reverse)
+                    textPosition = totalTextHeight - 1 - (step - y);
+                } else {
+                    // 위에서 아래로 스크롤 (normal)
+                    textPosition = step - displayHeight + y + 1;
+                }
+                if (textPosition >= 0 && textPosition < totalTextHeight && x < pattern.width) {
+                    const shouldFlip = pattern.data[textPosition] && pattern.data[textPosition][x] === 1;
                     if (shouldFlip) {
                         activeSteps.push(step);
                     }
