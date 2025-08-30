@@ -11,6 +11,7 @@
             padding : 5px;
             display : flex;
             flex-direction : column;
+            margin: 10px;
         "
     >
         try 💿 flip dot 💿 
@@ -18,9 +19,12 @@
 </div>
 
 <div align="center">
+	<a href="https://github.com/Hangeol-Chang/flipdot"><img src="https://flipdots.vercel.app/api/svg?column=32&customdots=00100000100%2C00010001000%2C00111111100%2C01101110110%2C11111111111%2C10111111101%2C10100000101%2C00011011000%2C&style=dark&dotSize=20&spacing=2&animationMode=scroll&dotOn=28f028&dotOff=f0f0f0&background=ffffff" /></a>
+</div>
+
+<div align="center">
     
-![Flip Dot Display](https://flipdots.vercel.app/api/svg?text=GITHUB%20README&style=dark&dotSize=16&spacing=2&animationMode=scroll&v=1)
-![Flip Dot Display](https://flipdots.vercel.app/api/svg?text=GITHUB%20README&style=dark&dotSize=16&spacing=2&animationMode=scroll&v=1)
+![Flip Dot Display](https://flipdots.vercel.app/api/svg?text=FLIPDOT%0README&style=dark&dotSize=16&spacing=2&animationMode=scroll&justify=center&v=1)
 
 </div>
 
@@ -33,163 +37,92 @@
 </div>
 <br>
 
-![](./docs/description_image1.gif)
+<!-- ![](./docs/description_image1.gif) -->
+<div align="center" style="maxWidth:400px">
+ <img src="./docs/examplePage.png" />
+</div>
 
-## 🚀 새로운 SVG API 기능
+## 🚀 주요 기능
 
 GitHub README.md에 직접 임베드할 수 있는 flip dot 이미지를 생성하는 API입니다.
-실제 flip-dot 하드웨어의 동작을 재현한 4가지 애니메이션 모드를 지원합니다.
+실제 flip-dot 하드웨어의 동작을 재현합니다.
+
+✨ **새로운 기능들**
+- 🔤 **여러 줄 텍스트**: `%0`으로 줄바꿈
+- 📐 **정렬 기능**: 세로/가로 정렬 옵션
+- 🎨 **커스텀 패턴**: 직접 도트 패턴 설계
+- 🎬 **4가지 애니메이션**: static, sequential, scroll, waterfall
+- 🌈 **그라디언트**: 여러 색상으로 무지개 효과
 
 ### 기본 사용법
-![BASIC](https://flipdots.vercel.app/api/svg?text=YOUR_TEXT&style=dark)
-![BASIC](https://flipdots.vercel.app/api/svg?text=YOUR_TEXT&style=dark)
+![BASIC](https://flipdots.vercel.app/api/svg?text=YOUR_TEXT&style=dark&animationMode=sequential)
 ```markdown
-https://flipdots.vercel.app/api/svg?text=YOUR_TEXT&style=dark
-https://flipdots.vercel.app/api/svg?text=YOUR_TEXT&style=dark
+![Flip Dot](https://flipdots.vercel.app/api/svg?text=YOUR_TEXT&style=dark&animationMode=sequential)
 ```
 
-### 애니메이션 사용법
-![SCROLL_EX1](https://flipdots.vercel.app/api/svg?text=HELLO%20WORLD&animationMode=scroll&style=retro)
-![SCROLL_EX1](https://flipdots.vercel.app/api/svg?text=HELLO%20WORLD&animationMode=scroll&style=retro)
+### 여러 줄 텍스트
+![Multi-line](https://flipdots.vercel.app/api/svg?text=HELLO%0WORLD&style=modern&dotSize=18&spacing=2&animationMode=sequential)
 ```markdown
-https://flipdots.vercel.app/api/svg?text=HELLO%20WORLD&animationMode=scroll&style=retro
-https://flipdots.vercel.app/api/svg?text=HELLO%20WORLD&animationMode=scroll&style=retro
+![Multi-line](https://flipdots.vercel.app/api/svg?text=HELLO%0WORLD&style=modern&dotSize=18&spacing=2&animationMode=sequential)
+```
+
+### 애니메이션
+![Animation](https://flipdots.vercel.app/api/svg?text=SCROLL_TEXT&animationMode=scroll&style=retro&dotSize=16&spacing=2)
+```markdown
+![Animation](https://flipdots.vercel.app/api/svg?text=SCROLL_TEXT&animationMode=scroll&style=retro&dotSize=16&spacing=2)
 ```
 
 ## 📋 파라미터
 
-### 📝 텍스트 파라미터
-- **`text`**: 표시할 텍스트 (영문자, 숫자, 특수문자 지원)
-  - 여러 줄: `%0`으로 줄바꿈 (예: `LINE1%0LINE2%0LINE3`)
-- **`customdots`**: 커스텀 dot 패턴 (예: `10110,01001,10110`)
-
-### 🎨 스타일 파라미터
-- **`style`**: 스타일 테마 (`light`, `retro`, `modern`, `dark`) - 기본값: `dark`
-- **`dotSize`**: 각 dot의 크기 (10-40px, 기본값: 20)
-- **`spacing`**: dot 간의 간격 (1-10px, 기본값: 2)
-
-### 📐 크기 및 정렬 파라미터
-- **`row`**: 행 개수 제한 (예: 10)
-- **`column`**: 열 개수 제한 (예: 20)
-- **`align`**: 세로 정렬 (`start`, `center`, `end`) - 기본값: `start`
-  - row가 텍스트 높이보다 클 때 위아래 정렬
-- **`justify`**: 가로 정렬 (`start`, `center`, `end`) - 기본값: `start`
-  - 여러 줄이나 column이 텍스트 너비보다 클 때 좌우 정렬
-
-### 🎬 애니메이션 파라미터
-- **`animationMode`**: 애니메이션 모드
-  - `static`: 정적 표시 (기본값)
-  - `sequential`: 순차적 flip 애니메이션
-  - `scroll`: 스크롤 텍스트 애니메이션
-  - `waterfall`: 위에서 아래로 떨어지는 애니메이션
-- **`speed`**: 애니메이션 속도 (0.5-3.0, 기본값: 1.0)
-- **`direction`**: 애니메이션 방향
-  - `normal`: 기본 방향 (오른쪽→왼쪽 또는 아래→위)
-  - `reverse`: 반대 방향 (왼쪽→오른쪽 또는 위→아래)
-
-### 🎨 커스텀 색상 파라미터
-- **`dotOn`**: 켜진 dot의 색상 (hex 코드, # 생략 가능)
-  - 단일 색상: `ff0000` (빨간색)
-  - 그라디언트: `ff0000,00ff00,0000ff` (빨강→초록→파랑)
-- **`dotOff`**: 꺼진 dot의 색상 (hex 코드, # 생략 가능)
-- **`background`**: 배경 색상 (hex 코드, # 생략 가능)
+| 파라미터 | 설명 | 기본값 | 예시 |
+|---------|------|--------|------|
+| **`text`** | 표시할 텍스트 (여러 줄: `%0`으로 구분) | `HELLO` | `HELLO%0WORLD` |
+| **`customdots`** | 커스텀 도트 패턴 (1=켜짐, 0=꺼짐) | - | `10110,01001,10110` |
+| **`style`** | 스타일 테마 | `dark` | `light`, `retro`, `modern`, `dark` |
+| **`dotSize`** | 도트 크기 (px) | `20` | `10-40` |
+| **`spacing`** | 도트 간격 (px) | `2` | `1-10` |
+| **`row`** | 행 개수 제한 | - | `10` |
+| **`column`** | 열 개수 제한 | - | `20` |
+| **`align`** | 세로 정렬 | `start` | `start`, `center`, `end` |
+| **`justify`** | 가로 정렬 | `start` | `start`, `center`, `end` |
+| **`animationMode`** | 애니메이션 모드 | `static` | `sequential`, `scroll`, `waterfall` |
+| **`speed`** | 애니메이션 속도 | `1.0` | `0.5-3.0` |
+| **`direction`** | 애니메이션 방향 | `normal` | `normal`, `reverse` |
+| **`dotOn`** | 켜진 도트 색상 (그라디언트: 콤마로 구분) | - | `ff0000` 또는 `ff0000,00ff00,0000ff` |
+| **`dotOff`** | 꺼진 도트 색상 | - | `333333` |
+| **`background`** | 배경 색상 | - | `000000` |
 
 ## 🎭 스타일 예제
 
 ### 기본 스타일들
 
-![Light Style](https://flipdots.vercel.app/api/svg?text=LIGHT&style=light&dotSize=20&spacing=2&v=1)
-```markdown
-https://flipdots.vercel.app/api/svg?text=LIGHT&style=light&dotSize=20&spacing=2
-```
-![Light Style](https://flipdots.vercel.app/api/svg?text=LIGHT&style=light&dotSize=20&spacing=2&v=1)
-```markdown
-https://flipdots.vercel.app/api/svg?text=LIGHT&style=light&dotSize=20&spacing=2
-```
-
-![Retro Style](https://flipdots.vercel.app/api/svg?text=RETRO&style=retro&dotSize=20&spacing=2&v=1)
-```markdown
-https://flipdots.vercel.app/api/svg?text=RETRO&style=retro&dotSize=20&spacing=2
-```
-![Modern Style](https://flipdots.vercel.app/api/svg?text=MODERN&style=modern&dotSize=20&spacing=2&v=1)
-```markdown
-https://flipdots.vercel.app/api/svg?text=MODERN&style=modern&dotSize=20&spacing=2
-```
-![Retro Style](https://flipdots.vercel.app/api/svg?text=RETRO&style=retro&dotSize=20&spacing=2&v=1)
-```markdown
-https://flipdots.vercel.app/api/svg?text=RETRO&style=retro&dotSize=20&spacing=2
-```
-![Modern Style](https://flipdots.vercel.app/api/svg?text=MODERN&style=modern&dotSize=20&spacing=2&v=1)
-```markdown
-https://flipdots.vercel.app/api/svg?text=MODERN&style=modern&dotSize=20&spacing=2
-```
-
-![Dark Style](https://flipdots.vercel.app/api/svg?text=DARK&style=dark&dotSize=20&spacing=2&v=1)
-```markdown
-https://flipdots.vercel.app/api/svg?text=DARK&style=dark&dotSize=20&spacing=2
-```
-
-![Dark Style](https://flipdots.vercel.app/api/svg?text=DARK&style=dark&dotSize=20&spacing=2&v=1)
-```markdown
-https://flipdots.vercel.app/api/svg?text=DARK&style=dark&dotSize=20&spacing=2
-```
-
+![Light Style](https://flipdots.vercel.app/api/svg?text=LIGHT&style=light&dotSize=20&spacing=2&animationMode=sequential&v=1)
+![Dark Style](https://flipdots.vercel.app/api/svg?text=DARK&style=dark&dotSize=20&spacing=2&animationMode=sequential&v=1)
+![Retro Style](https://flipdots.vercel.app/api/svg?text=RETRO&style=retro&dotSize=20&spacing=2&animationMode=sequential&v=1)
+![Modern Style](https://flipdots.vercel.app/api/svg?text=MODERN&style=modern&dotSize=20&spacing=2&animationMode=sequential&v=1)
 
 ### 커스텀 색상
 
 ![Custom Red](https://flipdots.vercel.app/api/svg?text=CUSTOM&dotOn=ff0000&background=000000&dotSize=20&spacing=2&v=1)
-```markdown
-https://flipdots.vercel.app/api/svg?text=CUSTOM&dotOn=ff0000&background=000000&dotSize=20&spacing=2
-```
-![Custom Red](https://flipdots.vercel.app/api/svg?text=CUSTOM&dotOn=ff0000&background=000000&dotSize=20&spacing=2&v=1)
-```markdown
-https://flipdots.vercel.app/api/svg?text=CUSTOM&dotOn=ff0000&background=000000&dotSize=20&spacing=2
-```
-
-![Rainbow Gradient](https://flipdots.vercel.app/api/svg?text=RAINBOW&dotOn=ff0000,ff8000,ffff00,00ff00,0000ff,8000ff&background=000000&dotSize=18&spacing=2&v=1)
-```markdown
-https://flipdots.vercel.app/api/svg?text=RAINBOW&dotOn=ff0000,ff8000,ffff00,00ff00,0000ff,8000ff&background=000000&dotSize=18&spacing=2
-```
-![Rainbow Gradient](https://flipdots.vercel.app/api/svg?text=RAINBOW&dotOn=ff0000,ff8000,ffff00,00ff00,0000ff,8000ff&background=000000&dotSize=18&spacing=2&v=1)
-```markdown
-https://flipdots.vercel.app/api/svg?text=RAINBOW&dotOn=ff0000,ff8000,ffff00,00ff00,0000ff,8000ff&background=000000&dotSize=18&spacing=2
-```
-
+![Gradient](https://flipdots.vercel.app/api/svg?text=GRADIENT&dotOn=6F04D9,1B0273,0597F2,05C7F2&background=CCCCCC&dotOff=DDDDDD&dotSize=18&spacing=2&v=1)
 ![Purple Theme](https://flipdots.vercel.app/api/svg?text=PURPLE&dotOn=ff00ff&dotOff=330033&background=1a0a1a&dotSize=22&spacing=2&v=1)
-```markdown
-https://flipdots.vercel.app/api/svg?text=PURPLE&dotOn=ff00ff&dotOff=330033&background=1a0a1a&dotSize=22&spacing=2
-```
-![Purple Theme](https://flipdots.vercel.app/api/svg?text=PURPLE&dotOn=ff00ff&dotOff=330033&background=1a0a1a&dotSize=22&spacing=2&v=1)
-```markdown
-https://flipdots.vercel.app/api/svg?text=PURPLE&dotOn=ff00ff&dotOff=330033&background=1a0a1a&dotSize=22&spacing=2
-```
 
 ## 🎬 애니메이션 예제
 
 ### Sequential Animation (순차 애니메이션)
 실제 flip-dot처럼 각 dot가 순차적으로 뒤집히는 애니메이션
 
-![Sequential Animation](https://flipdots.vercel.app/api/svg?text=SEQUENTIAL&animationMode=sequential&style=retro&dotSize=18&spacing=2&v=1)
-![Sequential Animation](https://flipdots.vercel.app/api/svg?text=SEQUENTIAL&animationMode=sequential&style=retro&dotSize=18&spacing=2&v=1)
-```markdown
-https://flipdots.vercel.app/api/svg?text=SEQUENTIAL&animationMode=sequential&style=retro&dotSize=18&spacing=2
-https://flipdots.vercel.app/api/svg?text=SEQUENTIAL&animationMode=sequential&style=retro&dotSize=18&spacing=2
-```
+![Sequential Animation](https://flipdots.vercel.app/api/svg?text=SEQUENTIAL&animationMode=sequential&style=retro&dotSize=18&spacing=2&v=2)
 
 ### Scroll Animation (스크롤 애니메이션)
 텍스트가 오른쪽에서 왼쪽으로 스크롤되는 애니메이션
 
 ![Scroll Animation](https://flipdots.vercel.app/api/svg?text=HELLO_WORLD!&animationMode=scroll&style=modern&dotSize=16&spacing=1&v=1)
-```markdown
-https://flipdots.vercel.app/api/svg?text=HELLO_WORLD!&animationMode=scroll&style=modern&dotSize=16&spacing=1
 
 ### Waterfall Animation (폭포 애니메이션)
 텍스트가 위에서 아래로 떨어지는 애니메이션
 
 ![Waterfall Animation](https://flipdots.vercel.app/api/svg?text=FALLING&animationMode=waterfall&style=dark&dotSize=18&spacing=2&v=1)
-```markdown
-https://flipdots.vercel.app/api/svg?text=FALLING&animationMode=waterfall&style=dark&dotSize=18&spacing=2
-```
 
 ## 📝 여러 줄 텍스트
 
@@ -224,21 +157,15 @@ https://flipdots.vercel.app/api/svg?text=FIXED&row=10&column=25&style=dark&dotSi
 ```
 
 ### 가운데 정렬
-![Center Align](https://flipdots.vercel.app/api/svg?text=CENTER&row=12&column=30&align=center&justify=center&style=modern&dotSize=18&spacing=2&v=1)
+![Center Align](https://flipdots.vercel.app/api/svg?text=CENTER&row=12&column=45&align=center&justify=center&style=modern&dotSize=18&spacing=2&animationMode=sequential&v=1)
 ```markdown
 https://flipdots.vercel.app/api/svg?text=CENTER&row=12&column=30&align=center&justify=center&style=modern&dotSize=18&spacing=2
 ```
 
 ### 여러 줄 정렬
-![Multi-line Align](https://flipdots.vercel.app/api/svg?text=LEFT%0CENTER%0RIGHT&row=15&column=35&align=center&justify=center&style=retro&dotSize=16&spacing=2&v=1)
+![Multi-line Align](https://flipdots.vercel.app/api/svg?text=ALIIGN%0_BOTTOM%0RIGHT&row=25&column=45&align=end&justify=end&style=retro&dotSize=16&spacing=2&v=1)
 ```markdown
-https://flipdots.vercel.app/api/svg?text=LEFT%0CENTER%0RIGHT&row=15&column=35&align=center&justify=center&style=retro&dotSize=16&spacing=2
-```
-
-### 오른쪽 아래 정렬
-![Bottom Right](https://flipdots.vercel.app/api/svg?text=BOTTOM%0RIGHT&row=15&column=40&align=end&justify=end&style=dark&dotSize=16&spacing=2&v=1)
-```markdown
-https://flipdots.vercel.app/api/svg?text=BOTTOM%0RIGHT&row=15&column=40&align=end&justify=end&style=dark&dotSize=16&spacing=2
+https://flipdots.vercel.app/api/svg?text=ALIIGN%0_BOTTOM%0RIGHT&row=25&column=45&align=end&justify=end&style=retro&dotSize=16&spacing=2&v=1
 ```
 
 ## 🎨 커스텀 도트 패턴
@@ -246,7 +173,7 @@ https://flipdots.vercel.app/api/svg?text=BOTTOM%0RIGHT&row=15&column=40&align=en
 텍스트 대신 직접 도트 패턴을 정의할 수 있습니다. `1`은 켜진 도트, `0`은 꺼진 도트를 의미하며, 콤마로 행을 구분합니다.
 
 ### 하트 모양
-![Heart Pattern](https://flipdots.vercel.app/api/svg?customdots=01101100,11111110,11111110,01111100,00111000,00010000&style=dark&dotOn=ff69b4&dotSize=20&spacing=2&v=1)
+![Heart Pattern](https://flipdots.vercel.app/api/svg?customdots=0110110,1111111,1111111,0111110,0011100,0001000&style=dark&dotOn=ff69b4&dotSize=20&spacing=2&v=1)
 ```markdown
 https://flipdots.vercel.app/api/svg?customdots=01101100,11111110,11111110,01111100,00111000,00010000&style=dark&dotOn=ff69b4&dotSize=20&spacing=2
 ```
@@ -257,14 +184,14 @@ https://flipdots.vercel.app/api/svg?customdots=01101100,11111110,11111110,011111
 https://flipdots.vercel.app/api/svg?customdots=00000010,00000110,00001100,10011000,11110000,01100000&style=modern&dotOn=00ff00&dotSize=18&spacing=2
 ```
 
-### 별 모양
+### 갤러그 뿌슝
 ![Star Pattern](https://flipdots.vercel.app/api/svg?customdots=00100000100,00010001000,00111111100,01101110110,11111111111,10111111101,10100000101,00011011000&style=dark&dotOn=ffff00&dotSize=16&spacing=2&v=1)
 ```markdown
 https://flipdots.vercel.app/api/svg?customdots=00100000100,00010001000,00111111100,01101110110,11111111111,10111111101,10100000101,00011011000&style=dark&dotOn=ffff00&dotSize=16&spacing=2
 ```
 
 ### 커스텀 패턴 + 애니메이션
-![Custom Animation](https://flipdots.vercel.app/api/svg?customdots=10110,01001,10110&animationMode=sequential&style=retro&dotSize=22&spacing=3&v=1)
+![Custom Animation](https://flipdots.vercel.app/api/svg?customdots=10110,01001,10110&animationMode=scroll&style=retro&dotSize=22&spacing=3&v=1)
 ```markdown
 https://flipdots.vercel.app/api/svg?customdots=10110,01001,10110&animationMode=sequential&style=retro&dotSize=22&spacing=3
 ```
@@ -277,29 +204,8 @@ https://flipdots.vercel.app/api/svg?customdots=10110,01001,10110&animationMode=s
 - **URL 인코딩**: 특수문자가 URL에서 자동으로 인코딩되어도 정상 처리
 
 ![Special Characters](https://flipdots.vercel.app/api/svg?text=HELLO_WORLD!&style=dark&dotSize=18&spacing=2&v=1)
-```markdown
-https://flipdots.vercel.app/api/svg?text=HELLO_WORLD!&style=dark&dotSize=18&spacing=2
-```
-![Special Characters](https://flipdots.vercel.app/api/svg?text=HELLO_WORLD!&style=dark&dotSize=18&spacing=2&v=1)
-```markdown
-https://flipdots.vercel.app/api/svg?text=HELLO_WORLD!&style=dark&dotSize=18&spacing=2
-```
-
 ![URL Example](https://flipdots.vercel.app/api/svg?text=GITHUB.COM/USER&style=modern&dotSize=16&spacing=2&v=1)
-```markdown
-https://flipdots.vercel.app/api/svg?text=GITHUB.COM/USER&style=modern&dotSize=16&spacing=2
-```
-![URL Example](https://flipdots.vercel.app/api/svg?text=GITHUB.COM/USER&style=modern&dotSize=16&spacing=2&v=1)
-```markdown
-https://flipdots.vercel.app/api/svg?text=GITHUB.COM/USER&style=modern&dotSize=16&spacing=2
-```
-
 ![Score Example](https://flipdots.vercel.app/api/svg?text=SCORE:_100%25&style=retro&dotSize=18&spacing=2&v=1)
-![Score Example](https://flipdots.vercel.app/api/svg?text=SCORE:_100%25&style=retro&dotSize=18&spacing=2&v=1)
-```markdown
-https://flipdots.vercel.app/api/svg?text=SCORE:_100%25&style=retro&dotSize=18&spacing=2
-https://flipdots.vercel.app/api/svg?text=SCORE:_100%25&style=retro&dotSize=18&spacing=2
-```
 
 *참고: URL에서 `%`는 `%25`로 인코딩됩니다.*
 
@@ -383,8 +289,6 @@ https://flipdots.vercel.app/api/svg?text=SCORE:_100%25&style=retro&dotSize=18&sp
 
 #### 현재 학습 중
 ![Learning](https://flipdots.vercel.app/api/svg?text=LEARNING%0RUST&animationMode=waterfall&dotOn=ce422b&background=000000&dotSize=18&spacing=2&v=1)
-```markdown
-![Learning](https://flipdots.vercel.app/api/svg?text=LEARNING%0RUST&animationMode=waterfall&dotOn=ce422b&background=000000&dotSize=18&spacing=2)
 
 ## 🛠️ 고급 사용법
 
