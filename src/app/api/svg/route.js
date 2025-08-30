@@ -16,6 +16,10 @@ export async function GET(request) {
     const customDots = searchParams.get('customdots'); // 커스텀 dot 패턴
     const direction = searchParams.get('direction') || 'normal'; // 'normal', 'reverse'
     
+    // 정렬 파라미터
+    const align = searchParams.get('align') || 'start'; // 'start', 'center', 'end' - 세로 정렬
+    const justify = searchParams.get('justify') || 'start'; // 'start', 'center', 'end' - 가로 정렬
+    
     // 고정 매트릭스 크기 파라미터
     const fixedRows = searchParams.get('row') ? parseInt(searchParams.get('row')) : null;
     const fixedCols = searchParams.get('column') ? parseInt(searchParams.get('column')) : null;
@@ -32,7 +36,7 @@ export async function GET(request) {
     if (customDots) {
         textPattern = customDotsToPattern(customDots);
     } else {
-        textPattern = textToPattern(text);
+        textPattern = textToPattern(text, justify);
     }
     
     // 고정 크기가 지정된 경우 패턴을 자르거나 패딩
@@ -50,7 +54,7 @@ export async function GET(request) {
     } else {
         // 일반적인 경우: 고정 크기에 맞춰 자르거나 패딩
         finalPattern = fixedRows || fixedCols ? 
-            cropOrPadPattern(textPattern, fixedRows, fixedCols) : 
+            cropOrPadPattern(textPattern, fixedRows, fixedCols, align, justify) : 
             textPattern;
     }
     
@@ -65,7 +69,9 @@ export async function GET(request) {
         speed,
         fixedCols,
         fixedRows,
-        direction
+        direction,
+        align,
+        justify
     });
     
     return new NextResponse(svg, {
@@ -76,7 +82,7 @@ export async function GET(request) {
     });
 }
 
-function textToPattern(text) {
+function textToPattern(text, justify = 'start') {
     // %0을 구분자로 여러 줄 처리
     const lines = text.split('%0');
     
@@ -135,11 +141,28 @@ function textToPattern(text) {
     for (let lineIndex = 0; lineIndex < linePatterns.length; lineIndex++) {
         const linePattern = linePatterns[lineIndex];
         
-        // 각 줄의 패턴을 전체 패턴에 복사
+        // justify 정렬을 위한 시작 X 위치 계산
+        let startX = 0;
+        if (linePattern.width < maxWidth) {
+            switch (justify) {
+                case 'center':
+                    startX = Math.floor((maxWidth - linePattern.width) / 2);
+                    break;
+                case 'end':
+                    startX = maxWidth - linePattern.width;
+                    break;
+                case 'start':
+                default:
+                    startX = 0;
+                    break;
+            }
+        }
+        
+        // 각 줄의 패턴을 정렬된 위치에 복사
         for (let y = 0; y < linePattern.height; y++) {
             for (let x = 0; x < linePattern.width; x++) {
                 if (y < linePattern.data.length && x < linePattern.data[y].length) {
-                    fullPattern[currentY + y][x] = linePattern.data[y][x];
+                    fullPattern[currentY + y][startX + x] = linePattern.data[y][x];
                 }
             }
         }
@@ -282,7 +305,7 @@ function customDotsToPattern(customDots) {
     };
 }
 
-function cropOrPadPattern(pattern, fixedRows, fixedCols) {
+function cropOrPadPattern(pattern, fixedRows, fixedCols, align = 'start', justify = 'start') {
     // 기본값 설정: 지정되지 않은 경우 원본 크기 사용
     const targetRows = fixedRows || pattern.height;
     const targetCols = fixedCols || pattern.width;
@@ -290,11 +313,50 @@ function cropOrPadPattern(pattern, fixedRows, fixedCols) {
     // 새로운 패턴 배열 생성 (모든 값을 0으로 초기화)
     const newPattern = Array(targetRows).fill().map(() => Array(targetCols).fill(0));
     
-    // 원본 패턴을 새 패턴에 복사 (범위를 벗어나는 부분은 자동으로 잘림)
-    for (let y = 0; y < Math.min(targetRows, pattern.height); y++) {
-        for (let x = 0; x < Math.min(targetCols, pattern.width); x++) {
+    // 정렬 계산
+    let startY = 0;
+    let startX = 0;
+    
+    // 세로 정렬 (align) - row가 텍스트 높이보다 클 때
+    if (fixedRows && pattern.height < targetRows) {
+        switch (align) {
+            case 'center':
+                startY = Math.floor((targetRows - pattern.height) / 2);
+                break;
+            case 'end':
+                startY = targetRows - pattern.height;
+                break;
+            case 'start':
+            default:
+                startY = 0;
+                break;
+        }
+    }
+    
+    // 가로 정렬 (justify) - column이 텍스트 너비보다 클 때
+    if (fixedCols && pattern.width < targetCols) {
+        switch (justify) {
+            case 'center':
+                startX = Math.floor((targetCols - pattern.width) / 2);
+                break;
+            case 'end':
+                startX = targetCols - pattern.width;
+                break;
+            case 'start':
+            default:
+                startX = 0;
+                break;
+        }
+    }
+    
+    // 원본 패턴을 정렬된 위치에 복사
+    const copyRows = Math.min(targetRows - startY, pattern.height);
+    const copyCols = Math.min(targetCols - startX, pattern.width);
+    
+    for (let y = 0; y < copyRows; y++) {
+        for (let x = 0; x < copyCols; x++) {
             if (y < pattern.data.length && x < pattern.data[y].length) {
-                newPattern[y][x] = pattern.data[y][x];
+                newPattern[startY + y][startX + x] = pattern.data[y][x];
             }
         }
     }
@@ -307,7 +369,7 @@ function cropOrPadPattern(pattern, fixedRows, fixedCols) {
 }
 
 function generateFlipDotSVG(pattern, options) {
-    const { dotSize, spacing, style, customColors, animationMode = 'static', text = '', speed = 1.0, fixedCols = null, fixedRows = null, direction = 'normal' } = options;
+    const { dotSize, spacing, style, customColors, animationMode = 'static', text = '', speed = 1.0, fixedCols = null, fixedRows = null, direction = 'normal', align = 'start', justify = 'start' } = options;
     const dotRadius = dotSize / 2 - 1;
     const totalDotSize = dotSize + spacing;
     

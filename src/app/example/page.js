@@ -12,6 +12,8 @@ export default function ExamplePage() {
     const [direction, setDirection] = useState('normal');
     const [row, setRow] = useState('');
     const [column, setColumn] = useState('');
+    const [align, setAlign] = useState('start');
+    const [justify, setJustify] = useState('start');
     const [customDots, setCustomDots] = useState('');
     const [dotOn, setDotOn] = useState('');
     const [dotOff, setDotOff] = useState('');
@@ -48,6 +50,8 @@ export default function ExamplePage() {
         if (direction !== 'normal') params.append('direction', direction);
         if (row) params.append('row', row);
         if (column) params.append('column', column);
+        if (align !== 'start') params.append('align', align);
+        if (justify !== 'start') params.append('justify', justify);
         if (dotOn) params.append('dotOn', dotOn.replace('#', ''));
         if (dotOff) params.append('dotOff', dotOff.replace('#', ''));
         if (background) params.append('background', background.replace('#', ''));
@@ -411,6 +415,48 @@ export default function ExamplePage() {
                                 }}
                                 placeholder="예: 20"
                             />
+                        </div>
+                        
+                        {/* 세로 정렬 (align) */}
+                        <div>
+                            <label>세로 정렬: </label>
+                            <select 
+                                value={align} 
+                                onChange={(e) => setAlign(e.target.value)}
+                                style={{ 
+                                    padding: '5px', 
+                                    backgroundColor: '#333', 
+                                    color: 'white', 
+                                    border: '1px solid #555',
+                                    borderRadius: '4px',
+                                    width: '100%'
+                                }}
+                            >
+                                <option value="start">위</option>
+                                <option value="center">가운데</option>
+                                <option value="end">아래</option>
+                            </select>
+                        </div>
+                        
+                        {/* 가로 정렬 (justify) */}
+                        <div>
+                            <label>가로 정렬: </label>
+                            <select 
+                                value={justify} 
+                                onChange={(e) => setJustify(e.target.value)}
+                                style={{ 
+                                    padding: '5px', 
+                                    backgroundColor: '#333', 
+                                    color: 'white', 
+                                    border: '1px solid #555',
+                                    borderRadius: '4px',
+                                    width: '100%'
+                                }}
+                            >
+                                <option value="start">왼쪽</option>
+                                <option value="center">가운데</option>
+                                <option value="end">오른쪽</option>
+                            </select>
                         </div>
                     </div>
 
