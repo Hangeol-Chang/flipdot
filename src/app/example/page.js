@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { FaGithub } from 'react-icons/fa';
 
 export default function ExamplePage() {
     const [mode, setMode] = useState('text'); // 'text' 또는 'custom'
@@ -70,7 +71,30 @@ export default function ExamplePage() {
             margin: '0 auto',
             color: 'white'
         }}>
-            <h1>Flip Dot API Example</h1>
+            <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '15px',
+                marginBottom: '10px'
+            }}>
+                <h1 style={{ margin: 0 }}>Flip Dot API Example</h1>
+                <a 
+                    href="https://github.com/Hangeol-Chang/flipdot" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    style={{
+                        color: 'white',
+                        display: 'flex',
+                        alignItems: 'center',
+                        textDecoration: 'none',
+                        transition: 'opacity 0.2s'
+                    }}
+                    onMouseOver={(e) => e.currentTarget.style.opacity = '0.7'}
+                    onMouseOut={(e) => e.currentTarget.style.opacity = '1'}
+                >
+                    <FaGithub size={32} />
+                </a>
+            </div>
             <p>GitHub README.md에서 사용할 수 있는 flip dot 이미지를 생성하는 API입니다.</p>
             
             {/* 예제 텍스트 - 태그 스타일 */}
