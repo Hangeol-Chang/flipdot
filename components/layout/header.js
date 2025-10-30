@@ -2,6 +2,7 @@
 import styled from 'styled-components'
 import Image from 'next/image';
 import Link from 'next/link';
+import { FaGithub } from 'react-icons/fa';
 
 const StyledHeader = styled.div`
     background : black;
@@ -33,14 +34,36 @@ export default function Header() {
                         justifyContent: 'space-between',
                     }}
                 >
-                    <Link href='/'>
-                        <div style={{
-                            display : 'flex',
-                            alignItems : 'center',
-                        }} >
-                            Flip Dot
-                        </div>
-                    </Link>
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '15px'
+                    }}>
+                        <Link href='/'>
+                            <div style={{
+                                display : 'flex',
+                                alignItems : 'center',
+                            }} >
+                                Flip Dot
+                            </div>
+                        </Link>
+                        <a 
+                            href="https://github.com/Hangeol-Chang/flipdot" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            style={{
+                                color: 'white',
+                                display: 'flex',
+                                alignItems: 'center',
+                                textDecoration: 'none',
+                                transition: 'opacity 0.2s'
+                            }}
+                            onMouseOver={(e) => e.currentTarget.style.opacity = '0.7'}
+                            onMouseOut={(e) => e.currentTarget.style.opacity = '1'}
+                        >
+                            <FaGithub size={24} />
+                        </a>
+                    </div>
 
                     <div
                         style={{
