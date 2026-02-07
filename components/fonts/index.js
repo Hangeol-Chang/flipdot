@@ -12,10 +12,10 @@ import { FD_TEXT_MAP_SPECIAL } from './latin/special.js';
 const fontRegistry = {
     // 우선순위: 특수문자 > 숫자 > 대문자 > 소문자
     maps: [
-        { name: 'special', map: FD_TEXT_MAP_SPECIAL },
-        { name: 'numbers', map: FD_TEXT_MAP_NUM },
-        { name: 'uppercase', map: FD_TEXT_MAP_ENG },
-        { name: 'lowercase', map: FD_TEXT_MAP_ENG_LOWER },
+        { name: 'special', map: FD_TEXT_MAP_SPECIAL, priority: 0 },
+        { name: 'numbers', map: FD_TEXT_MAP_NUM, priority: 10 },
+        { name: 'uppercase', map: FD_TEXT_MAP_ENG, priority: 20 },
+        { name: 'lowercase', map: FD_TEXT_MAP_ENG_LOWER, priority: 30 },
     ],
     
     /**
