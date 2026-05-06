@@ -55,9 +55,11 @@ GitHub README.mdに直接埋め込むことができるflip dotイメージを�
 ✨ **新機能**
 - 🔤 **複数行テキスト**: `_`で改行
 - 📐 **配置オプション**: 縦/横配置オプション
-- 🎨 **カスタムパターン**: 独自のドットパターンを設計
+- 🎨 **カスタムパターン**: 独自のドットパターンを設計（binaryまたはhex形式）
 - 🎬 **4つのアニメーションモード**: static、sequential、scroll、waterfall
 - 🌈 **グラデーション**: 複数の色で虹効果
+- 🔷 **ドット形状**: circle、rect、rounded、diamond
+- ⚡ **フリップエフェクト**: rotate、flip、squeeze、fade、scale
 
 ### 基本的な使用法
 ![BASIC](https://flipdots.vercel.app/api/svg?text=YOUR_TEXT&style=dark&animationMode=sequential)
@@ -82,10 +84,12 @@ GitHub README.mdに直接埋め込むことができるflip dotイメージを�
 | パラメータ | 説明 | デフォルト | 例 |
 |-----------|------|----------|---|
 | **`text`** | 表示するテキスト（複数行：`_`で区切り） | `HELLO` | `HELLO_WORLD` |
-| **`customdots`** | カスタムドットパターン（1=オン、0=オフ） | - | `10110,01001,10110` |
-| **`style`** | スタイルテーマ | `dark` | `light`, `retro`, `modern`, `dark` |
+| **`customdots`** | カスタムドットパターン — binary（`10110`）またはhex（`16`）形式 | - | `10110,01001` または `16,09,16` |
+| **`style`** | スタイルテーマ | `dark` | `dark`, `light`, `retro`, `modern`, `neon`, `ocean`, `sunset` |
 | **`dotSize`** | ドットサイズ（px） | `20` | `10-40` |
 | **`spacing`** | ドット間隔（px） | `2` | `1-10` |
+| **`dotShape`** | ドット形状 | `circle` | `circle`, `rect`, `rounded`, `diamond` |
+| **`flipEffect`** | フリップアニメーション | `rotate` | `rotate`, `flip`, `squeeze`, `fade`, `scale` |
 | **`row`** | 行数制限 | - | `10` |
 | **`column`** | 列数制限 | - | `20` |
 | **`align`** | 縦配置 | `start` | `start`, `center`, `end` |
@@ -105,6 +109,9 @@ GitHub README.mdに直接埋め込むことができるflip dotイメージを�
 ![Dark Style](https://flipdots.vercel.app/api/svg?text=DARK&style=dark&dotSize=20&spacing=2&animationMode=sequential&v=1)
 ![Retro Style](https://flipdots.vercel.app/api/svg?text=RETRO&style=retro&dotSize=20&spacing=2&animationMode=sequential&v=1)
 ![Modern Style](https://flipdots.vercel.app/api/svg?text=MODERN&style=modern&dotSize=20&spacing=2&animationMode=sequential&v=1)
+![Neon Style](https://flipdots.vercel.app/api/svg?text=NEON&style=neon&dotSize=20&spacing=2&animationMode=sequential&v=1)
+![Ocean Style](https://flipdots.vercel.app/api/svg?text=OCEAN&style=ocean&dotSize=20&spacing=2&animationMode=sequential&v=1)
+![Sunset Style](https://flipdots.vercel.app/api/svg?text=SUNSET&style=sunset&dotSize=20&spacing=2&animationMode=sequential&v=1)
 
 ### カスタムカラー
 
@@ -159,17 +166,77 @@ GitHub README.mdに直接埋め込むことができるflip dotイメージを�
 
 テキストの代わりにドットパターンを直接定義できます。`1`はオンドット、`0`はオフドットを意味し、行はカンマで区切ります。
 
+**2つの入力形式に対応しています:**
+
+| 形式 | 例 | 説明 |
+|------|-----|------|
+| Binary | `00100000100` | 各文字が1ドット（0=オフ、1=オン） |
+| Hex | `104` | hex1桁 = 4ビット — URLを約3倍短縮 |
+
+> **自動検出**: `0`と`1`以外の文字（`2〜9`、`a〜f`）があればhexとして処理します。既存のbinary形式は引き続き使用できます。
+
+**Hex変換例**（星形パターン、11列 → 3桁hex）:
+```
+Binary: 00100000100,00010001000,00111111100,01101110110,11111111111,10111111101,10100000101,00011011000
+Hex:       104,     088,         0fc,         1b6,         7ff,         77d,         505,         0d8
+```
+
 ### ハート形
 ![Heart Pattern](https://flipdots.vercel.app/api/svg?customdots=0110110,1111111,1111111,0111110,0011100,0001000&style=dark&dotOn=ff69b4&dotSize=20&spacing=2&v=1)
+```markdown
+https://flipdots.vercel.app/api/svg?customdots=36,7f,7f,3e,1c,08&style=dark&dotOn=ff69b4&dotSize=20&spacing=2
+```
 
 ### チェックマーク
 ![Check Pattern](https://flipdots.vercel.app/api/svg?customdots=0000001,0000011,0000110,1001100,1111000,0110000&style=modern&dotOn=00ff00&dotSize=18&spacing=2&v=1)
+```markdown
+https://flipdots.vercel.app/api/svg?customdots=01,03,06,4c,78,30&style=modern&dotOn=00ff00&dotSize=18&spacing=2
+```
 
 ### 星形
 ![Star Pattern](https://flipdots.vercel.app/api/svg?customdots=00100000100,00010001000,00111111100,01101110110,11111111111,10111111101,10100000101,00011011000&style=dark&dotOn=ffff00&dotSize=16&spacing=2&v=1)
+```markdown
+https://flipdots.vercel.app/api/svg?customdots=104,088,0fc,1b6,7ff,77d,505,0d8&style=dark&dotOn=ffff00&dotSize=16&spacing=2
+```
 
 ### カスタムパターン + アニメーション
 ![Custom Animation](https://flipdots.vercel.app/api/svg?customdots=10110,01001,10110&animationMode=scroll&style=retro&dotSize=22&spacing=3&v=1)
+```markdown
+https://flipdots.vercel.app/api/svg?customdots=16,09,16&animationMode=sequential&style=retro&dotSize=22&spacing=3
+```
+
+## 🔷 ドット形状 & フリップエフェクト
+
+### ドット形状 (`dotShape`)
+
+| 値 | 説明 |
+|----|------|
+| `circle` | 円形ドット（デフォルト） |
+| `rect` | 四角形ドット |
+| `rounded` | 角丸四角形 |
+| `diamond` | ひし形 |
+
+```markdown
+https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=rect&style=dark
+https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=rounded&style=retro
+https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=diamond&style=modern
+```
+
+### フリップエフェクト (`flipEffect`)
+
+| 値 | 説明 |
+|----|------|
+| `rotate` | Z+Y軸の斜め回転（デフォルト、実際のハードウェアに近い） |
+| `flip` | 水平回転のみ（rotateY） |
+| `squeeze` | 横方向に潰れて戻るエフェクト |
+| `fade` | フェードイン/アウト |
+| `scale` | 縮んでから広がるエフェクト |
+
+```markdown
+https://flipdots.vercel.app/api/svg?text=HELLO&flipEffect=squeeze&animationMode=sequential
+https://flipdots.vercel.app/api/svg?text=HELLO&flipEffect=fade&animationMode=sequential
+https://flipdots.vercel.app/api/svg?text=HELLO&flipEffect=scale&animationMode=sequential
+```
 
 ## ✨ 特殊機能
 

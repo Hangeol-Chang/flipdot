@@ -55,9 +55,11 @@
 ✨ **新功能**
 - 🔤 **多行文本**: 用`_`换行
 - 📐 **对齐选项**: 垂直/水平对齐选项
-- 🎨 **自定义图案**: 设计您自己的点阵图案
+- 🎨 **自定义图案**: 设计您自己的点阵图案（支持二进制和十六进制格式）
 - 🎬 **4种动画模式**: static、sequential、scroll、waterfall
 - 🌈 **渐变**: 多种颜色的彩虹效果
+- 🔷 **点形状**: circle、rect、rounded、diamond
+- 💫 **翻转效果**: rotate、flip、squeeze、fade、scale
 
 ### 基本用法
 ![BASIC](https://flipdots.vercel.app/api/svg?text=YOUR_TEXT&style=dark&animationMode=sequential)
@@ -82,8 +84,10 @@
 | 参数 | 描述 | 默认值 | 示例 |
 |------|------|--------|------|
 | **`text`** | 要显示的文本（多行：用`_`分隔） | `HELLO` | `HELLO_WORLD` |
-| **`customdots`** | 自定义点阵图案（1=开，0=关） | - | `10110,01001,10110` |
-| **`style`** | 样式主题 | `dark` | `light`, `retro`, `modern`, `dark` |
+| **`customdots`** | 自定义点阵图案（二进制或十六进制，行用逗号分隔） | - | `10110,01001` 或 `16,09` |
+| **`style`** | 样式主题 | `dark` | `light`, `retro`, `modern`, `dark`, `neon`, `ocean`, `sunset` |
+| **`dotShape`** | 点的形状 | `circle` | `circle`, `rect`, `rounded`, `diamond` |
+| **`flipEffect`** | 翻转动画效果 | `rotate` | `rotate`, `flip`, `squeeze`, `fade`, `scale` |
 | **`dotSize`** | 点大小（px） | `20` | `10-40` |
 | **`spacing`** | 点间距（px） | `2` | `1-10` |
 | **`row`** | 行数限制 | - | `10` |
@@ -105,6 +109,12 @@
 ![Dark Style](https://flipdots.vercel.app/api/svg?text=DARK&style=dark&dotSize=20&spacing=2&animationMode=sequential&v=1)
 ![Retro Style](https://flipdots.vercel.app/api/svg?text=RETRO&style=retro&dotSize=20&spacing=2&animationMode=sequential&v=1)
 ![Modern Style](https://flipdots.vercel.app/api/svg?text=MODERN&style=modern&dotSize=20&spacing=2&animationMode=sequential&v=1)
+
+### 新增样式
+
+![Neon Style](https://flipdots.vercel.app/api/svg?text=NEON&style=neon&dotSize=20&spacing=2&animationMode=sequential&v=1)
+![Ocean Style](https://flipdots.vercel.app/api/svg?text=OCEAN&style=ocean&dotSize=20&spacing=2&animationMode=sequential&v=1)
+![Sunset Style](https://flipdots.vercel.app/api/svg?text=SUNSET&style=sunset&dotSize=20&spacing=2&animationMode=sequential&v=1)
 
 ### 自定义颜色
 
@@ -157,19 +167,84 @@
 
 ## 🎨 自定义点阵图案
 
-您可以直接定义点阵图案而不是文本。`1`表示开启的点，`0`表示关闭的点，行用逗号分隔。
+您可以直接定义点阵图案而不是文本。行用逗号分隔，支持两种格式：
+
+### 格式说明
+
+| 格式 | 示例 | 说明 |
+|------|------|------|
+| **二进制** | `10110,01001` | 直接用`0`/`1`表示每个点（开/关） |
+| **十六进制** | `16,09` | 十六进制值，每位数字代表4个点（更紧凑） |
+
+**十六进制转换示例**（心形图案）：
+```
+二进制行:  0110110  →  十六进制: 36
+           1111111  →          7f
+           1111111  →          7f
+           0111110  →          3e
+           0011100  →          1c
+           0001000  →          08
+```
 
 ### 心形
-![Heart Pattern](https://flipdots.vercel.app/api/svg?customdots=0110110,1111111,1111111,0111110,0011100,0001000&style=dark&dotOn=ff69b4&dotSize=20&spacing=2&v=1)
+![Heart Pattern](https://flipdots.vercel.app/api/svg?customdots=36,7f,7f,3e,1c,08&style=dark&dotOn=ff69b4&dotSize=20&spacing=2&v=1)
+
+```markdown
+<!-- 十六进制（推荐，更短的URL） -->
+![Heart](https://flipdots.vercel.app/api/svg?customdots=36,7f,7f,3e,1c,08&style=dark&dotOn=ff69b4&dotSize=20&spacing=2)
+
+<!-- 二进制（原始格式，同样有效） -->
+![Heart](https://flipdots.vercel.app/api/svg?customdots=0110110,1111111,1111111,0111110,0011100,0001000&style=dark&dotOn=ff69b4&dotSize=20&spacing=2)
+```
 
 ### 复选标记
-![Check Pattern](https://flipdots.vercel.app/api/svg?customdots=0000001,0000011,0000110,1001100,1111000,0110000&style=modern&dotOn=00ff00&dotSize=18&spacing=2&v=1)
+![Check Pattern](https://flipdots.vercel.app/api/svg?customdots=01,03,06,4c,78,30&style=modern&dotOn=00ff00&dotSize=18&spacing=2&v=1)
 
 ### 星形
-![Star Pattern](https://flipdots.vercel.app/api/svg?customdots=00100000100,00010001000,00111111100,01101110110,11111111111,10111111101,10100000101,00011011000&style=dark&dotOn=ffff00&dotSize=16&spacing=2&v=1)
+![Star Pattern](https://flipdots.vercel.app/api/svg?customdots=104,088,0fc,6f6,7ff,6fd,685,0d8&style=dark&dotOn=ffff00&dotSize=16&spacing=2&v=1)
 
 ### 自定义图案 + 动画
-![Custom Animation](https://flipdots.vercel.app/api/svg?customdots=10110,01001,10110&animationMode=scroll&style=retro&dotSize=22&spacing=3&v=1)
+![Custom Animation](https://flipdots.vercel.app/api/svg?customdots=16,09,16&animationMode=scroll&style=retro&dotSize=22&spacing=3&v=1)
+
+## 🔷 点形状 & 翻转效果
+
+### 点形状（`dotShape`）
+
+| 值 | 说明 |
+|----|------|
+| `circle` | 圆形（默认） |
+| `rect` | 矩形 |
+| `rounded` | 圆角矩形 |
+| `diamond` | 菱形 |
+
+![Circle Shape](https://flipdots.vercel.app/api/svg?text=SHAPE&dotShape=circle&style=dark&dotSize=20&spacing=2&animationMode=sequential&v=1)
+![Rect Shape](https://flipdots.vercel.app/api/svg?text=SHAPE&dotShape=rect&style=dark&dotSize=20&spacing=2&animationMode=sequential&v=1)
+![Rounded Shape](https://flipdots.vercel.app/api/svg?text=SHAPE&dotShape=rounded&style=dark&dotSize=20&spacing=2&animationMode=sequential&v=1)
+![Diamond Shape](https://flipdots.vercel.app/api/svg?text=SHAPE&dotShape=diamond&style=dark&dotSize=20&spacing=2&animationMode=sequential&v=1)
+
+```markdown
+![Rect](https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=rect&style=dark&animationMode=sequential)
+![Diamond](https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=diamond&style=retro&animationMode=sequential)
+```
+
+### 翻转效果（`flipEffect`）
+
+| 值 | 说明 |
+|----|------|
+| `rotate` | 三维旋转翻转（默认） |
+| `flip` | 水平翻转 |
+| `squeeze` | 水平挤压效果 |
+| `fade` | 淡入淡出 |
+| `scale` | 缩放效果 |
+
+![Rotate Effect](https://flipdots.vercel.app/api/svg?text=FLIP&flipEffect=rotate&style=dark&dotSize=20&spacing=2&animationMode=sequential&v=1)
+![Squeeze Effect](https://flipdots.vercel.app/api/svg?text=FLIP&flipEffect=squeeze&style=retro&dotSize=20&spacing=2&animationMode=sequential&v=1)
+![Fade Effect](https://flipdots.vercel.app/api/svg?text=FLIP&flipEffect=fade&style=modern&dotSize=20&spacing=2&animationMode=sequential&v=1)
+
+```markdown
+![Squeeze](https://flipdots.vercel.app/api/svg?text=HELLO&flipEffect=squeeze&style=dark&animationMode=sequential)
+![Fade](https://flipdots.vercel.app/api/svg?text=HELLO&flipEffect=fade&style=modern&animationMode=sequential)
+```
 
 ## ✨ 特殊功能
 

@@ -55,9 +55,11 @@ Reproduces the operation of actual flip-dot hardware.
 ✨ **New Features**
 - 🔤 **Multi-line Text**: Line breaks with `_`
 - 📐 **Alignment Options**: Vertical/horizontal alignment options
-- 🎨 **Custom Patterns**: Design your own dot patterns
+- 🎨 **Custom Patterns**: Design your own dot patterns (binary or hex)
 - 🎬 **4 Animation Modes**: static, sequential, scroll, waterfall
 - 🌈 **Gradients**: Rainbow effects with multiple colors
+- 🔷 **Dot Shapes**: circle, rect, rounded, diamond
+- ⚡ **Flip Effects**: rotate, flip, squeeze, fade, scale
 
 ### Basic Usage
 ![BASIC](https://flipdots.vercel.app/api/svg?text=YOUR_TEXT&style=dark&animationMode=sequential)
@@ -82,10 +84,12 @@ Reproduces the operation of actual flip-dot hardware.
 | Parameter | Description | Default | Example |
 |-----------|-------------|---------|---------|
 | **`text`** | Text to display (multi-line: separated by `_`, spaces: use `+`) | `HELLO` | `HELLO_WORLD` |
-| **`customdots`** | Custom dot pattern (1=on, 0=off) | - | `10110,01001,10110` |
-| **`style`** | Style theme | `dark` | `light`, `retro`, `modern`, `dark` |
+| **`customdots`** | Custom dot pattern — binary (`10110`) or hex (`16`) format | - | `10110,01001` or `16,09,16` |
+| **`style`** | Style theme | `dark` | `dark`, `light`, `retro`, `modern`, `neon`, `ocean`, `sunset` |
 | **`dotSize`** | Dot size (px) | `20` | `10-40` |
 | **`spacing`** | Dot spacing (px) | `2` | `1-10` |
+| **`dotShape`** | Dot shape | `circle` | `circle`, `rect`, `rounded`, `diamond` |
+| **`flipEffect`** | Flip animation style | `rotate` | `rotate`, `flip`, `squeeze`, `fade`, `scale` |
 | **`row`** | Row count limit | - | `10` |
 | **`column`** | Column count limit | - | `20` |
 | **`align`** | Vertical alignment | `start` | `start`, `center`, `end` |
@@ -105,6 +109,9 @@ Reproduces the operation of actual flip-dot hardware.
 ![Dark Style](https://flipdots.vercel.app/api/svg?text=DARK&style=dark&dotSize=20&spacing=2&animationMode=sequential&v=1)
 ![Retro Style](https://flipdots.vercel.app/api/svg?text=RETRO&style=retro&dotSize=20&spacing=2&animationMode=sequential&v=1)
 ![Modern Style](https://flipdots.vercel.app/api/svg?text=MODERN&style=modern&dotSize=20&spacing=2&animationMode=sequential&v=1)
+![Neon Style](https://flipdots.vercel.app/api/svg?text=NEON&style=neon&dotSize=20&spacing=2&animationMode=sequential&v=1)
+![Ocean Style](https://flipdots.vercel.app/api/svg?text=OCEAN&style=ocean&dotSize=20&spacing=2&animationMode=sequential&v=1)
+![Sunset Style](https://flipdots.vercel.app/api/svg?text=SUNSET&style=sunset&dotSize=20&spacing=2&animationMode=sequential&v=1)
 
 ### Custom Colors
 
@@ -183,28 +190,76 @@ https://flipdots.vercel.app/api/svg?text=ALIGN_BOTTOM_RIGHT&row=25&column=45&ali
 
 You can define dot patterns directly instead of text. `1` means on dot, `0` means off dot, and rows are separated by commas.
 
+**Two formats are supported:**
+
+| Format | Example | Description |
+|--------|---------|-------------|
+| Binary | `00100000100` | Each character is one dot (0=off, 1=on) |
+| Hex | `104` | Each hex digit encodes 4 dots — ~3× shorter URL |
+
+> **Format auto-detection**: any character outside `0` and `1` (e.g. `2–9`, `a–f`) triggers hex mode. Binary format is fully backward-compatible.
+
+**Hex encoding example** (star pattern, 11 columns → 3 hex digits per row):
+```
+Binary: 00100000100,00010001000,00111111100,01101110110,11111111111,10111111101,10100000101,00011011000
+Hex:       104,     088,         0fc,         1b6,         7ff,         77d,         505,         0d8
+```
+
 ### Heart Shape
 ![Heart Pattern](https://flipdots.vercel.app/api/svg?customdots=0110110,1111111,1111111,0111110,0011100,0001000&style=dark&dotOn=ff69b4&dotSize=20&spacing=2&v=1)
 ```markdown
-https://flipdots.vercel.app/api/svg?customdots=01101100,11111110,11111110,01111100,00111000,00010000&style=dark&dotOn=ff69b4&dotSize=20&spacing=2
+https://flipdots.vercel.app/api/svg?customdots=36,7f,7f,3e,1c,08&style=dark&dotOn=ff69b4&dotSize=20&spacing=2
 ```
 
 ### Check Mark
 ![Check Pattern](https://flipdots.vercel.app/api/svg?customdots=0000001,0000011,0000110,1001100,1111000,0110000&style=modern&dotOn=00ff00&dotSize=18&spacing=2&v=1)
 ```markdown
-https://flipdots.vercel.app/api/svg?customdots=00000010,00000110,00001100,10011000,11110000,01100000&style=modern&dotOn=00ff00&dotSize=18&spacing=2
+https://flipdots.vercel.app/api/svg?customdots=01,03,06,4c,78,30&style=modern&dotOn=00ff00&dotSize=18&spacing=2
 ```
 
 ### Star Shape
 ![Star Pattern](https://flipdots.vercel.app/api/svg?customdots=00100000100,00010001000,00111111100,01101110110,11111111111,10111111101,10100000101,00011011000&style=dark&dotOn=ffff00&dotSize=16&spacing=2&v=1)
 ```markdown
-https://flipdots.vercel.app/api/svg?customdots=00100000100,00010001000,00111111100,01101110110,11111111111,10111111101,10100000101,00011011000&style=dark&dotOn=ffff00&dotSize=16&spacing=2
+https://flipdots.vercel.app/api/svg?customdots=104,088,0fc,1b6,7ff,77d,505,0d8&style=dark&dotOn=ffff00&dotSize=16&spacing=2
 ```
 
 ### Custom Pattern + Animation
 ![Custom Animation](https://flipdots.vercel.app/api/svg?customdots=10110,01001,10110&animationMode=scroll&style=retro&dotSize=22&spacing=3&v=1)
 ```markdown
-https://flipdots.vercel.app/api/svg?customdots=10110,01001,10110&animationMode=sequential&style=retro&dotSize=22&spacing=3
+https://flipdots.vercel.app/api/svg?customdots=16,09,16&animationMode=sequential&style=retro&dotSize=22&spacing=3
+```
+
+## 🔷 Dot Shape & Flip Effect
+
+### Dot Shapes (`dotShape`)
+
+| Value | Description |
+|-------|-------------|
+| `circle` | Round dot (default) |
+| `rect` | Square dot |
+| `rounded` | Rounded square |
+| `diamond` | Diamond / rotated square |
+
+```markdown
+https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=rect&style=dark
+https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=rounded&style=retro
+https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=diamond&style=modern
+```
+
+### Flip Effects (`flipEffect`)
+
+| Value | Description |
+|-------|-------------|
+| `rotate` | Diagonal rotation on Z+Y axes (default, hardware-accurate) |
+| `flip` | Pure horizontal flip (rotateY) |
+| `squeeze` | Squishes to a line then expands back |
+| `fade` | Fade in/out |
+| `scale` | Shrinks then grows back |
+
+```markdown
+https://flipdots.vercel.app/api/svg?text=HELLO&flipEffect=squeeze&animationMode=sequential
+https://flipdots.vercel.app/api/svg?text=HELLO&flipEffect=fade&animationMode=sequential
+https://flipdots.vercel.app/api/svg?text=HELLO&flipEffect=scale&animationMode=sequential
 ```
 
 ## ✨ Special Features

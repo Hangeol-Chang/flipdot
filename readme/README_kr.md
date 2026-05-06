@@ -55,9 +55,11 @@ GitHub README.md에 직접 임베드할 수 있는 flip dot 이미지를 생성�
 ✨ **새로운 기능들**
 - 🔤 **여러 줄 텍스트**: `_`으로 줄바꿈
 - 📐 **정렬 기능**: 세로/가로 정렬 옵션
-- 🎨 **커스텀 패턴**: 직접 도트 패턴 설계
+- 🎨 **커스텀 패턴**: 직접 도트 패턴 설계 (binary 또는 hex)
 - 🎬 **4가지 애니메이션**: static, sequential, scroll, waterfall
 - 🌈 **그라디언트**: 여러 색상으로 무지개 효과
+- 🔷 **도트 모양**: circle, rect, rounded, diamond
+- ⚡ **뒤집기 효과**: rotate, flip, squeeze, fade, scale
 
 ### 기본 사용법
 ![BASIC](https://flipdots.vercel.app/api/svg?text=YOUR_TEXT&style=dark&animationMode=sequential)
@@ -82,10 +84,12 @@ GitHub README.md에 직접 임베드할 수 있는 flip dot 이미지를 생성�
 | 파라미터 | 설명 | 기본값 | 예시 |
 |---------|------|--------|------|
 | **`text`** | 표시할 텍스트 (여러 줄: `_`으로 구분) | `HELLO` | `HELLO_WORLD` |
-| **`customdots`** | 커스텀 도트 패턴 (1=켜짐, 0=꺼짐) | - | `10110,01001,10110` |
-| **`style`** | 스타일 테마 | `dark` | `light`, `retro`, `modern`, `dark` |
+| **`customdots`** | 커스텀 도트 패턴 — binary(`10110`) 또는 hex(`16`) 형식 | - | `10110,01001` 또는 `16,09,16` |
+| **`style`** | 스타일 테마 | `dark` | `dark`, `light`, `retro`, `modern`, `neon`, `ocean`, `sunset` |
 | **`dotSize`** | 도트 크기 (px) | `20` | `10-40` |
 | **`spacing`** | 도트 간격 (px) | `2` | `1-10` |
+| **`dotShape`** | 도트 모양 | `circle` | `circle`, `rect`, `rounded`, `diamond` |
+| **`flipEffect`** | 뒤집기 효과 | `rotate` | `rotate`, `flip`, `squeeze`, `fade`, `scale` |
 | **`row`** | 행 개수 제한 | - | `10` |
 | **`column`** | 열 개수 제한 | - | `20` |
 | **`align`** | 세로 정렬 | `start` | `start`, `center`, `end` |
@@ -105,6 +109,9 @@ GitHub README.md에 직접 임베드할 수 있는 flip dot 이미지를 생성�
 ![Dark Style](https://flipdots.vercel.app/api/svg?text=DARK&style=dark&dotSize=20&spacing=2&animationMode=sequential&v=1)
 ![Retro Style](https://flipdots.vercel.app/api/svg?text=RETRO&style=retro&dotSize=20&spacing=2&animationMode=sequential&v=1)
 ![Modern Style](https://flipdots.vercel.app/api/svg?text=MODERN&style=modern&dotSize=20&spacing=2&animationMode=sequential&v=1)
+![Neon Style](https://flipdots.vercel.app/api/svg?text=NEON&style=neon&dotSize=20&spacing=2&animationMode=sequential&v=1)
+![Ocean Style](https://flipdots.vercel.app/api/svg?text=OCEAN&style=ocean&dotSize=20&spacing=2&animationMode=sequential&v=1)
+![Sunset Style](https://flipdots.vercel.app/api/svg?text=SUNSET&style=sunset&dotSize=20&spacing=2&animationMode=sequential&v=1)
 
 ### 커스텀 색상
 
@@ -183,28 +190,76 @@ https://flipdots.vercel.app/api/svg?text=ALIGN_BOTTOM_RIGHT&row=25&column=45&ali
 
 텍스트 대신 직접 도트 패턴을 정의할 수 있습니다. `1`은 켜진 도트, `0`은 꺼진 도트를 의미하며, 콤마로 행을 구분합니다.
 
+**두 가지 입력 형식을 지원합니다:**
+
+| 형식 | 예시 | 설명 |
+|------|------|------|
+| Binary | `00100000100` | 각 문자가 도트 1개 (0=꺼짐, 1=켜짐) |
+| Hex | `104` | hex 1자리 = 4비트 — URL 약 3배 단축 |
+
+> **자동 감지**: `0`과 `1` 이외의 문자(`2~9`, `a~f`)가 있으면 hex로 처리합니다. 기존 binary 형식은 그대로 사용 가능합니다.
+
+**Hex 변환 예시** (갤러그 패턴, 11열 → 3자리 hex):
+```
+Binary: 00100000100,00010001000,00111111100,01101110110,11111111111,10111111101,10100000101,00011011000
+Hex:       104,     088,         0fc,         1b6,         7ff,         77d,         505,         0d8
+```
+
 ### 하트 모양
 ![Heart Pattern](https://flipdots.vercel.app/api/svg?customdots=0110110,1111111,1111111,0111110,0011100,0001000&style=dark&dotOn=ff69b4&dotSize=20&spacing=2&v=1)
 ```markdown
-https://flipdots.vercel.app/api/svg?customdots=01101100,11111110,11111110,01111100,00111000,00010000&style=dark&dotOn=ff69b4&dotSize=20&spacing=2
+https://flipdots.vercel.app/api/svg?customdots=36,7f,7f,3e,1c,08&style=dark&dotOn=ff69b4&dotSize=20&spacing=2
 ```
 
 ### 체크마크
 ![Check Pattern](https://flipdots.vercel.app/api/svg?customdots=0000001,0000011,0000110,1001100,1111000,0110000&style=modern&dotOn=00ff00&dotSize=18&spacing=2&v=1)
 ```markdown
-https://flipdots.vercel.app/api/svg?customdots=00000010,00000110,00001100,10011000,11110000,01100000&style=modern&dotOn=00ff00&dotSize=18&spacing=2
+https://flipdots.vercel.app/api/svg?customdots=01,03,06,4c,78,30&style=modern&dotOn=00ff00&dotSize=18&spacing=2
 ```
 
 ### 갤러그 뿌슝
 ![Star Pattern](https://flipdots.vercel.app/api/svg?customdots=00100000100,00010001000,00111111100,01101110110,11111111111,10111111101,10100000101,00011011000&style=dark&dotOn=ffff00&dotSize=16&spacing=2&v=1)
 ```markdown
-https://flipdots.vercel.app/api/svg?customdots=00100000100,00010001000,00111111100,01101110110,11111111111,10111111101,10100000101,00011011000&style=dark&dotOn=ffff00&dotSize=16&spacing=2
+https://flipdots.vercel.app/api/svg?customdots=104,088,0fc,1b6,7ff,77d,505,0d8&style=dark&dotOn=ffff00&dotSize=16&spacing=2
 ```
 
 ### 커스텀 패턴 + 애니메이션
 ![Custom Animation](https://flipdots.vercel.app/api/svg?customdots=10110,01001,10110&animationMode=scroll&style=retro&dotSize=22&spacing=3&v=1)
 ```markdown
-https://flipdots.vercel.app/api/svg?customdots=10110,01001,10110&animationMode=sequential&style=retro&dotSize=22&spacing=3
+https://flipdots.vercel.app/api/svg?customdots=16,09,16&animationMode=sequential&style=retro&dotSize=22&spacing=3
+```
+
+## 🔷 도트 모양 & 뒤집기 효과
+
+### 도트 모양 (`dotShape`)
+
+| 값 | 설명 |
+|----|------|
+| `circle` | 원형 도트 (기본값) |
+| `rect` | 사각형 도트 |
+| `rounded` | 둥근 사각형 |
+| `diamond` | 마름모 |
+
+```markdown
+https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=rect&style=dark
+https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=rounded&style=retro
+https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=diamond&style=modern
+```
+
+### 뒤집기 효과 (`flipEffect`)
+
+| 값 | 설명 |
+|----|------|
+| `rotate` | Z+Y축 대각선 회전 (기본값, 실제 하드웨어와 유사) |
+| `flip` | 순수 수평 회전 (rotateY) |
+| `squeeze` | 가로로 눌렸다 펴지는 효과 |
+| `fade` | 페이드 인/아웃 |
+| `scale` | 작아졌다 커지는 효과 |
+
+```markdown
+https://flipdots.vercel.app/api/svg?text=HELLO&flipEffect=squeeze&animationMode=sequential
+https://flipdots.vercel.app/api/svg?text=HELLO&flipEffect=fade&animationMode=sequential
+https://flipdots.vercel.app/api/svg?text=HELLO&flipEffect=scale&animationMode=sequential
 ```
 
 ## ✨ 특수 기능
