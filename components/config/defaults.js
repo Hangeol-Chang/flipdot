@@ -10,9 +10,8 @@ export const DEFAULTS = {
     dotSize: 20,
     spacing: 2,
 
-    // Dot shape & flip effect
+    // Dot shape
     dotShape: 'circle',   // 'circle' | 'rect' | 'rounded' | 'diamond'
-    flipEffect: 'rotate', // 'rotate' | 'flip' | 'squeeze' | 'fade' | 'scale'
 
     // Animation defaults
     animationMode: 'static',
@@ -62,8 +61,6 @@ export const DIRECTIONS = ['normal', 'reverse'];
 export const ALIGNMENTS = ['start', 'center', 'end'];
 
 export const DOT_SHAPES = ['circle', 'rect', 'rounded', 'diamond'];
-
-export const FLIP_EFFECTS = ['rotate', 'flip', 'squeeze', 'fade', 'scale'];
 
 // URL 디코딩 맵
 export const URL_DECODED_MAP = {

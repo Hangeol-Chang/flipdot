@@ -46,19 +46,15 @@ export function calculateSvgDimensions(pattern, options) {
 }
 
 /**
- * 단일 dot 셀(배경 + 악센트 + 도형)을 SVG 문자열로 반환
+ * 단일 dot 셀을 SVG 문자열로 반환 (배경·악센트·도형은 shape이 전담)
  */
-function renderDotCell(x, y, { dotSize, totalDotSize, totalPadding, dotRadius, colors, dotColor, className, style, dataAttrs, shape }) {
-    const cellX  = x * totalDotSize + totalPadding;
-    const cellY  = y * totalDotSize + totalPadding;
-    const cx     = cellX + dotSize / 2;
-    const cy     = cellY + dotSize / 2;
+function renderDotCell(x, y, { dotSize, totalDotSize, totalPadding, dotRadius, colors, isOn, dotOnColor, className, style, dataAttrs, shape }) {
+    const cellX = x * totalDotSize + totalPadding;
+    const cellY = y * totalDotSize + totalPadding;
+    const cx    = cellX + dotSize / 2;
+    const cy    = cellY + dotSize / 2;
 
-    const bg      = `<rect x="${cellX}" y="${cellY}" width="${dotSize}" height="${dotSize}" fill="${colors.background}"/>`;
-    const accent  = `<polygon points="${cellX},${cellY} ${cellX + 4},${cellY} ${cellX},${cellY + 4}" fill="${colors.shadow}"/>`;
-    const dot     = shape.render({ cx, cy, dotRadius, dotSize, dotColor, className, style, dataAttrs });
-
-    return bg + accent + dot;
+    return shape.render({ cx, cy, cellX, cellY, dotRadius, dotSize, isOn, dotOnColor, colors, className, style, dataAttrs });
 }
 
 /**
@@ -74,17 +70,18 @@ function generateStaticDots(pattern, options, dimensions) {
 
     for (let y = 0; y < pattern.height; y++) {
         for (let x = 0; x < pattern.width; x++) {
-            const shouldFlip = pattern.data[y]?.[x] === 1;
-            const dotColor   = shouldFlip && dotOnColors.length > 1
+            const isOn       = pattern.data[y]?.[x] === 1;
+            const dotOnColor = dotOnColors.length > 1
                 ? calculateGradientColor(dotOnColors, x, pattern.width)
-                : shouldFlip ? colors.dotOn : colors.dotOff;
+                : colors.dotOn;
 
             dots += renderDotCell(x, y, {
                 dotSize, totalDotSize, totalPadding, dotRadius, colors,
-                dotColor,
-                className:  shouldFlip ? 'dot-on' : 'dot-off',
-                style:      `animation-delay: ${(x + y) * 0.08}s;`,
-                dataAttrs:  '',
+                isOn,
+                dotOnColor,
+                className: isOn ? 'dot-on' : 'dot-off',
+                style:     `animation-delay: ${(x + y) * 0.08}s;`,
+                dataAttrs: '',
                 shape,
             });
         }
@@ -106,16 +103,17 @@ function generateScrollDots(pattern, options, dimensions) {
 
     for (let y = 0; y < pattern.height; y++) {
         for (let x = 0; x < displayWidth; x++) {
-            const dotColor = dotOnColors.length > 1
+            const dotOnColor = dotOnColors.length > 1
                 ? calculateGradientColor(dotOnColors, x, displayWidth)
                 : colors.dotOn;
 
             dots += renderDotCell(x, y, {
                 dotSize, totalDotSize, totalPadding, dotRadius, colors,
-                dotColor: colors.dotOff,
-                className:  'scroll-dot',
-                style:      '',
-                dataAttrs:  ` data-x="${x}" data-y="${y}" data-on-color="${dotColor}"`,
+                isOn:      false,
+                dotOnColor,
+                className: 'scroll-dot',
+                style:     '',
+                dataAttrs: ` data-x="${x}" data-y="${y}" data-on-color="${dotOnColor}"`,
                 shape,
             });
         }
@@ -127,7 +125,7 @@ function generateScrollDots(pattern, options, dimensions) {
 /**
  * Waterfall 모드 dot 생성
  */
-function generateWaterfallDots(pattern, options, dimensions) {
+function generateWaterfallDots(options, dimensions) {
     const { dotSize, dotShape = DEFAULTS.dotShape, colors } = options;
     const { displayWidth, displayHeight, totalDotSize, totalPadding } = dimensions;
     const dotRadius   = dotSize / 2 - 1;
@@ -137,16 +135,17 @@ function generateWaterfallDots(pattern, options, dimensions) {
 
     for (let y = 0; y < displayHeight; y++) {
         for (let x = 0; x < displayWidth; x++) {
-            const dotColor = dotOnColors.length > 1
+            const dotOnColor = dotOnColors.length > 1
                 ? calculateGradientColor(dotOnColors, x, displayWidth)
                 : colors.dotOn;
 
             dots += renderDotCell(x, y, {
                 dotSize, totalDotSize, totalPadding, dotRadius, colors,
-                dotColor: colors.dotOff,
-                className:  'waterfall-dot',
-                style:      '',
-                dataAttrs:  ` data-x="${x}" data-y="${y}" data-on-color="${dotColor}"`,
+                isOn:      false,
+                dotOnColor,
+                className: 'waterfall-dot',
+                style:     '',
+                dataAttrs: ` data-x="${x}" data-y="${y}" data-on-color="${dotOnColor}"`,
                 shape,
             });
         }
@@ -166,19 +165,20 @@ export function generateFlipDotSVG(pattern, options) {
     if (options.animationMode === 'scroll') {
         dots = generateScrollDots(pattern, options, dimensions);
     } else if (options.animationMode === 'waterfall') {
-        dots = generateWaterfallDots(pattern, options, dimensions);
+        dots = generateWaterfallDots(options, dimensions);
     } else {
         dots = generateStaticDots(pattern, options, dimensions);
     }
 
+    const shape = shapeRegistry.getShape(options.dotShape ?? DEFAULTS.dotShape);
     const animationCSS = generateAnimationCSS(options.animationMode, {
         pattern,
         displayWidth,
         displayHeight,
-        colors:     options.colors,
-        speed:      options.speed,
-        direction:  options.direction,
-        flipEffect: options.flipEffect,
+        colors:    options.colors,
+        speed:     options.speed,
+        direction: options.direction,
+        shape,
     });
 
     return `<?xml version="1.0" encoding="UTF-8"?>

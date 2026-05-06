@@ -1,10 +1,25 @@
 /**
  * Animation Generator
  * 애니메이션 CSS 생성 모듈
+ * 효과 상태(off/mid/on)는 각 shape에서 가져온다.
  */
 
 import { ANIMATION_CONFIG } from '../config/defaults.js';
-import flipEffectRegistry from './effects.js';
+
+const DEFAULT_EFFECT = {
+    off: 'fill: {dotOff}; transform: rotateY(0deg);',
+    mid: 'fill: {dotOff}; transform: rotateY(90deg);',
+    on:  'fill: {dotOn}; transform: rotateY(180deg);',
+};
+
+function resolveColors(effect, colors) {
+    const resolve = (s) => s.replace(/\{dotOff\}/g, colors.dotOff).replace(/\{dotOn\}/g, colors.dotOn);
+    return {
+        off: resolve(effect.off),
+        mid: resolve(effect.mid),
+        on:  resolve(effect.on),
+    };
+}
 
 export function calculateTiming(speed = 1.0) {
     return {
@@ -18,8 +33,8 @@ export function calculateTiming(speed = 1.0) {
     };
 }
 
-export function generateStaticAnimation(colors, flipEffect = 'rotate') {
-    const e = flipEffectRegistry.resolve(flipEffect, colors);
+export function generateStaticAnimation(colors, shape) {
+    const e = resolveColors(shape?.effect ?? DEFAULT_EFFECT, colors);
     return `
         .dot-on {
             animation: staticFlip 0.8s ease-out forwards;
@@ -35,9 +50,9 @@ export function generateStaticAnimation(colors, flipEffect = 'rotate') {
     `;
 }
 
-export function generateSequentialAnimation(colors, speed = 1.0, flipEffect = 'rotate') {
+export function generateSequentialAnimation(colors, speed = 1.0, shape) {
     const timing = calculateTiming(speed);
-    const e = flipEffectRegistry.resolve(flipEffect, colors);
+    const e = resolveColors(shape?.effect ?? DEFAULT_EFFECT, colors);
     return `
         .dot-on {
             animation: sequentialFlip ${timing.sequentialCycleDuration}s ease-in-out infinite;
@@ -62,7 +77,6 @@ function buildKeyframes(name, activeSteps, timing, totalCycleDuration, totalScro
     for (let i = 0; i < activeSteps.length; i++) {
         const step = activeSteps[i];
 
-        // 연속 구간 중간이면 건너뜀 (앞에서 이미 처리됨)
         if (i > 0 && activeSteps[i - 1] === step - 1) continue;
 
         const t0 = (step * timing.stepInterval / totalCycleDuration) * 100;
@@ -73,7 +87,6 @@ function buildKeyframes(name, activeSteps, timing, totalCycleDuration, totalScro
         kf += `  ${t1.toFixed(3)}% { ${e.mid} }\n`;
         kf += `  ${t2.toFixed(3)}% { ${e.on}  }\n`;
 
-        // 연속 구간의 마지막 step 찾기
         let last = step;
         while (i < activeSteps.length - 1 && activeSteps[i + 1] === last + 1) {
             i++;
@@ -100,12 +113,12 @@ function buildKeyframes(name, activeSteps, timing, totalCycleDuration, totalScro
 
 const DOT_ANIM_BASE = 'transform-box: content-box; transform-origin: center center;';
 
-export function generateScrollAnimation(pattern, displayWidth, colors, speed = 1.0, direction = 'normal', flipEffect = 'rotate') {
+export function generateScrollAnimation(pattern, displayWidth, colors, speed = 1.0, direction = 'normal', shape) {
     const timing = calculateTiming(speed);
     const scrollSteps = pattern.width + displayWidth;
     const totalScrollTime = scrollSteps * timing.stepInterval;
     const totalCycleDuration = totalScrollTime + timing.pauseTime;
-    const e = flipEffectRegistry.resolve(flipEffect, colors);
+    const e = resolveColors(shape?.effect ?? DEFAULT_EFFECT, colors);
 
     let css = `.scroll-dot { animation-fill-mode: forwards; ${DOT_ANIM_BASE} }\n\n`;
 
@@ -130,12 +143,12 @@ export function generateScrollAnimation(pattern, displayWidth, colors, speed = 1
     return css;
 }
 
-export function generateWaterfallAnimation(pattern, displayHeight, displayWidth, colors, speed = 1.0, direction = 'normal', flipEffect = 'rotate') {
+export function generateWaterfallAnimation(pattern, displayHeight, displayWidth, colors, speed = 1.0, direction = 'normal', shape) {
     const timing = calculateTiming(speed);
     const scrollSteps = pattern.height + displayHeight;
     const totalScrollTime = scrollSteps * timing.stepInterval;
     const totalCycleDuration = totalScrollTime + timing.pauseTime;
-    const e = flipEffectRegistry.resolve(flipEffect, colors);
+    const e = resolveColors(shape?.effect ?? DEFAULT_EFFECT, colors);
 
     let css = `.waterfall-dot { animation-fill-mode: forwards; ${DOT_ANIM_BASE} }\n\n`;
 
@@ -161,17 +174,17 @@ export function generateWaterfallAnimation(pattern, displayHeight, displayWidth,
 }
 
 export function generateAnimationCSS(animationMode, options) {
-    const { pattern, displayWidth, displayHeight, colors, speed, direction, flipEffect = 'rotate' } = options;
+    const { pattern, displayWidth, displayHeight, colors, speed, direction, shape } = options;
 
     switch (animationMode) {
         case 'scroll':
-            return generateScrollAnimation(pattern, displayWidth, colors, speed, direction, flipEffect);
+            return generateScrollAnimation(pattern, displayWidth, colors, speed, direction, shape);
         case 'waterfall':
-            return generateWaterfallAnimation(pattern, displayHeight, displayWidth, colors, speed, direction, flipEffect);
+            return generateWaterfallAnimation(pattern, displayHeight, displayWidth, colors, speed, direction, shape);
         case 'sequential':
-            return generateSequentialAnimation(colors, speed, flipEffect);
+            return generateSequentialAnimation(colors, speed, shape);
         case 'static':
         default:
-            return generateStaticAnimation(colors, flipEffect);
+            return generateStaticAnimation(colors, shape);
     }
 }
