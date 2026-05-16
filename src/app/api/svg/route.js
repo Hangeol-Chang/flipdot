@@ -18,7 +18,6 @@ export async function GET(request) {
     const align        = searchParams.get('align')         || DEFAULTS.align;
     const justify      = searchParams.get('justify')       || DEFAULTS.justify;
     const dotShape     = searchParams.get('dotShape')      || DEFAULTS.dotShape;
-    const flipEffect   = searchParams.get('flipEffect')    || DEFAULTS.flipEffect;
     const customDots   = searchParams.get('customdots');
     const fixedRows    = searchParams.get('row')    ? parseInt(searchParams.get('row'))    : null;
     const fixedCols    = searchParams.get('column') ? parseInt(searchParams.get('column')) : null;
@@ -57,7 +56,6 @@ export async function GET(request) {
         align,
         justify,
         dotShape,
-        flipEffect,
     });
 
     return new NextResponse(svg, {

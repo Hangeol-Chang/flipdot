@@ -5,7 +5,7 @@
         "border": "#1A1A1A",
         "shadow": "#000000",
         "dotOn": "#FFFFFF",
-        "dotOff": "#222222"
+        "dotOff": "#333333"
     },
     "light": {
         "panelBackground": "#F5F5F5",

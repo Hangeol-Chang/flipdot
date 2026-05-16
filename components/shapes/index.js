@@ -14,9 +14,8 @@
 import circle  from './variants/circle.js';
 import rect    from './variants/rect.js';
 import rounded from './variants/rounded.js';
-import diamond from './variants/diamond.js';
 
-const shapes = { circle, rect, rounded, diamond };
+const shapes = { circle, rect, rounded };
 
 const shapeRegistry = {
     getShape(name) {

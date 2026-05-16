@@ -58,8 +58,7 @@
 - 🎨 **自定义图案**: 设计您自己的点阵图案（支持二进制和十六进制格式）
 - 🎬 **4种动画模式**: static、sequential、scroll、waterfall
 - 🌈 **渐变**: 多种颜色的彩虹效果
-- 🔷 **点形状**: circle、rect、rounded、diamond
-- 💫 **翻转效果**: rotate、flip、squeeze、fade、scale
+- 🔷 **点形状**: circle、rect、rounded
 
 ### 基本用法
 ![BASIC](https://flipdots.vercel.app/api/svg?text=YOUR_TEXT&style=dark&animationMode=sequential)
@@ -86,8 +85,7 @@
 | **`text`** | 要显示的文本（多行：用`_`分隔） | `HELLO` | `HELLO_WORLD` |
 | **`customdots`** | 自定义点阵图案（二进制或十六进制，行用逗号分隔） | - | `10110,01001` 或 `16,09` |
 | **`style`** | 样式主题 | `dark` | `light`, `retro`, `modern`, `dark`, `neon`, `ocean`, `sunset` |
-| **`dotShape`** | 点的形状 | `circle` | `circle`, `rect`, `rounded`, `diamond` |
-| **`flipEffect`** | 翻转动画效果 | `rotate` | `rotate`, `flip`, `squeeze`, `fade`, `scale` |
+| **`dotShape`** | 点的形状 | `circle` | `circle`, `rect`, `rounded` |
 | **`dotSize`** | 点大小（px） | `20` | `10-40` |
 | **`spacing`** | 点间距（px） | `2` | `1-10` |
 | **`row`** | 行数限制 | - | `10` |
@@ -206,7 +204,7 @@
 ### 自定义图案 + 动画
 ![Custom Animation](https://flipdots.vercel.app/api/svg?customdots=16,09,16&animationMode=scroll&style=retro&dotSize=22&spacing=3&v=1)
 
-## 🔷 点形状 & 翻转效果
+## 🔷 点形状
 
 ### 点形状（`dotShape`）
 
@@ -215,35 +213,14 @@
 | `circle` | 圆形（默认） |
 | `rect` | 矩形 |
 | `rounded` | 圆角矩形 |
-| `diamond` | 菱形 |
 
 ![Circle Shape](https://flipdots.vercel.app/api/svg?text=SHAPE&dotShape=circle&style=dark&dotSize=20&spacing=2&animationMode=sequential&v=1)
 ![Rect Shape](https://flipdots.vercel.app/api/svg?text=SHAPE&dotShape=rect&style=dark&dotSize=20&spacing=2&animationMode=sequential&v=1)
 ![Rounded Shape](https://flipdots.vercel.app/api/svg?text=SHAPE&dotShape=rounded&style=dark&dotSize=20&spacing=2&animationMode=sequential&v=1)
-![Diamond Shape](https://flipdots.vercel.app/api/svg?text=SHAPE&dotShape=diamond&style=dark&dotSize=20&spacing=2&animationMode=sequential&v=1)
 
 ```markdown
 ![Rect](https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=rect&style=dark&animationMode=sequential)
-![Diamond](https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=diamond&style=retro&animationMode=sequential)
-```
-
-### 翻转效果（`flipEffect`）
-
-| 值 | 说明 |
-|----|------|
-| `rotate` | 三维旋转翻转（默认） |
-| `flip` | 水平翻转 |
-| `squeeze` | 水平挤压效果 |
-| `fade` | 淡入淡出 |
-| `scale` | 缩放效果 |
-
-![Rotate Effect](https://flipdots.vercel.app/api/svg?text=FLIP&flipEffect=rotate&style=dark&dotSize=20&spacing=2&animationMode=sequential&v=1)
-![Squeeze Effect](https://flipdots.vercel.app/api/svg?text=FLIP&flipEffect=squeeze&style=retro&dotSize=20&spacing=2&animationMode=sequential&v=1)
-![Fade Effect](https://flipdots.vercel.app/api/svg?text=FLIP&flipEffect=fade&style=modern&dotSize=20&spacing=2&animationMode=sequential&v=1)
-
-```markdown
-![Squeeze](https://flipdots.vercel.app/api/svg?text=HELLO&flipEffect=squeeze&style=dark&animationMode=sequential)
-![Fade](https://flipdots.vercel.app/api/svg?text=HELLO&flipEffect=fade&style=modern&animationMode=sequential)
+![Rounded](https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=rounded&style=retro&animationMode=sequential)
 ```
 
 ## ✨ 特殊功能

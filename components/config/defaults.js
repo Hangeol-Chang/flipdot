@@ -11,7 +11,7 @@ export const DEFAULTS = {
     spacing: 2,
 
     // Dot shape
-    dotShape: 'circle',   // 'circle' | 'rect' | 'rounded' | 'diamond'
+    dotShape: 'circle',   // 'circle' | 'rect' | 'rounded'
 
     // Animation defaults
     animationMode: 'static',
@@ -60,7 +60,7 @@ export const DIRECTIONS = ['normal', 'reverse'];
 
 export const ALIGNMENTS = ['start', 'center', 'end'];
 
-export const DOT_SHAPES = ['circle', 'rect', 'rounded', 'diamond'];
+export const DOT_SHAPES = ['circle', 'rect', 'rounded'];
 
 // URL 디코딩 맵
 export const URL_DECODED_MAP = {

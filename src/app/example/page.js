@@ -9,7 +9,6 @@ export default function ExamplePage() {
     const [dotSize, setDotSize] = useState(20);
     const [spacing, setSpacing] = useState(2);
     const [dotShape, setDotShape] = useState('circle');
-    const [flipEffect, setFlipEffect] = useState('rotate');
     const [animationMode, setAnimationMode] = useState('static');
     const [speed, setSpeed] = useState(1.0);
     const [direction, setDirection] = useState('normal');
@@ -56,7 +55,6 @@ export default function ExamplePage() {
         if (align !== 'start') params.append('align', align);
         if (justify !== 'start') params.append('justify', justify);
         if (dotShape !== 'circle') params.append('dotShape', dotShape);
-        if (flipEffect !== 'rotate') params.append('flipEffect', flipEffect);
         if (dotOn) params.append('dotOn', dotOn.replace('#', ''));
         if (dotOff) params.append('dotOff', dotOff.replace('#', ''));
         if (background) params.append('background', background.replace('#', ''));
@@ -467,30 +465,6 @@ export default function ExamplePage() {
                                 <option value="circle">Circle (원형)</option>
                                 <option value="rect">Rect (사각형)</option>
                                 <option value="rounded">Rounded (둥근 사각형)</option>
-                                <option value="diamond">Diamond (마름모)</option>
-                            </select>
-                        </div>
-
-                        {/* 뒤집기 효과 */}
-                        <div>
-                            <label>뒤집기 효과: </label>
-                            <select
-                                value={flipEffect}
-                                onChange={(e) => setFlipEffect(e.target.value)}
-                                style={{
-                                    padding: '5px',
-                                    backgroundColor: '#333',
-                                    color: 'white',
-                                    border: '1px solid #555',
-                                    borderRadius: '4px',
-                                    width: '100%'
-                                }}
-                            >
-                                <option value="rotate">Rotate (대각선 회전)</option>
-                                <option value="flip">Flip (수평 회전)</option>
-                                <option value="squeeze">Squeeze (눌렸다 펴짐)</option>
-                                <option value="fade">Fade (페이드)</option>
-                                <option value="scale">Scale (크기 변화)</option>
                             </select>
                         </div>
 
@@ -789,8 +763,7 @@ export default function ExamplePage() {
                         
                         <h3>Dot 표현</h3>
                         <ul style={{ lineHeight: '1.6' }}>
-                            <li><strong>dotShape</strong>: circle, rect, rounded, diamond</li>
-                            <li><strong>flipEffect</strong>: rotate, flip, squeeze, fade, scale</li>
+                            <li><strong>dotShape</strong>: circle, rect, rounded</li>
                         </ul>
 
                         <h3>애니메이션 파라미터</h3>

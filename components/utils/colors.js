@@ -73,56 +73,6 @@ export function calculateGradientColor(colors, x, totalWidth) {
 }
 
 /**
- * 색상 밝기 조정
- * @param {string} hexColor - 원본 색상 (hex)
- * @param {number} percent - 밝기 변화 (-100 ~ 100)
- * @returns {string} - 조정된 색상 (hex)
- */
-export function adjustBrightness(hexColor, percent) {
-    const hex = hexColor.replace('#', '');
-    
-    const r = parseInt(hex.substr(0, 2), 16);
-    const g = parseInt(hex.substr(2, 2), 16);
-    const b = parseInt(hex.substr(4, 2), 16);
-    
-    const adjustedR = Math.max(0, Math.min(255, r + (r * percent / 100)));
-    const adjustedG = Math.max(0, Math.min(255, g + (g * percent / 100)));
-    const adjustedB = Math.max(0, Math.min(255, b + (b * percent / 100)));
-    
-    const newR = Math.round(adjustedR).toString(16).padStart(2, '0');
-    const newG = Math.round(adjustedG).toString(16).padStart(2, '0');
-    const newB = Math.round(adjustedB).toString(16).padStart(2, '0');
-    
-    return `#${newR}${newG}${newB}`;
-}
-
-/**
- * Hex 색상을 RGB 객체로 변환
- * @param {string} hexColor - hex 색상
- * @returns {Object} - { r, g, b }
- */
-export function hexToRgb(hexColor) {
-    const hex = hexColor.replace('#', '');
-    return {
-        r: parseInt(hex.substr(0, 2), 16),
-        g: parseInt(hex.substr(2, 2), 16),
-        b: parseInt(hex.substr(4, 2), 16)
-    };
-}
-
-/**
- * RGB를 Hex 색상으로 변환
- * @param {number} r - Red (0-255)
- * @param {number} g - Green (0-255)
- * @param {number} b - Blue (0-255)
- * @returns {string} - hex 색상
- */
-export function rgbToHex(r, g, b) {
-    const toHex = (c) => Math.round(Math.max(0, Math.min(255, c))).toString(16).padStart(2, '0');
-    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-}
-
-/**
  * 색상 문자열에서 색상 배열 추출
  * @param {string} colorString - 콤마로 구분된 색상 문자열
  * @returns {string[]} - 색상 배열

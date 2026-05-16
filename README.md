@@ -58,8 +58,7 @@ Reproduces the operation of actual flip-dot hardware.
 - 🎨 **Custom Patterns**: Design your own dot patterns (binary or hex)
 - 🎬 **4 Animation Modes**: static, sequential, scroll, waterfall
 - 🌈 **Gradients**: Rainbow effects with multiple colors
-- 🔷 **Dot Shapes**: circle, rect, rounded, diamond
-- ⚡ **Flip Effects**: rotate, flip, squeeze, fade, scale
+- 🔷 **Dot Shapes**: circle, rect, rounded
 
 ### Basic Usage
 ![BASIC](https://flipdots.vercel.app/api/svg?text=YOUR_TEXT&style=dark&animationMode=sequential)
@@ -88,8 +87,7 @@ Reproduces the operation of actual flip-dot hardware.
 | **`style`** | Style theme | `dark` | `dark`, `light`, `retro`, `modern`, `neon`, `ocean`, `sunset` |
 | **`dotSize`** | Dot size (px) | `20` | `10-40` |
 | **`spacing`** | Dot spacing (px) | `2` | `1-10` |
-| **`dotShape`** | Dot shape | `circle` | `circle`, `rect`, `rounded`, `diamond` |
-| **`flipEffect`** | Flip animation style | `rotate` | `rotate`, `flip`, `squeeze`, `fade`, `scale` |
+| **`dotShape`** | Dot shape | `circle` | `circle`, `rect`, `rounded` |
 | **`row`** | Row count limit | - | `10` |
 | **`column`** | Column count limit | - | `20` |
 | **`align`** | Vertical alignment | `start` | `start`, `center`, `end` |
@@ -229,7 +227,7 @@ https://flipdots.vercel.app/api/svg?customdots=104,088,0fc,1b6,7ff,77d,505,0d8&s
 https://flipdots.vercel.app/api/svg?customdots=16,09,16&animationMode=sequential&style=retro&dotSize=22&spacing=3
 ```
 
-## 🔷 Dot Shape & Flip Effect
+## 🔷 Dot Shape
 
 ### Dot Shapes (`dotShape`)
 
@@ -238,28 +236,10 @@ https://flipdots.vercel.app/api/svg?customdots=16,09,16&animationMode=sequential
 | `circle` | Round dot (default) |
 | `rect` | Square dot |
 | `rounded` | Rounded square |
-| `diamond` | Diamond / rotated square |
 
 ```markdown
 https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=rect&style=dark
 https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=rounded&style=retro
-https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=diamond&style=modern
-```
-
-### Flip Effects (`flipEffect`)
-
-| Value | Description |
-|-------|-------------|
-| `rotate` | Diagonal rotation on Z+Y axes (default, hardware-accurate) |
-| `flip` | Pure horizontal flip (rotateY) |
-| `squeeze` | Squishes to a line then expands back |
-| `fade` | Fade in/out |
-| `scale` | Shrinks then grows back |
-
-```markdown
-https://flipdots.vercel.app/api/svg?text=HELLO&flipEffect=squeeze&animationMode=sequential
-https://flipdots.vercel.app/api/svg?text=HELLO&flipEffect=fade&animationMode=sequential
-https://flipdots.vercel.app/api/svg?text=HELLO&flipEffect=scale&animationMode=sequential
 ```
 
 ## ✨ Special Features

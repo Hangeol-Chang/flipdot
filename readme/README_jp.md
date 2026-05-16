@@ -58,8 +58,7 @@ GitHub README.mdに直接埋め込むことができるflip dotイメージを�
 - 🎨 **カスタムパターン**: 独自のドットパターンを設計（binaryまたはhex形式）
 - 🎬 **4つのアニメーションモード**: static、sequential、scroll、waterfall
 - 🌈 **グラデーション**: 複数の色で虹効果
-- 🔷 **ドット形状**: circle、rect、rounded、diamond
-- ⚡ **フリップエフェクト**: rotate、flip、squeeze、fade、scale
+- 🔷 **ドット形状**: circle、rect、rounded
 
 ### 基本的な使用法
 ![BASIC](https://flipdots.vercel.app/api/svg?text=YOUR_TEXT&style=dark&animationMode=sequential)
@@ -88,8 +87,7 @@ GitHub README.mdに直接埋め込むことができるflip dotイメージを�
 | **`style`** | スタイルテーマ | `dark` | `dark`, `light`, `retro`, `modern`, `neon`, `ocean`, `sunset` |
 | **`dotSize`** | ドットサイズ（px） | `20` | `10-40` |
 | **`spacing`** | ドット間隔（px） | `2` | `1-10` |
-| **`dotShape`** | ドット形状 | `circle` | `circle`, `rect`, `rounded`, `diamond` |
-| **`flipEffect`** | フリップアニメーション | `rotate` | `rotate`, `flip`, `squeeze`, `fade`, `scale` |
+| **`dotShape`** | ドット形状 | `circle` | `circle`, `rect`, `rounded` |
 | **`row`** | 行数制限 | - | `10` |
 | **`column`** | 列数制限 | - | `20` |
 | **`align`** | 縦配置 | `start` | `start`, `center`, `end` |
@@ -205,7 +203,7 @@ https://flipdots.vercel.app/api/svg?customdots=104,088,0fc,1b6,7ff,77d,505,0d8&s
 https://flipdots.vercel.app/api/svg?customdots=16,09,16&animationMode=sequential&style=retro&dotSize=22&spacing=3
 ```
 
-## 🔷 ドット形状 & フリップエフェクト
+## 🔷 ドット形状
 
 ### ドット形状 (`dotShape`)
 
@@ -214,28 +212,10 @@ https://flipdots.vercel.app/api/svg?customdots=16,09,16&animationMode=sequential
 | `circle` | 円形ドット（デフォルト） |
 | `rect` | 四角形ドット |
 | `rounded` | 角丸四角形 |
-| `diamond` | ひし形 |
 
 ```markdown
 https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=rect&style=dark
 https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=rounded&style=retro
-https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=diamond&style=modern
-```
-
-### フリップエフェクト (`flipEffect`)
-
-| 値 | 説明 |
-|----|------|
-| `rotate` | Z+Y軸の斜め回転（デフォルト、実際のハードウェアに近い） |
-| `flip` | 水平回転のみ（rotateY） |
-| `squeeze` | 横方向に潰れて戻るエフェクト |
-| `fade` | フェードイン/アウト |
-| `scale` | 縮んでから広がるエフェクト |
-
-```markdown
-https://flipdots.vercel.app/api/svg?text=HELLO&flipEffect=squeeze&animationMode=sequential
-https://flipdots.vercel.app/api/svg?text=HELLO&flipEffect=fade&animationMode=sequential
-https://flipdots.vercel.app/api/svg?text=HELLO&flipEffect=scale&animationMode=sequential
 ```
 
 ## ✨ 特殊機能

@@ -58,8 +58,7 @@ GitHub README.md에 직접 임베드할 수 있는 flip dot 이미지를 생성�
 - 🎨 **커스텀 패턴**: 직접 도트 패턴 설계 (binary 또는 hex)
 - 🎬 **4가지 애니메이션**: static, sequential, scroll, waterfall
 - 🌈 **그라디언트**: 여러 색상으로 무지개 효과
-- 🔷 **도트 모양**: circle, rect, rounded, diamond
-- ⚡ **뒤집기 효과**: rotate, flip, squeeze, fade, scale
+- 🔷 **도트 모양**: circle, rect, rounded
 
 ### 기본 사용법
 ![BASIC](https://flipdots.vercel.app/api/svg?text=YOUR_TEXT&style=dark&animationMode=sequential)
@@ -88,8 +87,7 @@ GitHub README.md에 직접 임베드할 수 있는 flip dot 이미지를 생성�
 | **`style`** | 스타일 테마 | `dark` | `dark`, `light`, `retro`, `modern`, `neon`, `ocean`, `sunset` |
 | **`dotSize`** | 도트 크기 (px) | `20` | `10-40` |
 | **`spacing`** | 도트 간격 (px) | `2` | `1-10` |
-| **`dotShape`** | 도트 모양 | `circle` | `circle`, `rect`, `rounded`, `diamond` |
-| **`flipEffect`** | 뒤집기 효과 | `rotate` | `rotate`, `flip`, `squeeze`, `fade`, `scale` |
+| **`dotShape`** | 도트 모양 | `circle` | `circle`, `rect`, `rounded` |
 | **`row`** | 행 개수 제한 | - | `10` |
 | **`column`** | 열 개수 제한 | - | `20` |
 | **`align`** | 세로 정렬 | `start` | `start`, `center`, `end` |
@@ -229,7 +227,7 @@ https://flipdots.vercel.app/api/svg?customdots=104,088,0fc,1b6,7ff,77d,505,0d8&s
 https://flipdots.vercel.app/api/svg?customdots=16,09,16&animationMode=sequential&style=retro&dotSize=22&spacing=3
 ```
 
-## 🔷 도트 모양 & 뒤집기 효과
+## 🔷 도트 모양
 
 ### 도트 모양 (`dotShape`)
 
@@ -238,28 +236,10 @@ https://flipdots.vercel.app/api/svg?customdots=16,09,16&animationMode=sequential
 | `circle` | 원형 도트 (기본값) |
 | `rect` | 사각형 도트 |
 | `rounded` | 둥근 사각형 |
-| `diamond` | 마름모 |
 
 ```markdown
 https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=rect&style=dark
 https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=rounded&style=retro
-https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=diamond&style=modern
-```
-
-### 뒤집기 효과 (`flipEffect`)
-
-| 값 | 설명 |
-|----|------|
-| `rotate` | Z+Y축 대각선 회전 (기본값, 실제 하드웨어와 유사) |
-| `flip` | 순수 수평 회전 (rotateY) |
-| `squeeze` | 가로로 눌렸다 펴지는 효과 |
-| `fade` | 페이드 인/아웃 |
-| `scale` | 작아졌다 커지는 효과 |
-
-```markdown
-https://flipdots.vercel.app/api/svg?text=HELLO&flipEffect=squeeze&animationMode=sequential
-https://flipdots.vercel.app/api/svg?text=HELLO&flipEffect=fade&animationMode=sequential
-https://flipdots.vercel.app/api/svg?text=HELLO&flipEffect=scale&animationMode=sequential
 ```
 
 ## ✨ 특수 기능

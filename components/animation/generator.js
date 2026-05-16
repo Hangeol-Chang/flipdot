@@ -14,6 +14,19 @@ const DEFAULT_EFFECT = {
 
 function resolveColors(effect, colors) {
     const resolve = (s) => s.replace(/\{dotOff\}/g, colors.dotOff).replace(/\{dotOn\}/g, colors.dotOn);
+
+    if (effect.keyframes) {
+        const entries = Object.entries(effect.keyframes);
+        const keyframes = Object.fromEntries(entries.map(([k, v]) => [k, resolve(v)]));
+        const styles = entries.map(([, v]) => resolve(v));
+        return {
+            keyframes,
+            off: styles[0],
+            mid: styles[Math.floor(styles.length / 2)],
+            on:  styles[styles.length - 1],
+        };
+    }
+
     return {
         off: resolve(effect.off),
         mid: resolve(effect.mid),
@@ -35,17 +48,18 @@ export function calculateTiming(speed = 1.0) {
 
 export function generateStaticAnimation(colors, shape) {
     const e = resolveColors(shape?.effect ?? DEFAULT_EFFECT, colors);
+    const keyframeBody = e.keyframes
+        ? Object.entries(e.keyframes).map(([pct, style]) => `            ${pct} { ${style} }`).join('\n')
+        : `            0%   { ${e.off} }\n            50%  { ${e.mid} }\n            100% { ${e.on}  }`;
     return `
         .dot-on {
             animation: staticFlip 0.8s ease-out forwards;
             transform-box: content-box;
             transform-origin: center center;
         }
-        .dot-off { ${e.off} }
+        .dot-off { transform-box: fill-box; transform-origin: center center; ${e.off} }
         @keyframes staticFlip {
-            0%   { ${e.off} }
-            50%  { ${e.mid} }
-            100% { ${e.on}  }
+${keyframeBody}
         }
     `;
 }
@@ -59,7 +73,7 @@ export function generateSequentialAnimation(colors, speed = 1.0, shape) {
             transform-box: content-box;
             transform-origin: center center;
         }
-        .dot-off { ${e.off} }
+        .dot-off { transform-box: fill-box; transform-origin: center center; ${e.off} }
         @keyframes sequentialFlip {
             0%, 100% { ${e.off} }
             10%, 90% { ${e.mid} }

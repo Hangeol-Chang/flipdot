@@ -28,9 +28,6 @@ const styleRegistry = {
         }
         if (customColors.background) {
             colors.background = customColors.background;
-            colors.panelBackground = this.adjustBrightness(customColors.background, -20);
-            colors.border = this.adjustBrightness(customColors.background, 10);
-            colors.shadow = this.adjustBrightness(customColors.background, -30);
         }
         
         return colors;
@@ -59,25 +56,7 @@ const styleRegistry = {
         return name in styles;
     },
     
-    /**
-     * 색상 밝기 조정
-     */
-    adjustBrightness(hexColor, percent) {
-        const hex = hexColor.replace('#', '');
-        const r = parseInt(hex.substr(0, 2), 16);
-        const g = parseInt(hex.substr(2, 2), 16);
-        const b = parseInt(hex.substr(4, 2), 16);
-        
-        const adjustedR = Math.max(0, Math.min(255, r + (r * percent / 100)));
-        const adjustedG = Math.max(0, Math.min(255, g + (g * percent / 100)));
-        const adjustedB = Math.max(0, Math.min(255, b + (b * percent / 100)));
-        
-        const newR = Math.round(adjustedR).toString(16).padStart(2, '0');
-        const newG = Math.round(adjustedG).toString(16).padStart(2, '0');
-        const newB = Math.round(adjustedB).toString(16).padStart(2, '0');
-        
-        return `#${newR}${newG}${newB}`;
-    }
+
 };
 
 export default styleRegistry;
