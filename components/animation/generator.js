@@ -1,349 +1,204 @@
 /**
  * Animation Generator
- * 애니메이션 CSS 생성을 담당하는 모듈
+ * 애니메이션 CSS 생성 모듈
+ * 효과 상태(off/mid/on)는 각 shape에서 가져온다.
  */
 
 import { ANIMATION_CONFIG } from '../config/defaults.js';
 
-/**
- * 애니메이션 타이밍 계산
- */
+const DEFAULT_EFFECT = {
+    off: 'fill: {dotOff}; transform: rotateY(0deg);',
+    mid: 'fill: {dotOff}; transform: rotateY(90deg);',
+    on:  'fill: {dotOn}; transform: rotateY(180deg);',
+};
+
+function resolveColors(effect, colors) {
+    const resolve = (s) => s.replace(/\{dotOff\}/g, colors.dotOff).replace(/\{dotOn\}/g, colors.dotOn);
+
+    if (effect.keyframes) {
+        const entries = Object.entries(effect.keyframes);
+        const keyframes = Object.fromEntries(entries.map(([k, v]) => [k, resolve(v)]));
+        const styles = entries.map(([, v]) => resolve(v));
+        return {
+            keyframes,
+            off: styles[0],
+            mid: styles[Math.floor(styles.length / 2)],
+            on:  styles[styles.length - 1],
+        };
+    }
+
+    return {
+        off: resolve(effect.off),
+        mid: resolve(effect.mid),
+        on:  resolve(effect.on),
+    };
+}
+
 export function calculateTiming(speed = 1.0) {
     return {
-        flipDuration: ANIMATION_CONFIG.flipDuration / speed,
-        holdDuration: ANIMATION_CONFIG.holdDuration / speed,
-        stepInterval: ANIMATION_CONFIG.stepInterval / speed,
-        pauseTime: ANIMATION_CONFIG.pauseTime / speed,
+        flipDuration:            ANIMATION_CONFIG.flipDuration / speed,
+        holdDuration:            ANIMATION_CONFIG.holdDuration / speed,
+        stepInterval:            ANIMATION_CONFIG.stepInterval / speed,
+        pauseTime:               ANIMATION_CONFIG.pauseTime / speed,
         sequentialCycleDuration: ANIMATION_CONFIG.sequentialCycleDuration / speed,
-        staticFlipDuration: ANIMATION_CONFIG.staticFlipDuration,
+        staticFlipDuration:      ANIMATION_CONFIG.staticFlipDuration,
         diagonalDelayMultiplier: ANIMATION_CONFIG.diagonalDelayMultiplier,
     };
 }
 
-/**
- * Static 애니메이션 CSS 생성
- */
-export function generateStaticAnimation(colors) {
+export function generateStaticAnimation(colors, shape) {
+    const e = resolveColors(shape?.effect ?? DEFAULT_EFFECT, colors);
+    const keyframeBody = e.keyframes
+        ? Object.entries(e.keyframes).map(([pct, style]) => `            ${pct} { ${style} }`).join('\n')
+        : `            0%   { ${e.off} }\n            50%  { ${e.mid} }\n            100% { ${e.on}  }`;
     return `
-        /* Static/Basic 모드: 한 번만 실행되는 애니메이션 */
         .dot-on {
             animation: staticFlip 0.8s ease-out forwards;
             transform-box: content-box;
             transform-origin: center center;
         }
-        
-        .dot-off {
-            fill: ${colors.dotOff};
-            opacity: 1;
-            transform: none;
-        }
-        
+        .dot-off { transform-box: fill-box; transform-origin: center center; ${e.off} }
         @keyframes staticFlip {
-            0% {
-                fill: ${colors.dotOff};
-                transform: rotateZ(0deg) rotateY(0deg);
-                opacity: 1;
-            }
-            50% {
-                fill: ${colors.dotOff};
-                transform: rotateZ(45deg) rotateY(90deg);
-                opacity: 1;
-            }
-            100% {
-                fill: ${colors.dotOn};
-                transform: rotateZ(90deg) rotateY(180deg);
-                opacity: 1;
-            }
+${keyframeBody}
         }
     `;
 }
 
-/**
- * Sequential 애니메이션 CSS 생성
- */
-export function generateSequentialAnimation(colors, speed = 1.0) {
+export function generateSequentialAnimation(colors, speed = 1.0, shape) {
     const timing = calculateTiming(speed);
-    
+    const e = resolveColors(shape?.effect ?? DEFAULT_EFFECT, colors);
     return `
-        /* Sequential 모드: 순차적 반복 애니메이션 */
         .dot-on {
             animation: sequentialFlip ${timing.sequentialCycleDuration}s ease-in-out infinite;
             transform-box: content-box;
             transform-origin: center center;
         }
-        
-        .dot-off {
-            fill: ${colors.dotOff};
-            opacity: 1;
-            transform: none;
-        }
-        
+        .dot-off { transform-box: fill-box; transform-origin: center center; ${e.off} }
         @keyframes sequentialFlip {
-            0%, 100% {
-                fill: ${colors.dotOff};
-                transform: rotateZ(0deg) rotateY(0deg);
-                opacity: 1.0;
-            }
-            10%, 90% {
-                fill: ${colors.dotOff};
-                transform: rotateZ(45deg) rotateY(90deg);
-                opacity: 1;
-            }
-            20% {
-                fill: ${colors.dotOn};
-                transform: rotateZ(90deg) rotateY(180deg);
-                opacity: 1;
-            }
-            80% {
-                fill: ${colors.dotOn};
-                transform: rotateZ(90deg) rotateY(180deg);
-                opacity: 1;
-            }
+            0%, 100% { ${e.off} }
+            10%, 90% { ${e.mid} }
+            20%, 80% { ${e.on}  }
         }
     `;
 }
 
 /**
- * Scroll 애니메이션 CSS 생성
+ * scroll/waterfall 공통 per-dot keyframes 생성
  */
-export function generateScrollAnimation(pattern, displayWidth, colors, speed = 1.0, direction = 'normal') {
+function buildKeyframes(name, activeSteps, timing, totalCycleDuration, totalScrollTime, e) {
+    let kf = `@keyframes ${name} {\n  0% { ${e.off} }\n`;
+
+    for (let i = 0; i < activeSteps.length; i++) {
+        const step = activeSteps[i];
+
+        if (i > 0 && activeSteps[i - 1] === step - 1) continue;
+
+        const t0 = (step * timing.stepInterval / totalCycleDuration) * 100;
+        const t1 = t0 + (timing.flipDuration / 2 / totalCycleDuration) * 100;
+        const t2 = t0 + (timing.flipDuration     / totalCycleDuration) * 100;
+
+        kf += `  ${t0.toFixed(3)}% { ${e.off} }\n`;
+        kf += `  ${t1.toFixed(3)}% { ${e.mid} }\n`;
+        kf += `  ${t2.toFixed(3)}% { ${e.on}  }\n`;
+
+        let last = step;
+        while (i < activeSteps.length - 1 && activeSteps[i + 1] === last + 1) {
+            i++;
+            last = activeSteps[i];
+        }
+
+        const holdEnd    = last * timing.stepInterval + timing.holdDuration;
+        const flipOffEnd = holdEnd + timing.flipDuration;
+
+        const p0 = (holdEnd                             / totalCycleDuration) * 100;
+        const p1 = ((holdEnd + timing.flipDuration / 2) / totalCycleDuration) * 100;
+        const p2 = (flipOffEnd                          / totalCycleDuration) * 100;
+
+        kf += `  ${p0.toFixed(3)}% { ${e.on}  }\n`;
+        kf += `  ${p1.toFixed(3)}% { ${e.mid} }\n`;
+        kf += `  ${p2.toFixed(3)}% { ${e.off} }\n`;
+    }
+
+    const endPct = (totalScrollTime / totalCycleDuration) * 100;
+    kf += `  ${endPct.toFixed(3)}% { ${e.off} }\n`;
+    kf += `  100% { ${e.off} }\n}\n\n`;
+    return kf;
+}
+
+const DOT_ANIM_BASE = 'transform-box: content-box; transform-origin: center center;';
+
+export function generateScrollAnimation(pattern, displayWidth, colors, speed = 1.0, direction = 'normal', shape) {
     const timing = calculateTiming(speed);
-    const totalTextWidth = pattern.width;
-    const scrollSteps = totalTextWidth + displayWidth;
+    const scrollSteps = pattern.width + displayWidth;
     const totalScrollTime = scrollSteps * timing.stepInterval;
     const totalCycleDuration = totalScrollTime + timing.pauseTime;
-    
-    let animationCSS = `
-        /* 스크롤 모드 애니메이션 */
-        .scroll-dot {
-            animation-fill-mode: forwards;
-            transform-box: content-box;
-            transform-origin: center center;
-        }
-    `;
-    
+    const e = resolveColors(shape?.effect ?? DEFAULT_EFFECT, colors);
+
+    let css = `.scroll-dot { animation-fill-mode: forwards; ${DOT_ANIM_BASE} }\n\n`;
+
     for (let y = 0; y < pattern.height; y++) {
         for (let x = 0; x < displayWidth; x++) {
-            let keyframes = `@keyframes scroll-${x}-${y} {\n  0% { fill: ${colors.dotOff}; }\n`;
-            
-            let activeSteps = [];
+            const activeSteps = [];
             for (let step = 0; step < scrollSteps; step++) {
-                let textPosition;
-                if (direction === 'reverse') {
-                    textPosition = totalTextWidth - 1 - (step - x);
-                } else {
-                    textPosition = step - displayWidth + x + 1;
-                }
-                if (textPosition >= 0 && textPosition < totalTextWidth) {
-                    const shouldFlip = pattern.data[y] && pattern.data[y][textPosition] === 1;
-                    if (shouldFlip) {
-                        activeSteps.push(step);
-                    }
+                const pos = direction === 'reverse'
+                    ? pattern.width - 1 - (step - x)
+                    : step - displayWidth + x + 1;
+                if (pos >= 0 && pos < pattern.width && pattern.data[y]?.[pos] === 1) {
+                    activeSteps.push(step);
                 }
             }
-            
-            for (let i = 0; i < activeSteps.length; i++) {
-                const step = activeSteps[i];
-                const stepStartTime = step * timing.stepInterval;
-                const stepStartPercent = (stepStartTime / totalCycleDuration) * 100;
-                
-                const isPrevConsecutive = i > 0 && activeSteps[i - 1] === step - 1;
-                
-                if (isPrevConsecutive) {
-                    continue;
-                }
-                
-                const flipOnStart = stepStartPercent;
-                const flipOnMid = stepStartPercent + (timing.flipDuration / 2 / totalCycleDuration) * 100;
-                const flipOnEnd = stepStartPercent + (timing.flipDuration / totalCycleDuration) * 100;
-                
-                keyframes += `  ${flipOnStart}% { 
-                    fill: ${colors.dotOff}; 
-                    transform: rotateZ(0deg) rotateY(0deg);
-                }\n`;
-                keyframes += `  ${flipOnMid}% { 
-                    fill: ${colors.dotOff}; 
-                    transform: rotateZ(45deg) rotateY(90deg);
-                }\n`;
-                keyframes += `  ${flipOnEnd}% { 
-                    fill: ${colors.dotOn}; 
-                    transform: rotateZ(90deg) rotateY(180deg);
-                }\n`;
-                
-                let lastConsecutiveStep = step;
-                while (i < activeSteps.length - 1 && activeSteps[i + 1] === lastConsecutiveStep + 1) {
-                    i++;
-                    lastConsecutiveStep = activeSteps[i];
-                }
-                
-                const lastStepTime = lastConsecutiveStep * timing.stepInterval;
-                const holdEndTime = lastStepTime + timing.holdDuration;
-                const flipOffEndTime = holdEndTime + timing.flipDuration;
-                
-                const holdEndPercent = (holdEndTime / totalCycleDuration) * 100;
-                const flipOffMidPercent = ((holdEndTime + timing.flipDuration / 2) / totalCycleDuration) * 100;
-                const flipOffEndPercent = (flipOffEndTime / totalCycleDuration) * 100;
-                
-                keyframes += `  ${holdEndPercent}% { 
-                    fill: ${colors.dotOn}; 
-                    transform: rotateZ(90deg) rotateY(180deg);
-                }\n`;
-                keyframes += `  ${flipOffMidPercent}% { 
-                    fill: ${colors.dotOff}; 
-                    transform: rotateZ(45deg) rotateY(90deg);
-                }\n`;
-                keyframes += `  ${flipOffEndPercent}% { 
-                    fill: ${colors.dotOff}; 
-                    transform: rotateZ(0deg) rotateY(0deg);
-                }\n`;
-            }
-            
-            const scrollEndPercent = (totalScrollTime / totalCycleDuration) * 100;
-            keyframes += `  ${scrollEndPercent}% { fill: ${colors.dotOff}; }\n`;
-            keyframes += `  100% { fill: ${colors.dotOff}; }\n`;
-            keyframes += `}\n\n`;
-            
-            animationCSS += keyframes;
-            
-            animationCSS += `.scroll-dot[data-x="${x}"][data-y="${y}"] {\n`;
-            animationCSS += `  animation: scroll-${x}-${y} ${totalCycleDuration}s infinite ease-in-out;\n`;
-            animationCSS += `  transform-box: content-box;\n`;
-            animationCSS += `  transform-origin: center center;\n`;
-            animationCSS += `}\n\n`;
+
+            const name = `scroll-${x}-${y}`;
+            css += buildKeyframes(name, activeSteps, timing, totalCycleDuration, totalScrollTime, e);
+            css += `.scroll-dot[data-x="${x}"][data-y="${y}"] { animation: ${name} ${totalCycleDuration}s infinite ease-in-out; ${DOT_ANIM_BASE} }\n\n`;
         }
     }
-    
-    return animationCSS;
+
+    return css;
 }
 
-/**
- * Waterfall 애니메이션 CSS 생성
- */
-export function generateWaterfallAnimation(pattern, displayHeight, displayWidth, colors, speed = 1.0, direction = 'normal') {
+export function generateWaterfallAnimation(pattern, displayHeight, displayWidth, colors, speed = 1.0, direction = 'normal', shape) {
     const timing = calculateTiming(speed);
-    const totalTextHeight = pattern.height;
-    const scrollSteps = totalTextHeight + displayHeight;
+    const scrollSteps = pattern.height + displayHeight;
     const totalScrollTime = scrollSteps * timing.stepInterval;
     const totalCycleDuration = totalScrollTime + timing.pauseTime;
-    
-    let animationCSS = `
-        /* 워터폴 모드 애니메이션 */
-        .waterfall-dot {
-            animation-fill-mode: forwards;
-            transform-box: content-box;
-            transform-origin: center center;
-        }
-    `;
-    
+    const e = resolveColors(shape?.effect ?? DEFAULT_EFFECT, colors);
+
+    let css = `.waterfall-dot { animation-fill-mode: forwards; ${DOT_ANIM_BASE} }\n\n`;
+
     for (let y = 0; y < displayHeight; y++) {
         for (let x = 0; x < displayWidth; x++) {
-            let keyframes = `@keyframes waterfall-${x}-${y} {\n  0% { fill: ${colors.dotOff}; }\n`;
-            
-            let activeSteps = [];
+            const activeSteps = [];
             for (let step = 0; step < scrollSteps; step++) {
-                let textPosition;
-                if (direction === 'reverse') {
-                    textPosition = step - displayHeight + y + 1;
-                } else {
-                    textPosition = totalTextHeight - 1 - (step - y);
-                }
-                if (textPosition >= 0 && textPosition < totalTextHeight && x < pattern.width) {
-                    const shouldFlip = pattern.data[textPosition] && pattern.data[textPosition][x] === 1;
-                    if (shouldFlip) {
-                        activeSteps.push(step);
-                    }
+                const pos = direction === 'reverse'
+                    ? step - displayHeight + y + 1
+                    : pattern.height - 1 - (step - y);
+                if (pos >= 0 && pos < pattern.height && x < pattern.width && pattern.data[pos]?.[x] === 1) {
+                    activeSteps.push(step);
                 }
             }
-            
-            for (let i = 0; i < activeSteps.length; i++) {
-                const step = activeSteps[i];
-                const stepStartTime = step * timing.stepInterval;
-                const stepStartPercent = (stepStartTime / totalCycleDuration) * 100;
-                
-                const isPrevConsecutive = i > 0 && activeSteps[i - 1] === step - 1;
-                
-                if (isPrevConsecutive) {
-                    continue;
-                }
-                
-                const flipOnStart = stepStartPercent;
-                const flipOnMid = stepStartPercent + (timing.flipDuration / 2 / totalCycleDuration) * 100;
-                const flipOnEnd = stepStartPercent + (timing.flipDuration / totalCycleDuration) * 100;
-                
-                keyframes += `  ${flipOnStart}% { 
-                    fill: ${colors.dotOff}; 
-                    transform: rotateZ(0deg) rotateY(0deg);
-                }\n`;
-                keyframes += `  ${flipOnMid}% { 
-                    fill: ${colors.dotOff}; 
-                    transform: rotateZ(45deg) rotateY(90deg);
-                }\n`;
-                keyframes += `  ${flipOnEnd}% { 
-                    fill: ${colors.dotOn}; 
-                    transform: rotateZ(90deg) rotateY(180deg);
-                }\n`;
-                
-                let lastConsecutiveStep = step;
-                while (i < activeSteps.length - 1 && activeSteps[i + 1] === lastConsecutiveStep + 1) {
-                    i++;
-                    lastConsecutiveStep = activeSteps[i];
-                }
-                
-                const lastStepTime = lastConsecutiveStep * timing.stepInterval;
-                const holdEndTime = lastStepTime + timing.holdDuration;
-                const flipOffEndTime = holdEndTime + timing.flipDuration;
-                
-                const holdEndPercent = (holdEndTime / totalCycleDuration) * 100;
-                const flipOffMidPercent = ((holdEndTime + timing.flipDuration / 2) / totalCycleDuration) * 100;
-                const flipOffEndPercent = (flipOffEndTime / totalCycleDuration) * 100;
-                
-                keyframes += `  ${holdEndPercent}% { 
-                    fill: ${colors.dotOn}; 
-                    transform: rotateZ(90deg) rotateY(180deg);
-                }\n`;
-                keyframes += `  ${flipOffMidPercent}% { 
-                    fill: ${colors.dotOff}; 
-                    transform: rotateZ(45deg) rotateY(90deg);
-                }\n`;
-                keyframes += `  ${flipOffEndPercent}% { 
-                    fill: ${colors.dotOff}; 
-                    transform: rotateZ(0deg) rotateY(0deg);
-                }\n`;
-            }
-            
-            const scrollEndPercent = (totalScrollTime / totalCycleDuration) * 100;
-            keyframes += `  ${scrollEndPercent}% { fill: ${colors.dotOff}; }\n`;
-            keyframes += `  100% { fill: ${colors.dotOff}; }\n`;
-            keyframes += `}\n\n`;
-            
-            animationCSS += keyframes;
-            
-            animationCSS += `.waterfall-dot[data-x="${x}"][data-y="${y}"] {\n`;
-            animationCSS += `  animation: waterfall-${x}-${y} ${totalCycleDuration}s infinite ease-in-out;\n`;
-            animationCSS += `  transform-box: content-box;\n`;
-            animationCSS += `  transform-origin: center center;\n`;
-            animationCSS += `}\n\n`;
+
+            const name = `waterfall-${x}-${y}`;
+            css += buildKeyframes(name, activeSteps, timing, totalCycleDuration, totalScrollTime, e);
+            css += `.waterfall-dot[data-x="${x}"][data-y="${y}"] { animation: ${name} ${totalCycleDuration}s infinite ease-in-out; ${DOT_ANIM_BASE} }\n\n`;
         }
     }
-    
-    return animationCSS;
+
+    return css;
 }
 
-/**
- * 애니메이션 모드에 따른 CSS 생성
- */
 export function generateAnimationCSS(animationMode, options) {
-    const { pattern, displayWidth, displayHeight, colors, speed, direction } = options;
-    
+    const { pattern, displayWidth, displayHeight, colors, speed, direction, shape } = options;
+
     switch (animationMode) {
         case 'scroll':
-            return generateScrollAnimation(pattern, displayWidth, colors, speed, direction);
+            return generateScrollAnimation(pattern, displayWidth, colors, speed, direction, shape);
         case 'waterfall':
-            return generateWaterfallAnimation(pattern, displayHeight, displayWidth, colors, speed, direction);
+            return generateWaterfallAnimation(pattern, displayHeight, displayWidth, colors, speed, direction, shape);
         case 'sequential':
-            return generateSequentialAnimation(colors, speed);
+            return generateSequentialAnimation(colors, speed, shape);
         case 'static':
         default:
-            return generateStaticAnimation(colors);
+            return generateStaticAnimation(colors, shape);
     }
 }

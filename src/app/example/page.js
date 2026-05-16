@@ -8,6 +8,7 @@ export default function ExamplePage() {
     const [style, setStyle] = useState('dark');
     const [dotSize, setDotSize] = useState(20);
     const [spacing, setSpacing] = useState(2);
+    const [dotShape, setDotShape] = useState('circle');
     const [animationMode, setAnimationMode] = useState('static');
     const [speed, setSpeed] = useState(1.0);
     const [direction, setDirection] = useState('normal');
@@ -53,6 +54,7 @@ export default function ExamplePage() {
         if (column) params.append('column', column);
         if (align !== 'start') params.append('align', align);
         if (justify !== 'start') params.append('justify', justify);
+        if (dotShape !== 'circle') params.append('dotShape', dotShape);
         if (dotOn) params.append('dotOn', dotOn.replace('#', ''));
         if (dotOff) params.append('dotOff', dotOff.replace('#', ''));
         if (background) params.append('background', background.replace('#', ''));
@@ -322,7 +324,7 @@ export default function ExamplePage() {
                                     width: '100%',
                                     height: '60px'
                                 }}
-                                placeholder="예: 10110,01001,10110 (1=켜짐, 0=꺼짐, 콤마로 행 구분)"
+                                placeholder="binary: 10110,01001,10110&#10;hex:    16,09,16  (자릿수×4비트가 너비)"
                             />
                         </div>
                     )}
@@ -353,6 +355,9 @@ export default function ExamplePage() {
                                 <option value="light">Light</option>
                                 <option value="retro">Retro</option>
                                 <option value="modern">Modern</option>
+                                <option value="neon">Neon</option>
+                                <option value="ocean">Ocean</option>
+                                <option value="sunset">Sunset</option>
                             </select>
                         </div>
                         
@@ -442,6 +447,27 @@ export default function ExamplePage() {
                             />
                         </div>
                         
+                        {/* Dot 형태 */}
+                        <div>
+                            <label>Dot 형태: </label>
+                            <select
+                                value={dotShape}
+                                onChange={(e) => setDotShape(e.target.value)}
+                                style={{
+                                    padding: '5px',
+                                    backgroundColor: '#333',
+                                    color: 'white',
+                                    border: '1px solid #555',
+                                    borderRadius: '4px',
+                                    width: '100%'
+                                }}
+                            >
+                                <option value="circle">Circle (원형)</option>
+                                <option value="rect">Rect (사각형)</option>
+                                <option value="rounded">Rounded (둥근 사각형)</option>
+                            </select>
+                        </div>
+
                         {/* 세로 정렬 (align) */}
                         <div>
                             <label>세로 정렬: </label>
@@ -735,6 +761,11 @@ export default function ExamplePage() {
                             <li><strong>spacing</strong>: dot 간의 간격</li>
                         </ul>
                         
+                        <h3>Dot 표현</h3>
+                        <ul style={{ lineHeight: '1.6' }}>
+                            <li><strong>dotShape</strong>: circle, rect, rounded</li>
+                        </ul>
+
                         <h3>애니메이션 파라미터</h3>
                         <ul style={{ lineHeight: '1.6' }}>
                             <li><strong>animationMode</strong>: static, sequential, scroll, waterfall</li>

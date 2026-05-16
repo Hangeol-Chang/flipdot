@@ -162,51 +162,76 @@ export function textToPattern(text, justify = 'start') {
 }
 
 /**
+ * customdots 문자열이 hex 포맷인지 판별
+ * 0과 1 이외의 문자(2-9, a-f)가 하나라도 있으면 hex로 간주
+ */
+function isHexFormat(customDots) {
+    return /[^01,\s]/.test(customDots);
+}
+
+/**
+ * hex 문자열 한 행을 비트 배열로 변환
+ * 너비는 hex 문자 수 × 4 비트로 결정 (MSB → LSB 순)
+ * 예: '104' (3자) → 12비트 → [0,0,0,1,0,0,0,0,0,1,0,0]
+ */
+function hexRowToBits(hexStr, width) {
+    const value = parseInt(hexStr, 16);
+    const bits = [];
+    for (let i = width - 1; i >= 0; i--) {
+        bits.push((value >> i) & 1);
+    }
+    return bits;
+}
+
+/**
  * 커스텀 dot 패턴 문자열을 패턴 객체로 변환
- * 예: "10110,01001,10110" -> 3x5 패턴
+ *
+ * 지원 포맷:
+ *   Binary (기존): "00100000100,00010001000,..."  — 0/1 문자열, 콤마로 행 구분
+ *   Hex   (신규):  "104,088,0fc,..."              — 16진수, 자릿수 × 4비트가 너비
+ *
+ * 포맷 자동 감지: 0/1 이외 문자가 있으면 hex, 없으면 binary
  */
 export function customDotsToPattern(customDots) {
     if (!customDots || typeof customDots !== 'string') {
         return { width: 1, height: 1, data: [[0]] };
     }
-    
-    const rows = customDots.split(',');
-    
+
+    const rows = customDots.split(',').map(r => r.trim()).filter(r => r.length > 0);
+
     if (rows.length === 0) {
         return { width: 1, height: 1, data: [[0]] };
     }
-    
+
+    if (isHexFormat(customDots)) {
+        // Hex 포맷: 가장 긴 hex 문자열의 자릿수 × 4를 너비로 사용
+        const maxHexLen = Math.max(...rows.map(r => r.length));
+        const width = maxHexLen * 4;
+        const data = rows.map(row => hexRowToBits(row, width));
+        return { width, height: data.length, data };
+    }
+
+    // Binary 포맷 (기존 동작 유지)
     const patternData = [];
     let maxWidth = 0;
-    
+
     for (const row of rows) {
         const rowData = [];
-        for (const char of row.trim()) {
-            if (char === '1') {
-                rowData.push(1);
-            } else if (char === '0') {
-                rowData.push(0);
-            }
+        for (const char of row) {
+            if (char === '1') rowData.push(1);
+            else if (char === '0') rowData.push(0);
         }
-        
         if (rowData.length > 0) {
             patternData.push(rowData);
             maxWidth = Math.max(maxWidth, rowData.length);
         }
     }
-    
-    // 모든 행의 길이를 maxWidth로 맞춤
+
     for (const row of patternData) {
-        while (row.length < maxWidth) {
-            row.push(0);
-        }
+        while (row.length < maxWidth) row.push(0);
     }
-    
-    return {
-        width: maxWidth,
-        height: patternData.length,
-        data: patternData
-    };
+
+    return { width: maxWidth, height: patternData.length, data: patternData };
 }
 
 /**

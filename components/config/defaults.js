@@ -9,27 +9,30 @@ export const DEFAULTS = {
     style: 'dark',
     dotSize: 20,
     spacing: 2,
-    
+
+    // Dot shape
+    dotShape: 'circle',   // 'circle' | 'rect' | 'rounded'
+
     // Animation defaults
     animationMode: 'static',
     speed: 1.0,
     direction: 'normal',
-    
+
     // Alignment defaults
-    align: 'start',     // vertical: 'start', 'center', 'end'
-    justify: 'start',   // horizontal: 'start', 'center', 'end'
-    
+    align: 'start',    // vertical:   'start' | 'center' | 'end'
+    justify: 'start',  // horizontal: 'start' | 'center' | 'end'
+
     // Layout defaults
     padding: 4,
     borderWidth: 4,
     borderRadius: 4,
-    
+
     // Space character width
     spaceWidth: 3,
-    
+
     // Character spacing
     charSpacing: 1,
-    
+
     // Line spacing (for multi-line text)
     lineSpacing: 1,
 };
@@ -56,6 +59,8 @@ export const ANIMATION_MODES = ['static', 'sequential', 'scroll', 'waterfall'];
 export const DIRECTIONS = ['normal', 'reverse'];
 
 export const ALIGNMENTS = ['start', 'center', 'end'];
+
+export const DOT_SHAPES = ['circle', 'rect', 'rounded'];
 
 // URL 디코딩 맵
 export const URL_DECODED_MAP = {
