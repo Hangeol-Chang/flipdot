@@ -28,12 +28,10 @@ export async function GET(request) {
         background: searchParams.get('background') ? addHashToColor(searchParams.get('background')) : null,
     };
 
-    // 텍스트 → dot 패턴 변환
     const rawPattern = customDots
         ? customDotsToPattern(customDots)
         : textToPattern(text, justify);
 
-    // scroll/waterfall 모드에서 원본 패턴 유지 (CSS가 스크롤 처리)
     const needsCrop = (fixedRows || fixedCols)
         && !(animationMode === 'waterfall')
         && !(animationMode === 'scroll' && fixedCols && !fixedRows);
