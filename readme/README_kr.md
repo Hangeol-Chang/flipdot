@@ -5,6 +5,25 @@
 - [🇯🇵 日本語 (Japanese)](./README_jp.md)
 - [🇨🇳 中文 (Chinese)](./README_cn.md)
 
+## 📑 목차
+- [🚀 주요 기능](#주요-기능)
+- [🔷 도트 모양](#도트-모양)
+- [📋 파라미터](#파라미터)
+- [🎭 스타일 예제](#스타일-예제)
+- [🎬 애니메이션 예제](#애니메이션-예제)
+- [📝 여러 줄 텍스트](#여러-줄-텍스트)
+- [📐 크기 제한 및 정렬](#크기-제한-및-정렬)
+- [🎨 커스텀 도트 패턴](#커스텀-도트-패턴)
+- [✨ 특수 기능](#특수-기능)
+- [💡 실용적인 사용 예](#실용적인-사용-예)
+- [🛠️ 고급 사용법](#고급-사용법)
+- [💡 유용한 팁](#유용한-팁)
+- [🎯 성능 최적화](#성능-최적화)
+- [📖 기술 사양](#기술-사양)
+- [🔧 개발자 정보](#개발자-정보)
+- [🤝 기여하기](#기여하기)
+- [📄 라이선스](#라이선스)
+
 <div align="center">
     <a href="https://flipdots.vercel.app/example"
         style="
@@ -54,11 +73,11 @@ GitHub README.md에 직접 임베드할 수 있는 flip dot 이미지를 생성�
 
 ✨ **새로운 기능들**
 - 🔤 **여러 줄 텍스트**: `_`으로 줄바꿈
-- 📐 **정렬 기능**: 세로/가로 정렬 옵션
-- 🎨 **커스텀 패턴**: 직접 도트 패턴 설계 (binary 또는 hex)
+- 🔷 **도트 모양**: 4가지 독특한 비주얼 스타일 — `circle`, `rect`, `rounded`, `diamond` — 각각 고유한 플립 애니메이션 보유
 - 🎬 **4가지 애니메이션**: static, sequential, scroll, waterfall
+- 🎨 **커스텀 패턴**: 직접 도트 패턴 설계 (binary 또는 hex)
 - 🌈 **그라디언트**: 여러 색상으로 무지개 효과
-- 🔷 **도트 모양**: circle, rect, rounded
+- 📐 **정렬 기능**: 세로/가로 정렬 옵션
 
 ### 기본 사용법
 ![BASIC](https://flipdots.vercel.app/api/svg?text=YOUR_TEXT&style=dark&animationMode=sequential)
@@ -87,7 +106,7 @@ GitHub README.md에 직접 임베드할 수 있는 flip dot 이미지를 생성�
 | **`style`** | 스타일 테마 | `dark` | `dark`, `light`, `retro`, `modern`, `neon`, `ocean`, `sunset` |
 | **`dotSize`** | 도트 크기 (px) | `20` | `10-40` |
 | **`spacing`** | 도트 간격 (px) | `2` | `1-10` |
-| **`dotShape`** | 도트 모양 | `circle` | `circle`, `rect`, `rounded` |
+| **`dotShape`** | 도트 모양 | `circle` | `circle`, `rect`, `rounded`, `diamond` |
 | **`row`** | 행 개수 제한 | - | `10` |
 | **`column`** | 열 개수 제한 | - | `20` |
 | **`align`** | 세로 정렬 | `start` | `start`, `center`, `end` |
@@ -229,17 +248,35 @@ https://flipdots.vercel.app/api/svg?customdots=16,09,16&animationMode=sequential
 
 ## 🔷 도트 모양
 
-### 도트 모양 (`dotShape`)
+`dotShape` 파라미터로 4가지 비주얼 스타일 중 선택할 수 있습니다. 각 모양은 고유한 플립 애니메이션을 가집니다.
 
 | 값 | 설명 |
 |----|------|
-| `circle` | 원형 도트 (기본값) |
-| `rect` | 사각형 도트 |
-| `rounded` | 둥근 사각형 |
+| `circle` | 원형 도트 (기본값) — 회전 플립 |
+| `rect` | 사각형 도트 — 대각선 축 플립, 실제 플립닷 하드웨어의 질감 재현 |
+| `rounded` | 둥근 사각형 — `rect`와 동일한 플립, 부드러운 모서리 |
+| `diamond` | 마름모형 도트 — 회전 플립 |
+
+### Circle (기본값)
+![Circle Shape](https://flipdots.vercel.app/api/svg?text=CIRCLE&dotShape=circle&style=dark&dotSize=20&spacing=2&animationMode=sequential&v=2)
+
+### Rect
+사각형 도트. 대각선 축을 기준으로 플립되어 기계적인 플립닷의 느낌을 그대로 살립니다.
+
+![Rect Shape](https://flipdots.vercel.app/api/svg?text=RECT&dotShape=rect&style=dark&dotSize=20&spacing=2&animationMode=sequential&v=2)
+
+### Rounded
+`rect`와 동일한 플립 동작이지만 모서리가 둥글어 더 부드럽고 현대적인 느낌입니다.
+
+![Rounded Shape](https://flipdots.vercel.app/api/svg?text=ROUND&dotShape=rounded&style=retro&dotSize=20&spacing=2&animationMode=sequential&v=2)
+
+### Diamond
+![Diamond Shape](https://flipdots.vercel.app/api/svg?text=DIAMOND&dotShape=diamond&style=modern&dotSize=20&spacing=2&animationMode=sequential&v=2)
 
 ```markdown
 https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=rect&style=dark
 https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=rounded&style=retro
+https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=diamond&style=modern
 ```
 
 ## ✨ 특수 기능

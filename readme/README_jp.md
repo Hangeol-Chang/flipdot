@@ -5,6 +5,25 @@
 - [🇰🇷 한국어 (Korean)](./README_kr.md)
 - [🇨🇳 中文 (Chinese)](./README_cn.md)
 
+## 📑 目次
+- [🚀 主な機能](#主な機能)
+- [🔷 ドット形状](#ドット形状)
+- [📋 パラメータ](#パラメータ)
+- [🎭 スタイル例](#スタイル例)
+- [🎬 アニメーション例](#アニメーション例)
+- [📝 複数行テキスト](#複数行テキスト)
+- [📐 サイズ制限と配置](#サイズ制限と配置)
+- [🎨 カスタムドットパターン](#カスタムドットパターン)
+- [✨ 特殊機能](#特殊機能)
+- [💡 実用的な使用例](#実用的な使用例)
+- [🛠️ 高度な使用法](#高度な使用法)
+- [💡 プロのヒント](#プロのヒント)
+- [🎯 パフォーマンス最適化](#パフォーマンス最適化)
+- [📖 技術仕様](#技術仕様)
+- [🔧 開発者情報](#開発者情報)
+- [🤝 コントリビュート](#コントリビュート)
+- [📄 ライセンス](#ライセンス)
+
 <div align="center">
     <a href="https://flipdots.vercel.app/example"
         style="
@@ -54,11 +73,11 @@ GitHub README.mdに直接埋め込むことができるflip dotイメージを�
 
 ✨ **新機能**
 - 🔤 **複数行テキスト**: `_`で改行
-- 📐 **配置オプション**: 縦/横配置オプション
-- 🎨 **カスタムパターン**: 独自のドットパターンを設計（binaryまたはhex形式）
+- 🔷 **ドット形状**: 4つのユニークなビジュアルスタイル — `circle`、`rect`、`rounded`、`diamond` — それぞれ独自のフリップアニメーション付き
 - 🎬 **4つのアニメーションモード**: static、sequential、scroll、waterfall
+- 🎨 **カスタムパターン**: 独自のドットパターンを設計（binaryまたはhex形式）
 - 🌈 **グラデーション**: 複数の色で虹効果
-- 🔷 **ドット形状**: circle、rect、rounded
+- 📐 **配置オプション**: 縦/横配置オプション
 
 ### 基本的な使用法
 ![BASIC](https://flipdots.vercel.app/api/svg?text=YOUR_TEXT&style=dark&animationMode=sequential)
@@ -87,7 +106,7 @@ GitHub README.mdに直接埋め込むことができるflip dotイメージを�
 | **`style`** | スタイルテーマ | `dark` | `dark`, `light`, `retro`, `modern`, `neon`, `ocean`, `sunset` |
 | **`dotSize`** | ドットサイズ（px） | `20` | `10-40` |
 | **`spacing`** | ドット間隔（px） | `2` | `1-10` |
-| **`dotShape`** | ドット形状 | `circle` | `circle`, `rect`, `rounded` |
+| **`dotShape`** | ドット形状 | `circle` | `circle`, `rect`, `rounded`, `diamond` |
 | **`row`** | 行数制限 | - | `10` |
 | **`column`** | 列数制限 | - | `20` |
 | **`align`** | 縦配置 | `start` | `start`, `center`, `end` |
@@ -205,17 +224,35 @@ https://flipdots.vercel.app/api/svg?customdots=16,09,16&animationMode=sequential
 
 ## 🔷 ドット形状
 
-### ドット形状 (`dotShape`)
+`dotShape`パラメータで4つのビジュアルスタイルから選べます。各形状は独自のフリップアニメーションを持っています。
 
 | 値 | 説明 |
 |----|------|
-| `circle` | 円形ドット（デフォルト） |
-| `rect` | 四角形ドット |
-| `rounded` | 角丸四角形 |
+| `circle` | 円形ドット（デフォルト） — 回転フリップ |
+| `rect` | 四角形ドット — 対角軸フリップ、実際のflip-dotハードウェアの質感を再現 |
+| `rounded` | 角丸四角形 — `rect`と同じフリップ、柔らかいエッジ |
+| `diamond` | ひし形ドット — 回転フリップ |
+
+### Circle（デフォルト）
+![Circle Shape](https://flipdots.vercel.app/api/svg?text=CIRCLE&dotShape=circle&style=dark&dotSize=20&spacing=2&animationMode=sequential&v=2)
+
+### Rect
+四角形ドット。対角線を軸にフリップし、機械的なflip-dotの質感をそのまま再現します。
+
+![Rect Shape](https://flipdots.vercel.app/api/svg?text=RECT&dotShape=rect&style=dark&dotSize=20&spacing=2&animationMode=sequential&v=2)
+
+### Rounded
+`rect`と同じフリップ動作ですが、角が丸くよりソフトでモダンな外観です。
+
+![Rounded Shape](https://flipdots.vercel.app/api/svg?text=ROUND&dotShape=rounded&style=retro&dotSize=20&spacing=2&animationMode=sequential&v=2)
+
+### Diamond
+![Diamond Shape](https://flipdots.vercel.app/api/svg?text=DIAMOND&dotShape=diamond&style=modern&dotSize=20&spacing=2&animationMode=sequential&v=2)
 
 ```markdown
 https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=rect&style=dark
 https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=rounded&style=retro
+https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=diamond&style=modern
 ```
 
 ## ✨ 特殊機能
