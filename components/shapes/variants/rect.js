@@ -1,4 +1,12 @@
 const rect = {
+    css: `
+        .anim-dot.bg-triangle[data-x][data-y] {
+            animation: none;
+            transform: rotate(-45deg) scaleY(1) rotate(45deg);
+            fill: var(--dotOn);
+        }
+    `,
+
     effect: {
         keyframes: {
             '0%':   'fill: {dotOff}; transform: rotate(-45deg) scaleY(-1) rotate(45deg);',
@@ -32,7 +40,7 @@ const rect = {
                     ${cx + r},${cy + r} 
                     ${cx - r + 0.1*r},${cy + r}
                 "
-                fill="${isOn ? dotOnColor : colors.dotOff}"
+                class="${className} bg-triangle" style="${style}" ${dataAttrs}
             />`;
 
         // 좌상단 삼각형: 대각선 축으로 flip 애니메이션

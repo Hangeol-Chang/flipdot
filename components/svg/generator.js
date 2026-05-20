@@ -54,7 +54,8 @@ function renderDotCell(x, y, { dotSize, totalDotSize, totalPadding, dotRadius, c
     const cx    = cellX + dotSize / 2;
     const cy    = cellY + dotSize / 2;
 
-    return shape.render({ cx, cy, cellX, cellY, dotRadius, dotSize, isOn, dotOnColor, colors, className, style, dataAttrs });
+    const styleWithOrigin = `${style} transform-origin: ${cx}px ${cy}px;`;
+    return shape.render({ cx, cy, cellX, cellY, dotRadius, dotSize, isOn, dotOnColor, colors, className, style: styleWithOrigin, dataAttrs });
 }
 
 /**
@@ -79,9 +80,9 @@ function generateStaticDots(pattern, options, dimensions) {
                 dotSize, totalDotSize, totalPadding, dotRadius, colors,
                 isOn,
                 dotOnColor,
-                className: isOn ? 'dot-on' : 'dot-off',
-                style:     `animation-delay: ${(x + y) * 0.08}s;`,
-                dataAttrs: '',
+                className: 'anim-dot',
+                style:     `color: ${dotOnColor};`,
+                dataAttrs: ` data-x="${x}" data-y="${y}"`,
                 shape,
             });
         }
@@ -111,8 +112,8 @@ function generateScrollDots(pattern, options, dimensions) {
                 dotSize, totalDotSize, totalPadding, dotRadius, colors,
                 isOn:      false,
                 dotOnColor,
-                className: 'scroll-dot',
-                style:     '',
+                className: 'anim-dot',
+                style:     `color: ${dotOnColor};`,
                 dataAttrs: ` data-x="${x}" data-y="${y}" data-on-color="${dotOnColor}"`,
                 shape,
             });
@@ -143,8 +144,8 @@ function generateWaterfallDots(options, dimensions) {
                 dotSize, totalDotSize, totalPadding, dotRadius, colors,
                 isOn:      false,
                 dotOnColor,
-                className: 'waterfall-dot',
-                style:     '',
+                className: 'anim-dot',
+                style:     `color: ${dotOnColor};`,
                 dataAttrs: ` data-x="${x}" data-y="${y}" data-on-color="${dotOnColor}"`,
                 shape,
             });
@@ -184,8 +185,10 @@ export function generateFlipDotSVG(pattern, options) {
     return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${svgWidth}" height="${svgHeight}" viewBox="0 0 ${svgWidth} ${svgHeight}">
     <style>
+        svg { --dotOn: ${options.colors.dotOn}; --dotOff: ${options.colors.dotOff}; }
         .flip-dot-display { font-family: monospace; }
         ${animationCSS}
+        ${shape.css ?? ''}
     </style>
     <rect width="100%" height="100%" fill="${options.colors.panelBackground}" rx="${DEFAULTS.borderRadius}" ry="${DEFAULTS.borderRadius}"/>
     ${dots}

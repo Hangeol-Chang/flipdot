@@ -2,6 +2,10 @@
  * Animation Generator
  * 애니메이션 CSS 생성 모듈
  * 효과 상태(off/mid/on)는 각 shape에서 가져온다.
+ *
+ * 모든 모드는 .anim-dot 단일 클래스 + [data-x][data-y] 속성 셀렉터로 통일.
+ * static/sequential: 공유 @keyframes + 각 on-dot 별 셀렉터로 animation-delay 적용
+ * scroll/waterfall:  per-dot @keyframes anim-X-Y 로 타이밍 인코딩
  */
 
 import { ANIMATION_CONFIG } from '../config/defaults.js';
@@ -11,6 +15,8 @@ const DEFAULT_EFFECT = {
     mid: 'fill: {dotOff}; transform: rotateY(90deg);',
     on:  'fill: {dotOn}; transform: rotateY(180deg);',
 };
+
+const DOT_BASE = 'transform-box: view-box;';
 
 function resolveColors(effect, colors) {
     const resolve = (s) => s.replace(/\{dotOff\}/g, colors.dotOff).replace(/\{dotOn\}/g, colors.dotOn);
@@ -46,40 +52,51 @@ export function calculateTiming(speed = 1.0) {
     };
 }
 
-export function generateStaticAnimation(colors, shape) {
+export function generateStaticAnimation(pattern, colors, shape) {
     const e = resolveColors(shape?.effect ?? DEFAULT_EFFECT, colors);
+    const timing = ANIMATION_CONFIG;
+
     const keyframeBody = e.keyframes
-        ? Object.entries(e.keyframes).map(([pct, style]) => `            ${pct} { ${style} }`).join('\n')
-        : `            0%   { ${e.off} }\n            50%  { ${e.mid} }\n            100% { ${e.on}  }`;
-    return `
-        .dot-on {
-            animation: staticFlip 0.8s ease-out forwards;
-            transform-box: content-box;
-            transform-origin: center center;
+        ? Object.entries(e.keyframes).map(([pct, s]) => `    ${pct} { ${s} }`).join('\n')
+        : `    0%   { ${e.off} }\n    50%  { ${e.mid} }\n    100% { ${e.on}  }`;
+
+    let css = `.anim-dot { ${DOT_BASE} ${e.off} }\n`;
+    css += `@keyframes staticFlip {\n${keyframeBody}\n}\n\n`;
+
+    for (let y = 0; y < pattern.height; y++) {
+        for (let x = 0; x < pattern.width; x++) {
+            if (pattern.data[y]?.[x] !== 1) continue;
+            const delay = (x + y) * timing.diagonalDelayMultiplier;
+            css += `.anim-dot[data-x="${x}"][data-y="${y}"] { animation: staticFlip ${timing.staticFlipDuration}s ease-out forwards; animation-delay: ${delay}s; }\n`;
         }
-        .dot-off { transform-box: fill-box; transform-origin: center center; ${e.off} }
-        @keyframes staticFlip {
-${keyframeBody}
-        }
-    `;
+    }
+
+    return css;
 }
 
-export function generateSequentialAnimation(colors, speed = 1.0, shape) {
+export function generateSequentialAnimation(pattern, colors, speed = 1.0, direction = 'normal', shape) {
     const timing = calculateTiming(speed);
     const e = resolveColors(shape?.effect ?? DEFAULT_EFFECT, colors);
-    return `
-        .dot-on {
-            animation: sequentialFlip ${timing.sequentialCycleDuration}s ease-in-out infinite;
-            transform-box: content-box;
-            transform-origin: center center;
+
+    let css = `.anim-dot { ${DOT_BASE} ${e.off} }\n`;
+    css += `@keyframes seqFlip {\n`;
+    css += `    0%, 100% { ${e.off} }\n`;
+    css += `    10%, 90% { ${e.mid} }\n`;
+    css += `    20%, 80% { ${e.on}  }\n`;
+    css += `}\n\n`;
+
+    for (let y = 0; y < pattern.height; y++) {
+        for (let x = 0; x < pattern.width; x++) {
+            if (pattern.data[y]?.[x] !== 1) continue;
+            const d = direction === 'reverse'
+                ? (pattern.width - 1 - x) + (pattern.height - 1 - y)
+                : x + y;
+            const delay = d * timing.diagonalDelayMultiplier;
+            css += `.anim-dot[data-x="${x}"][data-y="${y}"] { animation: seqFlip ${timing.sequentialCycleDuration}s ease-in-out infinite; animation-delay: ${delay}s; }\n`;
         }
-        .dot-off { transform-box: fill-box; transform-origin: center center; ${e.off} }
-        @keyframes sequentialFlip {
-            0%, 100% { ${e.off} }
-            10%, 90% { ${e.mid} }
-            20%, 80% { ${e.on}  }
-        }
-    `;
+    }
+
+    return css;
 }
 
 /**
@@ -125,8 +142,6 @@ function buildKeyframes(name, activeSteps, timing, totalCycleDuration, totalScro
     return kf;
 }
 
-const DOT_ANIM_BASE = 'transform-box: content-box; transform-origin: center center;';
-
 export function generateScrollAnimation(pattern, displayWidth, colors, speed = 1.0, direction = 'normal', shape) {
     const timing = calculateTiming(speed);
     const scrollSteps = pattern.width + displayWidth;
@@ -134,7 +149,7 @@ export function generateScrollAnimation(pattern, displayWidth, colors, speed = 1
     const totalCycleDuration = totalScrollTime + timing.pauseTime;
     const e = resolveColors(shape?.effect ?? DEFAULT_EFFECT, colors);
 
-    let css = `.scroll-dot { animation-fill-mode: forwards; ${DOT_ANIM_BASE} }\n\n`;
+    let css = `.anim-dot { animation-fill-mode: forwards; ${DOT_BASE} ${e.off} }\n\n`;
 
     for (let y = 0; y < pattern.height; y++) {
         for (let x = 0; x < displayWidth; x++) {
@@ -148,9 +163,9 @@ export function generateScrollAnimation(pattern, displayWidth, colors, speed = 1
                 }
             }
 
-            const name = `scroll-${x}-${y}`;
+            const name = `anim-${x}-${y}`;
             css += buildKeyframes(name, activeSteps, timing, totalCycleDuration, totalScrollTime, e);
-            css += `.scroll-dot[data-x="${x}"][data-y="${y}"] { animation: ${name} ${totalCycleDuration}s infinite ease-in-out; ${DOT_ANIM_BASE} }\n\n`;
+            css += `.anim-dot[data-x="${x}"][data-y="${y}"] { animation: ${name} ${totalCycleDuration}s infinite ease-in-out; }\n\n`;
         }
     }
 
@@ -164,7 +179,7 @@ export function generateWaterfallAnimation(pattern, displayHeight, displayWidth,
     const totalCycleDuration = totalScrollTime + timing.pauseTime;
     const e = resolveColors(shape?.effect ?? DEFAULT_EFFECT, colors);
 
-    let css = `.waterfall-dot { animation-fill-mode: forwards; ${DOT_ANIM_BASE} }\n\n`;
+    let css = `.anim-dot { animation-fill-mode: forwards; ${DOT_BASE} ${e.off} }\n\n`;
 
     for (let y = 0; y < displayHeight; y++) {
         for (let x = 0; x < displayWidth; x++) {
@@ -178,9 +193,9 @@ export function generateWaterfallAnimation(pattern, displayHeight, displayWidth,
                 }
             }
 
-            const name = `waterfall-${x}-${y}`;
+            const name = `anim-${x}-${y}`;
             css += buildKeyframes(name, activeSteps, timing, totalCycleDuration, totalScrollTime, e);
-            css += `.waterfall-dot[data-x="${x}"][data-y="${y}"] { animation: ${name} ${totalCycleDuration}s infinite ease-in-out; ${DOT_ANIM_BASE} }\n\n`;
+            css += `.anim-dot[data-x="${x}"][data-y="${y}"] { animation: ${name} ${totalCycleDuration}s infinite ease-in-out; }\n\n`;
         }
     }
 
@@ -196,9 +211,9 @@ export function generateAnimationCSS(animationMode, options) {
         case 'waterfall':
             return generateWaterfallAnimation(pattern, displayHeight, displayWidth, colors, speed, direction, shape);
         case 'sequential':
-            return generateSequentialAnimation(colors, speed, shape);
+            return generateSequentialAnimation(pattern, colors, speed, direction, shape);
         case 'static':
         default:
-            return generateStaticAnimation(colors, shape);
+            return generateStaticAnimation(pattern, colors, shape);
     }
 }
