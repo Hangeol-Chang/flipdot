@@ -5,6 +5,25 @@
 - [🇰🇷 한국어 (Korean)](./README_kr.md)
 - [🇯🇵 日本語 (Japanese)](./README_jp.md)
 
+## 📑 目录
+- [🚀 主要功能](#主要功能)
+- [🔷 点形状](#点形状)
+- [📋 参数](#参数)
+- [🎭 样式示例](#样式示例)
+- [🎬 动画示例](#动画示例)
+- [📝 多行文本](#多行文本)
+- [📐 尺寸限制与对齐](#尺寸限制与对齐)
+- [🎨 自定义点阵图案](#自定义点阵图案)
+- [✨ 特殊功能](#特殊功能)
+- [💡 实用案例](#实用案例)
+- [🛠️ 高级用法](#高级用法)
+- [💡 专业技巧](#专业技巧)
+- [🎯 性能优化](#性能优化)
+- [📖 技术规格](#技术规格)
+- [🔧 开发者信息](#开发者信息)
+- [🤝 贡献](#贡献)
+- [📄 许可证](#许可证)
+
 <div align="center">
     <a href="https://flipdots.vercel.app/example"
         style="
@@ -54,11 +73,11 @@
 
 ✨ **新功能**
 - 🔤 **多行文本**: 用`_`换行
-- 📐 **对齐选项**: 垂直/水平对齐选项
-- 🎨 **自定义图案**: 设计您自己的点阵图案（支持二进制和十六进制格式）
+- 🔷 **点形状**: 4种独特的视觉风格 — `circle`、`rect`、`rounded`、`diamond` — 各有独特的翻转动画
 - 🎬 **4种动画模式**: static、sequential、scroll、waterfall
+- 🎨 **自定义图案**: 设计您自己的点阵图案（支持二进制和十六进制格式）
 - 🌈 **渐变**: 多种颜色的彩虹效果
-- 🔷 **点形状**: circle、rect、rounded
+- 📐 **对齐选项**: 垂直/水平对齐选项
 
 ### 基本用法
 ![BASIC](https://flipdots.vercel.app/api/svg?text=YOUR_TEXT&style=dark&animationMode=sequential)
@@ -85,7 +104,7 @@
 | **`text`** | 要显示的文本（多行：用`_`分隔） | `HELLO` | `HELLO_WORLD` |
 | **`customdots`** | 自定义点阵图案（二进制或十六进制，行用逗号分隔） | - | `10110,01001` 或 `16,09` |
 | **`style`** | 样式主题 | `dark` | `light`, `retro`, `modern`, `dark`, `neon`, `ocean`, `sunset` |
-| **`dotShape`** | 点的形状 | `circle` | `circle`, `rect`, `rounded` |
+| **`dotShape`** | 点的形状 | `circle` | `circle`, `rect`, `rounded`, `diamond` |
 | **`dotSize`** | 点大小（px） | `20` | `10-40` |
 | **`spacing`** | 点间距（px） | `2` | `1-10` |
 | **`row`** | 行数限制 | - | `10` |
@@ -206,21 +225,35 @@
 
 ## 🔷 点形状
 
-### 点形状（`dotShape`）
+使用`dotShape`参数可从4种视觉风格中选择。每种形状都有其独特的翻转动画。
 
 | 值 | 说明 |
 |----|------|
-| `circle` | 圆形（默认） |
-| `rect` | 矩形 |
-| `rounded` | 圆角矩形 |
+| `circle` | 圆形（默认） — 旋转翻转 |
+| `rect` | 矩形 — 对角轴翻转，还原真实flip-dot硬件的质感 |
+| `rounded` | 圆角矩形 — 与`rect`相同的翻转，边缘更柔和 |
+| `diamond` | 菱形 — 旋转翻转 |
 
-![Circle Shape](https://flipdots.vercel.app/api/svg?text=SHAPE&dotShape=circle&style=dark&dotSize=20&spacing=2&animationMode=sequential&v=1)
-![Rect Shape](https://flipdots.vercel.app/api/svg?text=SHAPE&dotShape=rect&style=dark&dotSize=20&spacing=2&animationMode=sequential&v=1)
-![Rounded Shape](https://flipdots.vercel.app/api/svg?text=SHAPE&dotShape=rounded&style=dark&dotSize=20&spacing=2&animationMode=sequential&v=1)
+### Circle（默认）
+![Circle Shape](https://flipdots.vercel.app/api/svg?text=CIRCLE&dotShape=circle&style=dark&dotSize=20&spacing=2&animationMode=sequential&v=2)
+
+### Rect
+矩形点。以对角线为轴翻转，完美再现机械式flip-dot硬件的质感。
+
+![Rect Shape](https://flipdots.vercel.app/api/svg?text=RECT&dotShape=rect&style=dark&dotSize=20&spacing=2&animationMode=sequential&v=2)
+
+### Rounded
+与`rect`相同的翻转动作，但边角圆润，外观更柔和现代。
+
+![Rounded Shape](https://flipdots.vercel.app/api/svg?text=ROUND&dotShape=rounded&style=retro&dotSize=20&spacing=2&animationMode=sequential&v=2)
+
+### Diamond
+![Diamond Shape](https://flipdots.vercel.app/api/svg?text=DIAMOND&dotShape=diamond&style=modern&dotSize=20&spacing=2&animationMode=sequential&v=2)
 
 ```markdown
-![Rect](https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=rect&style=dark&animationMode=sequential)
-![Rounded](https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=rounded&style=retro&animationMode=sequential)
+https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=rect&style=dark
+https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=rounded&style=retro
+https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=diamond&style=modern
 ```
 
 ## ✨ 特殊功能

@@ -5,6 +5,25 @@
 - [🇯🇵 日本語 (Japanese)](./readme/README_jp.md)
 - [🇨🇳 中文 (Chinese)](./readme/README_cn.md)
 
+## 📑 Table of Contents
+- [🚀 Key Features](#key-features)
+- [🔷 Dot Shapes](#dot-shapes)
+- [📋 Parameters](#parameters)
+- [🎭 Style Examples](#style-examples)
+- [🎬 Animation Examples](#animation-examples)
+- [📝 Multi-line Text](#multi-line-text)
+- [📐 Size Limits and Alignment](#size-limits-and-alignment)
+- [🎨 Custom Dot Patterns](#custom-dot-patterns)
+- [✨ Special Features](#special-features)
+- [💡 Practical Use Cases](#practical-use-cases)
+- [🛠️ Advanced Usage](#advanced-usage)
+- [💡 Pro Tips](#pro-tips)
+- [🎯 Performance Optimization](#performance-optimization)
+- [📖 Technical Specifications](#technical-specifications)
+- [🔧 Developer Information](#developer-information)
+- [🤝 Contributing](#contributing)
+- [📄 License](#license)
+
 <div align="center">
     <a href="https://flipdots.vercel.app/example"
         style="
@@ -54,11 +73,11 @@ Reproduces the operation of actual flip-dot hardware.
 
 ✨ **New Features**
 - 🔤 **Multi-line Text**: Line breaks with `_`
-- 📐 **Alignment Options**: Vertical/horizontal alignment options
-- 🎨 **Custom Patterns**: Design your own dot patterns (binary or hex)
+- 🔷 **Dot Shapes**: 4 unique visual styles — `circle`, `rect`, `rounded`, `diamond` — each with its own flip animation
 - 🎬 **4 Animation Modes**: static, sequential, scroll, waterfall
+- 🎨 **Custom Patterns**: Design your own dot patterns (binary or hex)
 - 🌈 **Gradients**: Rainbow effects with multiple colors
-- 🔷 **Dot Shapes**: circle, rect, rounded
+- 📐 **Alignment Options**: Vertical/horizontal alignment options
 
 ### Basic Usage
 ![BASIC](https://flipdots.vercel.app/api/svg?text=YOUR_TEXT&style=dark&animationMode=sequential)
@@ -87,7 +106,7 @@ Reproduces the operation of actual flip-dot hardware.
 | **`style`** | Style theme | `dark` | `dark`, `light`, `retro`, `modern`, `neon`, `ocean`, `sunset` |
 | **`dotSize`** | Dot size (px) | `20` | `10-40` |
 | **`spacing`** | Dot spacing (px) | `2` | `1-10` |
-| **`dotShape`** | Dot shape | `circle` | `circle`, `rect`, `rounded` |
+| **`dotShape`** | Dot shape | `circle` | `circle`, `rect`, `rounded`, `diamond` |
 | **`row`** | Row count limit | - | `10` |
 | **`column`** | Column count limit | - | `20` |
 | **`align`** | Vertical alignment | `start` | `start`, `center`, `end` |
@@ -227,19 +246,37 @@ https://flipdots.vercel.app/api/svg?customdots=104,088,0fc,1b6,7ff,77d,505,0d8&s
 https://flipdots.vercel.app/api/svg?customdots=16,09,16&animationMode=sequential&style=retro&dotSize=22&spacing=3
 ```
 
-## 🔷 Dot Shape
+## 🔷 Dot Shapes
 
-### Dot Shapes (`dotShape`)
+Choose from 4 visual styles with the `dotShape` parameter. Each shape has its own unique flip animation.
 
 | Value | Description |
 |-------|-------------|
-| `circle` | Round dot (default) |
-| `rect` | Square dot |
-| `rounded` | Rounded square |
+| `circle` | Round dot (default) — rotational flip |
+| `rect` | Square dot — diagonal-axis flip that reveals the hardware feel |
+| `rounded` | Rounded square — same flip as `rect`, softer edges |
+| `diamond` | Diamond-shaped dot — rotational flip |
+
+### Circle (default)
+![Circle Shape](https://flipdots.vercel.app/api/svg?text=CIRCLE&dotShape=circle&style=dark&dotSize=20&spacing=2&animationMode=sequential&v=2)
+
+### Rect
+Square dot with a diagonal flip — the geometry of the transition gives it a mechanical, hardware-authentic feel.
+
+![Rect Shape](https://flipdots.vercel.app/api/svg?text=RECT&dotShape=rect&style=dark&dotSize=20&spacing=2&animationMode=sequential&v=2)
+
+### Rounded
+Rounded square with the same flip as `rect`. Softer and more modern look.
+
+![Rounded Shape](https://flipdots.vercel.app/api/svg?text=ROUND&dotShape=rounded&style=retro&dotSize=20&spacing=2&animationMode=sequential&v=2)
+
+### Diamond
+![Diamond Shape](https://flipdots.vercel.app/api/svg?text=DIAMOND&dotShape=diamond&style=modern&dotSize=20&spacing=2&animationMode=sequential&v=2)
 
 ```markdown
 https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=rect&style=dark
 https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=rounded&style=retro
+https://flipdots.vercel.app/api/svg?text=HELLO&dotShape=diamond&style=modern
 ```
 
 ## ✨ Special Features
