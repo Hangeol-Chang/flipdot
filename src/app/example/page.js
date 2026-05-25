@@ -398,7 +398,9 @@ export default function ExamplePage() {
                                 }}
                             >
                                 <option value="static">Static</option>
+                                <option value="staticD">Static Dynamic</option>
                                 <option value="sequential">Sequential</option>
+                                <option value="sequentialD">Sequential Dynamic</option>
                                 <option value="scroll">Scroll</option>
                                 <option value="waterfall">Waterfall</option>
                             </select>

@@ -197,6 +197,128 @@ export function generateWaterfallAnimation(pattern, displayHeight, displayWidth,
     return generateScrollingAnimation('vertical', pattern, displayWidth, displayHeight, colors, speed, direction, shape);
 }
 
+export function generateSequentialDAnimation(pattern, colors, speed = 1.0, direction = 'normal', shape) {
+    const timing = calculateTiming(speed);
+    const e = resolveColors(shape?.effect ?? DEFAULT_EFFECT, colors);
+
+    let css = `.anim-dot { ${DOT_BASE} ${e.off} }\n`;
+    css += `@keyframes seqFlip {\n`;
+    css += `    0%, 100% { ${e.off} }\n`;
+    css += `    10%, 90% { ${e.mid} }\n`;
+    css += `    20%, 80% { ${e.on}  }\n`;
+    css += `}\n\n`;
+
+    const FW = 10;
+
+    for (let y = 0; y < pattern.height; y++) {
+        for (let x = 0; x < pattern.width; x++) {
+            const isOn    = pattern.data[y]?.[x] === 1;
+            const flicker = isOn ? Math.random() < 0.15 : Math.random() < 0.03;
+
+            if (isOn) {
+                const d     = direction === 'reverse' ? (pattern.width - 1 - x) + (pattern.height - 1 - y) : x + y;
+                const delay = d * timing.diagonalDelayMultiplier;
+
+                if (flicker) {
+                    const cycleDuration = 8 + Math.random() * 12;
+                    const flickerDelay  = delay + Math.random() * 3;
+                    const numFlickers   = 1 + Math.floor(Math.random() * 2);
+                    const positions     = Array.from({ length: numFlickers }, () => 10 + Math.random() * (80 - FW)).sort((a, b) => a - b);
+
+                    let kf = `@keyframes fD-${x}-${y} {\n    0% { ${e.on} }\n`;
+                    for (const p of positions) {
+                        kf += `    ${p.toFixed(1)}% { ${e.on} }\n`;
+                        kf += `    ${(p + FW / 2).toFixed(1)}% { ${e.off} }\n`;
+                        kf += `    ${(p + FW).toFixed(1)}% { ${e.on} }\n`;
+                    }
+                    kf += `    100% { ${e.on} }\n}\n\n`;
+                    css += kf;
+                    css += `.anim-dot[data-x="${x}"][data-y="${y}"] { animation: seqFlip ${timing.sequentialCycleDuration}s ease-in-out ${delay}s infinite, fD-${x}-${y} ${cycleDuration.toFixed(2)}s ${flickerDelay.toFixed(2)}s infinite; }\n`;
+                } else {
+                    css += `.anim-dot[data-x="${x}"][data-y="${y}"] { animation: seqFlip ${timing.sequentialCycleDuration}s ease-in-out infinite; animation-delay: ${delay}s; }\n`;
+                }
+            } else if (flicker) {
+                const cycleDuration = 8 + Math.random() * 12;
+                const flickerDelay  = Math.random() * 5;
+                const numFlickers   = 1 + Math.floor(Math.random() * 2);
+                const positions     = Array.from({ length: numFlickers }, () => 10 + Math.random() * (80 - FW)).sort((a, b) => a - b);
+
+                let kf = `@keyframes fD-${x}-${y} {\n    0% { ${e.off} }\n`;
+                for (const p of positions) {
+                    kf += `    ${p.toFixed(1)}% { ${e.off} }\n`;
+                    kf += `    ${(p + FW / 2).toFixed(1)}% { ${e.on} }\n`;
+                    kf += `    ${(p + FW).toFixed(1)}% { ${e.off} }\n`;
+                }
+                kf += `    100% { ${e.off} }\n}\n\n`;
+                css += kf;
+                css += `.anim-dot[data-x="${x}"][data-y="${y}"] { animation: fD-${x}-${y} ${cycleDuration.toFixed(2)}s ${flickerDelay.toFixed(2)}s infinite; }\n`;
+            }
+        }
+    }
+
+    return css;
+}
+
+export function generateStaticDAnimation(pattern, colors, shape) {
+    const e = resolveColors(shape?.effect ?? DEFAULT_EFFECT, colors);
+    const timing = ANIMATION_CONFIG;
+
+    const keyframeBody = e.keyframes
+        ? Object.entries(e.keyframes).map(([pct, s]) => `    ${pct} { ${s} }`).join('\n')
+        : `    0%   { ${e.off} }\n    50%  { ${e.mid} }\n    100% { ${e.on}  }`;
+
+    let css = `.anim-dot { ${DOT_BASE} ${e.off} }\n`;
+    css += `@keyframes staticFlip {\n${keyframeBody}\n}\n\n`;
+
+    const FW = 10; // flicker transition width (% of cycle) — 0.2x of original 2%
+
+    for (let y = 0; y < pattern.height; y++) {
+        for (let x = 0; x < pattern.width; x++) {
+            const isOn    = pattern.data[y]?.[x] === 1;
+            const flicker = isOn ? Math.random() < 0.15 : Math.random() < 0.03;
+
+            if (isOn) {
+                const initDelay = (x + y) * timing.diagonalDelayMultiplier;
+                if (flicker) {
+                    const cycleDuration = 8 + Math.random() * 12;
+                    const flickerDelay  = initDelay + timing.staticFlipDuration + 0.5 + Math.random() * 3;
+                    const numFlickers   = 1 + Math.floor(Math.random() * 2);
+                    const positions     = Array.from({ length: numFlickers }, () => 10 + Math.random() * (80 - FW)).sort((a, b) => a - b);
+
+                    let kf = `@keyframes fD-${x}-${y} {\n    0% { ${e.on} }\n`;
+                    for (const p of positions) {
+                        kf += `    ${p.toFixed(1)}% { ${e.on} }\n`;
+                        kf += `    ${(p + FW / 2).toFixed(1)}% { ${e.off} }\n`;
+                        kf += `    ${(p + FW).toFixed(1)}% { ${e.on} }\n`;
+                    }
+                    kf += `    100% { ${e.on} }\n}\n\n`;
+                    css += kf;
+                    css += `.anim-dot[data-x="${x}"][data-y="${y}"] { animation: staticFlip ${timing.staticFlipDuration}s ease-out ${initDelay}s forwards, fD-${x}-${y} ${cycleDuration.toFixed(2)}s ${flickerDelay.toFixed(2)}s infinite; }\n`;
+                } else {
+                    css += `.anim-dot[data-x="${x}"][data-y="${y}"] { animation: staticFlip ${timing.staticFlipDuration}s ease-out ${initDelay}s forwards; }\n`;
+                }
+            } else if (flicker) {
+                const cycleDuration = 8 + Math.random() * 12;
+                const flickerDelay  = Math.random() * 5;
+                const numFlickers   = 1 + Math.floor(Math.random() * 2);
+                const positions     = Array.from({ length: numFlickers }, () => 10 + Math.random() * (80 - FW)).sort((a, b) => a - b);
+
+                let kf = `@keyframes fD-${x}-${y} {\n    0% { ${e.off} }\n`;
+                for (const p of positions) {
+                    kf += `    ${p.toFixed(1)}% { ${e.off} }\n`;
+                    kf += `    ${(p + FW / 2).toFixed(1)}% { ${e.on} }\n`;
+                    kf += `    ${(p + FW).toFixed(1)}% { ${e.off} }\n`;
+                }
+                kf += `    100% { ${e.off} }\n}\n\n`;
+                css += kf;
+                css += `.anim-dot[data-x="${x}"][data-y="${y}"] { animation: fD-${x}-${y} ${cycleDuration.toFixed(2)}s ${flickerDelay.toFixed(2)}s infinite; }\n`;
+            }
+        }
+    }
+
+    return css;
+}
+
 export function generateAnimationCSS(animationMode, options) {
     const { pattern, displayWidth, displayHeight, colors, speed, direction, shape } = options;
 
@@ -207,6 +329,10 @@ export function generateAnimationCSS(animationMode, options) {
             return generateWaterfallAnimation(pattern, displayHeight, displayWidth, colors, speed, direction, shape);
         case 'sequential':
             return generateSequentialAnimation(pattern, colors, speed, direction, shape);
+        case 'sequentialD':
+            return generateSequentialDAnimation(pattern, colors, speed, direction, shape);
+        case 'staticD':
+            return generateStaticDAnimation(pattern, colors, shape);
         case 'static':
         default:
             return generateStaticAnimation(pattern, colors, shape);
