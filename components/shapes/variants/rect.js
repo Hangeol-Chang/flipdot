@@ -16,7 +16,7 @@ const rect = {
         },
     },
 
-    render({ cx, cy, cellX, cellY, dotRadius, dotSize, isOn, dotOnColor, colors, className, style, dataAttrs }) {
+    render({ cx, cy, cellX, cellY, dotRadius, dotSize, colors, className, style, dataAttrs }) {
         const r = dotRadius;
         const holeSize = 0.25;
 
@@ -27,9 +27,6 @@ const rect = {
                 height="${dotSize}"
                 fill="${colors.background}"
             />
-        `;
-        const accent = `
-            <polygon points="${cellX},${cellY} ${cellX + 4},${cellY} ${cellX},${cellY + 4}" fill="${colors.shadow}"/>
         `;
 
         // 우하단 삼각형: 정적, 목적지 색상 표시 (애니메이션 중 배경 역할)
@@ -58,7 +55,7 @@ const rect = {
                 class="${className}" style="${style}" ${dataAttrs}
             />`;
 
-        return bg + accent + lowerRight + upperLeft;
+        return bg + lowerRight + upperLeft;
     },
 };
 

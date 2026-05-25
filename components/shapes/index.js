@@ -11,11 +11,11 @@
  *   또는 런타임에 shapeRegistry.register('name', { render }) 호출
  */
 
-import circle  from './variants/circle.js';
-import rect    from './variants/rect.js';
-import rounded from './variants/rounded.js';
+import circle   from './variants/circle.js';
+import rect     from './variants/rect.js';
+import octagon  from './variants/octagon.js';
 
-const shapes = { circle, rect, rounded };
+const shapes = { circle, rect, octagon };
 
 const shapeRegistry = {
     getShape(name) {

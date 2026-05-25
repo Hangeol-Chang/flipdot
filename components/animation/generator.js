@@ -142,25 +142,42 @@ function buildKeyframes(name, activeSteps, timing, totalCycleDuration, totalScro
     return kf;
 }
 
-export function generateScrollAnimation(pattern, displayWidth, colors, speed = 1.0, direction = 'normal', shape) {
+/**
+ * scroll / waterfall 공통 구현
+ * axis='horizontal' → scroll,  axis='vertical' → waterfall
+ */
+function generateScrollingAnimation(axis, pattern, displayWidth, displayHeight, colors, speed = 1.0, direction = 'normal', shape) {
     const timing = calculateTiming(speed);
-    const scrollSteps = pattern.width + displayWidth;
-    const totalScrollTime = scrollSteps * timing.stepInterval;
-    const totalCycleDuration = totalScrollTime + timing.pauseTime;
     const e = resolveColors(shape?.effect ?? DEFAULT_EFFECT, colors);
+
+    const isH         = axis === 'horizontal';
+    const cols        = displayWidth;
+    const rows        = isH ? pattern.height : displayHeight;
+    const patternDim  = isH ? pattern.width  : pattern.height;
+    const displayDim  = isH ? displayWidth   : displayHeight;
+    const scrollSteps = patternDim + displayDim;
+    const totalScrollTime    = scrollSteps * timing.stepInterval;
+    const totalCycleDuration = totalScrollTime + timing.pauseTime;
 
     let css = `.anim-dot { animation-fill-mode: forwards; ${DOT_BASE} ${e.off} }\n\n`;
 
-    for (let y = 0; y < pattern.height; y++) {
-        for (let x = 0; x < displayWidth; x++) {
+    for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
             const activeSteps = [];
             for (let step = 0; step < scrollSteps; step++) {
-                const pos = direction === 'reverse'
-                    ? pattern.width - 1 - (step - x)
-                    : step - displayWidth + x + 1;
-                if (pos >= 0 && pos < pattern.width && pattern.data[y]?.[pos] === 1) {
-                    activeSteps.push(step);
+                let active;
+                if (isH) {
+                    const pos = direction === 'reverse'
+                        ? pattern.width - 1 - (step - x)
+                        : step - displayWidth + x + 1;
+                    active = pos >= 0 && pos < pattern.width && pattern.data[y]?.[pos] === 1;
+                } else {
+                    const pos = direction === 'reverse'
+                        ? step - displayHeight + y + 1
+                        : pattern.height - 1 - (step - y);
+                    active = pos >= 0 && pos < pattern.height && x < pattern.width && pattern.data[pos]?.[x] === 1;
                 }
+                if (active) activeSteps.push(step);
             }
 
             const name = `anim-${x}-${y}`;
@@ -172,34 +189,12 @@ export function generateScrollAnimation(pattern, displayWidth, colors, speed = 1
     return css;
 }
 
+export function generateScrollAnimation(pattern, displayWidth, displayHeight, colors, speed = 1.0, direction = 'normal', shape) {
+    return generateScrollingAnimation('horizontal', pattern, displayWidth, displayHeight, colors, speed, direction, shape);
+}
+
 export function generateWaterfallAnimation(pattern, displayHeight, displayWidth, colors, speed = 1.0, direction = 'normal', shape) {
-    const timing = calculateTiming(speed);
-    const scrollSteps = pattern.height + displayHeight;
-    const totalScrollTime = scrollSteps * timing.stepInterval;
-    const totalCycleDuration = totalScrollTime + timing.pauseTime;
-    const e = resolveColors(shape?.effect ?? DEFAULT_EFFECT, colors);
-
-    let css = `.anim-dot { animation-fill-mode: forwards; ${DOT_BASE} ${e.off} }\n\n`;
-
-    for (let y = 0; y < displayHeight; y++) {
-        for (let x = 0; x < displayWidth; x++) {
-            const activeSteps = [];
-            for (let step = 0; step < scrollSteps; step++) {
-                const pos = direction === 'reverse'
-                    ? step - displayHeight + y + 1
-                    : pattern.height - 1 - (step - y);
-                if (pos >= 0 && pos < pattern.height && x < pattern.width && pattern.data[pos]?.[x] === 1) {
-                    activeSteps.push(step);
-                }
-            }
-
-            const name = `anim-${x}-${y}`;
-            css += buildKeyframes(name, activeSteps, timing, totalCycleDuration, totalScrollTime, e);
-            css += `.anim-dot[data-x="${x}"][data-y="${y}"] { animation: ${name} ${totalCycleDuration}s infinite ease-in-out; }\n\n`;
-        }
-    }
-
-    return css;
+    return generateScrollingAnimation('vertical', pattern, displayWidth, displayHeight, colors, speed, direction, shape);
 }
 
 export function generateAnimationCSS(animationMode, options) {
@@ -207,7 +202,7 @@ export function generateAnimationCSS(animationMode, options) {
 
     switch (animationMode) {
         case 'scroll':
-            return generateScrollAnimation(pattern, displayWidth, colors, speed, direction, shape);
+            return generateScrollAnimation(pattern, displayWidth, displayHeight, colors, speed, direction, shape);
         case 'waterfall':
             return generateWaterfallAnimation(pattern, displayHeight, displayWidth, colors, speed, direction, shape);
         case 'sequential':

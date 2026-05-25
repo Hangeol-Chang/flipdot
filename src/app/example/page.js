@@ -329,10 +329,31 @@ export default function ExamplePage() {
                         </div>
                     )}
                     
+                    {/* Dot 형태 */}
+                    <div style={{ marginBottom: '15px' }}>
+                        <label>Dot 형태 (Shape): </label>
+                        <select
+                            value={dotShape}
+                            onChange={(e) => setDotShape(e.target.value)}
+                            style={{
+                                padding: '5px',
+                                backgroundColor: '#333',
+                                color: 'white',
+                                border: '1px solid #555',
+                                borderRadius: '4px',
+                                width: '100%'
+                            }}
+                        >
+                            <option value="circle">원형 (Circle)</option>
+                            <option value="rect">사각형 (Rect)</option>
+                            <option value="octagon">8각형 (Octagon)</option>
+                        </select>
+                    </div>
+
                     {/* 설정 그리드 */}
-                    <div style={{ 
-                        display: 'grid', 
-                        gridTemplateColumns: '1fr 1fr', 
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: '1fr 1fr',
                         gap: '15px',
                         marginBottom: '15px'
                     }}>
@@ -447,27 +468,6 @@ export default function ExamplePage() {
                             />
                         </div>
                         
-                        {/* Dot 형태 */}
-                        <div>
-                            <label>Dot 형태: </label>
-                            <select
-                                value={dotShape}
-                                onChange={(e) => setDotShape(e.target.value)}
-                                style={{
-                                    padding: '5px',
-                                    backgroundColor: '#333',
-                                    color: 'white',
-                                    border: '1px solid #555',
-                                    borderRadius: '4px',
-                                    width: '100%'
-                                }}
-                            >
-                                <option value="circle">Circle (원형)</option>
-                                <option value="rect">Rect (사각형)</option>
-                                <option value="rounded">Rounded (둥근 사각형)</option>
-                            </select>
-                        </div>
-
                         {/* 세로 정렬 (align) */}
                         <div>
                             <label>세로 정렬: </label>
@@ -483,9 +483,9 @@ export default function ExamplePage() {
                                     width: '100%'
                                 }}
                             >
-                                <option value="start">위</option>
-                                <option value="center">가운데</option>
-                                <option value="end">아래</option>
+                                <option value="start">위 (Top)</option>
+                                <option value="center">가운데 (Center)</option>
+                                <option value="end">아래 (Bottom)</option>
                             </select>
                         </div>
                         
@@ -504,9 +504,9 @@ export default function ExamplePage() {
                                     width: '100%'
                                 }}
                             >
-                                <option value="start">왼쪽</option>
-                                <option value="center">가운데</option>
-                                <option value="end">오른쪽</option>
+                                <option value="start">왼쪽 (Left)</option>
+                                <option value="center">가운데 (Center)</option>
+                                <option value="end">오른쪽 (Right)</option>
                             </select>
                         </div>
                     </div>
@@ -528,10 +528,10 @@ export default function ExamplePage() {
                                 }}
                             >
                                 <option value="normal">
-                                    {animationMode === 'scroll' ? '오른쪽→왼쪽' : '아래→위'}
+                                    {animationMode === 'scroll' ? '오른쪽→왼쪽 (Right→Left)' : '아래→위 (Bottom→Top)'}
                                 </option>
                                 <option value="reverse">
-                                    {animationMode === 'scroll' ? '왼쪽→오른쪽' : '위→아래'}
+                                    {animationMode === 'scroll' ? '왼쪽→오른쪽 (Left→Right)' : '위→아래 (Top→Bottom)'}
                                 </option>
                             </select>
                         </div>
@@ -763,7 +763,7 @@ export default function ExamplePage() {
                         
                         <h3>Dot 표현</h3>
                         <ul style={{ lineHeight: '1.6' }}>
-                            <li><strong>dotShape</strong>: circle, rect, rounded</li>
+                            <li><strong>dotShape</strong>: circle, rect, octagon</li>
                         </ul>
 
                         <h3>애니메이션 파라미터</h3>
