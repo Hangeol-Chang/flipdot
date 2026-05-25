@@ -2,56 +2,42 @@
     "dark": {
         "panelBackground": "#000000",
         "background": "#0A0A0A",
-        "border": "#1A1A1A",
-        "shadow": "#000000",
         "dotOn": "#FFFFFF",
         "dotOff": "#333333"
     },
     "light": {
-        "panelBackground": "#F5F5F5",
+        "panelBackground": "#FAFAFA",
         "background": "#E0E0E0",
-        "border": "#CCCCCC",
-        "shadow": "#BBBBBB",
         "dotOn": "#000000",
         "dotOff": "#D0D0D0"
     },
     "retro": {
         "panelBackground": "#2D4A22",
         "background": "#3D5A32",
-        "border": "#4D6A42",
-        "shadow": "#1D3A12",
         "dotOn": "#8FBC8F",
         "dotOff": "#2D4A22"
     },
     "modern": {
         "panelBackground": "#1A1A2E",
         "background": "#16213E",
-        "border": "#0F3460",
-        "shadow": "#0A1426",
         "dotOn": "#E94560",
         "dotOff": "#1A1A2E"
     },
     "neon": {
         "panelBackground": "#0D0D0D",
         "background": "#1A1A1A",
-        "border": "#333333",
-        "shadow": "#000000",
         "dotOn": "#00FF00",
         "dotOff": "#1A1A1A"
     },
     "ocean": {
         "panelBackground": "#0A2647",
         "background": "#144272",
-        "border": "#205295",
-        "shadow": "#051B32",
         "dotOn": "#2C74B3",
         "dotOff": "#0A2647"
     },
     "sunset": {
         "panelBackground": "#2D132C",
         "background": "#4A1942",
-        "border": "#6B2D5B",
-        "shadow": "#1A0A19",
         "dotOn": "#F97B22",
         "dotOff": "#2D132C"
     }
